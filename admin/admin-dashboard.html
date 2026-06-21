@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CS Flooring | Admin Dashboard</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+
+<body class="admin-body">
+  <aside class="admin-sidebar">
+    <h2>CS Flooring</h2>
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-inventory.html">Inventory</a>
+    <a href="admin-customers.html">Customers</a>
+    <a href="admin-jobs.html">Jobs</a>
+    <a href="admin-calendar.html">Calendar</a>
+    <a href="admin-photos.html">Photos</a>
+    <a href="admin-documents.html">Documents</a>
+    <a href="index.html">Public Site</a>
+  </aside>
+
+  <main class="admin-main">
+    <h1>Owner Dashboard</h1>
+
+    <div class="dashboard-grid">
+      <div class="card">
+        <h3>Open Requests</h3>
+        <p id="requestCount">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Upcoming Jobs</h3>
+        <p id="jobCount">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Inventory Items</h3>
+        <p id="inventoryCount">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Active Customers</h3>
+        <p id="customerCount">0</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/jobs.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    document.getElementById("requestCount").textContent = getRequests().length;
+    document.getElementById("jobCount").textContent = getJobs().length;
+    document.getElementById("inventoryCount").textContent = getInventory().length;
+    document.getElementById("customerCount").textContent = getCustomers().filter(c => c.active).length;
+  </script>
+</body>
+
+</html>

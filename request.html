@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CS Flooring | Request Work</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="logo">CS Flooring</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="request.html">Request Work</a>
+      <a href="job-status.html">Job Status</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main class="section form-page">
+    <h1>Request Flooring Work</h1>
+    <p>Fill out this form to request an estimate.</p>
+
+    <form id="requestForm" class="form-card" onsubmit="event.preventDefault(); submitRequest();">
+      <label>
+        Name
+        <input id="name" type="text" placeholder="Full name" required />
+      </label>
+
+      <label>
+        Email
+        <input id="email" type="email" placeholder="Email address" required />
+      </label>
+
+      <label>
+        Phone
+        <input id="phone" type="tel" placeholder="Phone number" required />
+      </label>
+
+      <label>
+        Address
+        <input id="address" type="text" placeholder="Job address" />
+      </label>
+
+      <label>
+        Flooring Type
+        <select id="flooringType">
+          <option>Hardwood</option>
+          <option>Vinyl</option>
+          <option>Tile</option>
+          <option>Laminate</option>
+          <option>Not sure yet</option>
+        </select>
+      </label>
+
+      <label>
+        Room Size / Square Footage
+        <input id="squareFootage" type="text" placeholder="Example: 400 sq ft" />
+      </label>
+
+      <label>
+        Preferred Date
+        <input id="preferredDate" type="date" />
+      </label>
+
+      <label>
+        Description
+        <textarea id="description" placeholder="Describe the work needed" required></textarea>
+      </label>
+
+      <button class="btn" type="submit">Submit Request</button>
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 CS Flooring.</p>
+  </footer>
+
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/requests.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

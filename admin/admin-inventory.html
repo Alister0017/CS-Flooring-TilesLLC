@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CS Flooring | Inventory</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+
+<body class="admin-body">
+  <aside class="admin-sidebar">
+    <h2>CS Flooring</h2>
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-inventory.html">Inventory</a>
+    <a href="admin-customers.html">Customers</a>
+    <a href="admin-jobs.html">Jobs</a>
+    <a href="admin-calendar.html">Calendar</a>
+    <a href="admin-photos.html">Photos</a>
+    <a href="admin-documents.html">Documents</a>
+  </aside>
+
+  <main class="admin-main">
+    <h1>Inventory</h1>
+
+    <form id="inventoryForm" class="form-card admin-form" onsubmit="event.preventDefault(); addInventoryItem();">
+      <label>Item Name<input id="itemName" type="text" required /></label>
+      <label>Type<input id="itemType" type="text" required /></label>
+      <label>Unit Price<input id="unitPrice" type="number" step="0.01" required /></label>
+      <label>Quantity<input id="quantity" type="number" required /></label>
+      <button class="btn" type="submit">Add Stock Item</button>
+    </form>
+
+    <h2>Current Inventory</h2>
+    <div id="inventory"></div>
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/jobs.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

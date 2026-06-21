@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CS Flooring | Documents</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+
+<body class="admin-body">
+  <aside class="admin-sidebar">
+    <h2>CS Flooring</h2>
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-inventory.html">Inventory</a>
+    <a href="admin-customers.html">Customers</a>
+    <a href="admin-jobs.html">Jobs</a>
+    <a href="admin-calendar.html">Calendar</a>
+    <a href="admin-photos.html">Photos</a>
+    <a href="admin-documents.html">Documents</a>
+  </aside>
+
+  <main class="admin-main">
+    <h1>Estimate Files & Agreements</h1>
+
+    <h2>Add Estimate</h2>
+    <form id="estimateForm" class="form-card admin-form" onsubmit="event.preventDefault(); addEstimate();">
+      <label>Job Number<input id="estimateJobNumber" type="text" required /></label>
+      <label>Material Cost<input id="materialCost" type="number" step="0.01" required /></label>
+      <label>Labor Cost<input id="laborCost" type="number" step="0.01" required /></label>
+      <button class="btn" type="submit">Save Estimate</button>
+    </form>
+
+    <div id="estimates"></div>
+
+    <h2>Add Agreement</h2>
+    <form id="agreementForm" class="form-card admin-form" onsubmit="event.preventDefault(); addAgreement();">
+      <label>Job Number<input id="agreementJobNumber" type="text" required /></label>
+      <label>Agreement Notes<textarea id="agreementNotes" required></textarea></label>
+      <button class="btn" type="submit">Save Agreement</button>
+    </form>
+
+    <div id="agreements"></div>
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/jobs.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
