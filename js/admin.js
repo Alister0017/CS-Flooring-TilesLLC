@@ -1,5 +1,22 @@
 // admin.js
 
+async function generateSupabaseJobNumber() {
+    const year = new Date().getFullYear();
+
+    const { count, error } = await db
+        .from("jobs")
+        .select("*", { count: "exact", head: true });
+
+    if (error) {
+        console.error(error);
+        return `CS-${year}-${String(Date.now()).slice(-4)}`;
+    }
+
+    const next = (count || 0) + 1;
+
+    return `CS-${year}-${String(next).padStart(4, "0")}`;
+}
+
 async function loadRequests() {
     const container = document.getElementById("requests");
 
@@ -51,8 +68,80 @@ async function loadRequests() {
     });
 }
 
-function acceptRequest(requestId) {
-    showMessage("Accepting requests into Supabase jobs is the next step. This button is not connected yet.");
+async function acceptRequest(requestId) {
+    const { data: request, error: requestError } = await db
+        .from("measurement_requests")
+        .select("*")
+        .eq("request_id", requestId)
+        .single();
+
+    if (requestError || !request) {
+        console.error(requestError);
+        showMessage("Request not found.");
+        return;
+    }
+
+    const customer = {
+        customer_name: request.customer_name,
+        email: request.email,
+        phone: request.phone,
+        address: request.address,
+        active: true
+    };
+
+    const { data: createdCustomer, error: customerError } = await db
+        .from("customers")
+        .insert([customer])
+        .select()
+        .single();
+
+    if (customerError) {
+        console.error(customerError);
+        showMessage("Could not create customer.");
+        return;
+    }
+
+    const jobNumber = await generateSupabaseJobNumber();
+
+    const job = {
+        job_number: jobNumber,
+        customer_id: createdCustomer.customer_id,
+        flooring_type: request.flooring_type,
+        description: request.description,
+        measurement_date: request.preferred_measurement_date || null,
+        install_start_date: null,
+        install_end_date: null,
+        install_price: null,
+        status: "Measurement Scheduled",
+        estimate_id: null,
+        agreement_id: null
+    };
+
+    const { error: jobError } = await db
+        .from("jobs")
+        .insert([job]);
+
+    if (jobError) {
+        console.error(jobError);
+        showMessage("Could not create job.");
+        return;
+    }
+
+    const { error: deleteError } = await db
+        .from("measurement_requests")
+        .delete()
+        .eq("request_id", requestId);
+
+    if (deleteError) {
+        console.error(deleteError);
+        showMessage("Job created, but request could not be removed.");
+    } else {
+        showMessage(`Job created: ${jobNumber}`);
+    }
+
+    loadRequests();
+    loadJobs();
+    loadDashboardCounts();
 }
 
 async function declineRequest(requestId) {
@@ -70,44 +159,67 @@ async function declineRequest(requestId) {
     showMessage("Measurement request declined.");
 
     loadRequests();
-
-    if (typeof loadDashboardCounts === "function") {
-        loadDashboardCounts();
-    }
+    loadDashboardCounts();
 }
 
-function loadJobs() {
-    const jobs = getJobs();
+async function loadJobs() {
     const container = document.getElementById("jobs");
 
     if (!container) return;
 
+    container.innerHTML = "<p>Loading accepted jobs...</p>";
+
+    const { data, error } = await db
+        .from("jobs")
+        .select(`
+            *,
+            customers (
+                customer_name,
+                email,
+                phone,
+                address
+            )
+        `)
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error(error);
+        container.innerHTML = "<p>Error loading jobs.</p>";
+        return;
+    }
+
     container.innerHTML = "";
 
-    if (jobs.length === 0) {
+    if (!data || data.length === 0) {
         container.innerHTML = "<p>No accepted jobs found.</p>";
         return;
     }
 
-    jobs.forEach(job => {
+    data.forEach(job => {
         const div = document.createElement("div");
         div.className = "card";
 
+        const flooringTypes = Array.isArray(job.flooring_type)
+            ? job.flooring_type.join(", ")
+            : job.flooring_type;
+
         div.innerHTML = `
-            <h3>${job.jobNumber}</h3>
-            <p><strong>Customer:</strong> ${job.customerName}</p>
-            <p><strong>Email:</strong> ${job.email}</p>
-            <p><strong>Phone:</strong> ${job.phone}</p>
-            <p><strong>Address:</strong> ${job.address}</p>
-            <p><strong>Requested Work:</strong> ${job.flooringType}</p>
-            <p><strong>Measurement Date:</strong> ${job.measurementDate || "Not scheduled"}</p>
-            <p><strong>Description:</strong> ${job.description}</p>
+            <h3>${job.job_number}</h3>
+
+            <p><strong>Customer:</strong> ${job.customers?.customer_name || "No customer listed"}</p>
+            <p><strong>Email:</strong> ${job.customers?.email || "No email listed"}</p>
+            <p><strong>Phone:</strong> ${job.customers?.phone || "No phone listed"}</p>
+            <p><strong>Address:</strong> ${job.customers?.address || "No address listed"}</p>
+
+            <p><strong>Requested Work:</strong> ${flooringTypes || "Not listed"}</p>
+            <p><strong>Measurement Date:</strong> ${job.measurement_date || "Not scheduled"}</p>
+            <p><strong>Description:</strong> ${job.description || "No description provided"}</p>
             <p><strong>Status:</strong> ${job.status}</p>
-            <p><strong>Install Price:</strong> ${job.installPrice ? formatMoney(job.installPrice) : "Not set"}</p>
+            <p><strong>Install Price:</strong> ${job.install_price ? formatMoney(job.install_price) : "Not set"}</p>
 
             <label>
                 Update Status
-                <select onchange="updateJobStatus('${job.jobNumber}', this.value)">
+                <select onchange="updateJobStatus('${job.job_number}', this.value)">
                     <option value="">Change Status</option>
                     <option value="Measurement Scheduled">Measurement Scheduled</option>
                     <option value="Measurement Complete">Measurement Complete</option>
@@ -122,18 +234,40 @@ function loadJobs() {
 
             <label>
                 Set Install Price
-                <input type="number" step="0.01" placeholder="Install price" id="price-${job.jobNumber}">
+                <input type="number" step="0.01" placeholder="Install price" id="price-${job.job_number}">
             </label>
 
-            <button onclick="setInstallPrice('${job.jobNumber}')">Save Price</button>
-            <button onclick="deleteJob('${job.jobNumber}')">Delete Job</button>
+            <button onclick="setInstallPrice('${job.job_number}')">Save Price</button>
+            <button onclick="deleteJob('${job.job_number}')">Delete Job</button>
         `;
 
         container.appendChild(div);
     });
 }
 
-function setInstallPrice(jobNumber) {
+async function updateJobStatus(jobNumber, newStatus) {
+    if (!newStatus) return;
+
+    const { error } = await db
+        .from("jobs")
+        .update({
+            status: newStatus
+        })
+        .eq("job_number", jobNumber);
+
+    if (error) {
+        console.error(error);
+        showMessage("Could not update job status.");
+        return;
+    }
+
+    showMessage("Job status updated.");
+
+    loadJobs();
+    loadDashboardCounts();
+}
+
+async function setInstallPrice(jobNumber) {
     const input = document.getElementById(`price-${jobNumber}`);
 
     if (!input || input.value === "") {
@@ -141,60 +275,81 @@ function setInstallPrice(jobNumber) {
         return;
     }
 
-    const jobs = getJobs();
-    const job = jobs.find(j => j.jobNumber === jobNumber);
+    const { error } = await db
+        .from("jobs")
+        .update({
+            install_price: Number(input.value),
+            status: "Estimate Generated"
+        })
+        .eq("job_number", jobNumber);
 
-    if (!job) {
-        showMessage("Job not found.");
+    if (error) {
+        console.error(error);
+        showMessage("Could not save install price.");
         return;
     }
-
-    job.installPrice = Number(input.value);
-    job.status = "Estimate Generated";
-
-    updateJobs(jobs);
 
     showMessage("Install price saved.");
 
     loadJobs();
+    loadDashboardCounts();
 }
 
-function deleteJob(jobNumber) {
-    const jobs = getJobs();
-    const updatedJobs = jobs.filter(job => job.jobNumber !== jobNumber);
+async function deleteJob(jobNumber) {
+    const { error } = await db
+        .from("jobs")
+        .delete()
+        .eq("job_number", jobNumber);
 
-    updateJobs(updatedJobs);
+    if (error) {
+        console.error(error);
+        showMessage("Could not delete job.");
+        return;
+    }
 
     showMessage("Job deleted.");
 
     loadJobs();
+    loadDashboardCounts();
 }
 
-function loadCustomers() {
-    const customers = getCustomers();
+async function loadCustomers() {
     const container = document.getElementById("customers");
 
     if (!container) return;
 
+    container.innerHTML = "<p>Loading customers...</p>";
+
+    const { data, error } = await db
+        .from("customers")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error(error);
+        container.innerHTML = "<p>Error loading customers.</p>";
+        return;
+    }
+
     container.innerHTML = "";
 
-    if (customers.length === 0) {
+    if (!data || data.length === 0) {
         container.innerHTML = "<p>No customers found.</p>";
         return;
     }
 
-    customers.forEach(customer => {
+    data.forEach(customer => {
         const div = document.createElement("div");
         div.className = "card";
 
         div.innerHTML = `
-            <h3>${customer.name}</h3>
+            <h3>${customer.customer_name}</h3>
             <p><strong>Email:</strong> ${customer.email}</p>
             <p><strong>Phone:</strong> ${customer.phone}</p>
-            <p><strong>Address:</strong> ${customer.address}</p>
+            <p><strong>Address:</strong> ${customer.address || "No address listed"}</p>
             <p><strong>Active:</strong> ${customer.active ? "Yes" : "No"}</p>
 
-            <button onclick="toggleCustomerActive('${customer.customerId}')">
+            <button onclick="toggleCustomerActive('${customer.customer_id}', ${customer.active})">
                 ${customer.active ? "Mark Inactive" : "Mark Active"}
             </button>
         `;
@@ -203,17 +358,22 @@ function loadCustomers() {
     });
 }
 
-function toggleCustomerActive(customerId) {
-    const customers = getCustomers();
-    const customer = customers.find(c => c.customerId === customerId);
+async function toggleCustomerActive(customerId, currentStatus) {
+    const { error } = await db
+        .from("customers")
+        .update({
+            active: !currentStatus
+        })
+        .eq("customer_id", customerId);
 
-    if (!customer) return;
-
-    customer.active = !customer.active;
-
-    updateCustomers(customers);
+    if (error) {
+        console.error(error);
+        showMessage("Could not update customer.");
+        return;
+    }
 
     loadCustomers();
+    loadDashboardCounts();
 }
 
 async function loadDashboardCounts() {
@@ -222,19 +382,32 @@ async function loadDashboardCounts() {
     const inventoryCount = document.getElementById("inventoryCount");
     const customerCount = document.getElementById("customerCount");
 
-    if (requestCount && typeof db !== "undefined") {
+    if (requestCount) {
         const { count, error } = await db
             .from("measurement_requests")
             .select("*", { count: "exact", head: true });
 
-        if (!error) {
-            requestCount.textContent = count;
-        }
+        if (!error) requestCount.textContent = count;
     }
 
-    if (jobCount) jobCount.textContent = getJobs().length;
-    if (inventoryCount) inventoryCount.textContent = getInventory().length;
+    if (jobCount) {
+        const { count, error } = await db
+            .from("jobs")
+            .select("*", { count: "exact", head: true });
+
+        if (!error) jobCount.textContent = count;
+    }
+
     if (customerCount) {
-        customerCount.textContent = getCustomers().filter(customer => customer.active).length;
+        const { count, error } = await db
+            .from("customers")
+            .select("*", { count: "exact", head: true })
+            .eq("active", true);
+
+        if (!error) customerCount.textContent = count;
+    }
+
+    if (inventoryCount) {
+        inventoryCount.textContent = getInventory().length;
     }
 }
