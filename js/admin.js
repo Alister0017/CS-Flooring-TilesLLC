@@ -1,34 +1,50 @@
 // admin.js
 
-function loadRequests() {
-    const requests = getRequests();
+async function loadRequests() {
     const container = document.getElementById("requests");
 
     if (!container) return;
 
+    container.innerHTML = "<p>Loading measurement requests...</p>";
+
+    const { data, error } = await db
+        .from("measurement_requests")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error(error);
+        container.innerHTML = "<p>Error loading measurement requests.</p>";
+        return;
+    }
+
     container.innerHTML = "";
 
-    if (requests.length === 0) {
+    if (!data || data.length === 0) {
         container.innerHTML = "<p>No measurement requests found.</p>";
         return;
     }
 
-    requests.forEach(request => {
+    data.forEach(request => {
         const div = document.createElement("div");
         div.className = "card";
 
+        const flooringTypes = Array.isArray(request.flooring_type)
+            ? request.flooring_type.join(", ")
+            : request.flooring_type;
+
         div.innerHTML = `
-            <h3>${request.name}</h3>
+            <h3>${request.customer_name}</h3>
             <p><strong>Email:</strong> ${request.email}</p>
             <p><strong>Phone:</strong> ${request.phone}</p>
             <p><strong>Address:</strong> ${request.address}</p>
-            <p><strong>Requested Work:</strong> ${request.flooringType}</p>
-            <p><strong>Preferred Measurement Date:</strong> ${request.preferredDate || "Not provided"}</p>
-            <p><strong>Description:</strong> ${request.description}</p>
+            <p><strong>Requested Work:</strong> ${flooringTypes}</p>
+            <p><strong>Preferred Measurement Date:</strong> ${request.preferred_measurement_date || "Not provided"}</p>
+            <p><strong>Description:</strong> ${request.description || "No description provided"}</p>
             <p><strong>Status:</strong> ${request.status}</p>
 
-            <button onclick="acceptRequest('${request.id}')">Accept Measurement Request</button>
-            <button onclick="declineRequest('${request.id}')">Decline</button>
+            <button onclick="acceptRequest('${request.request_id}')">Accept Measurement Request</button>
+            <button onclick="declineRequest('${request.request_id}')">Decline</button>
         `;
 
         container.appendChild(div);
@@ -252,7 +268,7 @@ function loadDashboardCounts() {
 
     if (requestCount) requestCount.textContent = getRequests().length;
     if (jobCount) jobCount.textContent = getJobs().length;
-    if (inventoryCount) inventoryCount.textContent = getInventory().length;
+    if (inventoryCount) requestCount.textContent = getInventory().length;
     if (customerCount) {
         customerCount.textContent = getCustomers().filter(customer => customer.active).length;
     }
