@@ -24,50 +24,77 @@
   <main class="section">
     <h1>Flooring Options</h1>
     <p>
-      View available flooring work options. Final installation pricing is determined by the owner after the free
-      measurement and estimate.
+      Select a category or search by keyword. Final installation pricing is determined by the owner after the free measurement.
     </p>
 
-    <div class="filters">
-      <select>
-        <option>Filter by Type</option>
-        <option>Subfloor Options</option>
-        <option>Luxury Vinyl Products</option>
-        <option>Carpet</option>
-        <option>VCT</option>
-        <option>Trim/Moldings</option>
-      </select>
-    </div>
+    <section class="filters">
+      <input id="productSearch" type="text" placeholder="Search products..." oninput="filterProducts()" />
 
-    <div class="card-grid">
-      <div class="card product-card">
+      <div class="category-buttons">
+        <button onclick="setCategory('All')">All</button>
+        <button onclick="setCategory('Subfloor Options')">Subfloor Options</button>
+        <button onclick="setCategory('Luxury Vinyl Products')">Luxury Vinyl Products</button>
+        <button onclick="setCategory('Carpet')">Carpet</button>
+        <button onclick="setCategory('VCT')">VCT</button>
+        <button onclick="setCategory('Trim/Moldings')">Trim/Moldings</button>
+      </div>
+    </section>
+
+    <h2 id="categoryTitle">All Products</h2>
+
+    <div id="productGrid" class="card-grid">
+      <div class="card product-card" data-category="Subfloor Options" data-keywords="subfloor underlayment plywood leveling prep">
         <div class="placeholder-img">Image</div>
-        <h3>Subfloor Options</h3>
-        <p>Subfloor preparation and options based on the condition of the project area.</p>
+        <h3>Subfloor Prep</h3>
+        <p>Subfloor preparation before installing finish flooring.</p>
       </div>
 
-      <div class="card product-card">
+      <div class="card product-card" data-category="Subfloor Options" data-keywords="moisture barrier underlayment subfloor protection">
         <div class="placeholder-img">Image</div>
-        <h3>Luxury Vinyl Products</h3>
-        <p>Durable flooring products for residential and commercial spaces.</p>
+        <h3>Moisture Barrier</h3>
+        <p>Added protection under flooring products.</p>
       </div>
 
-      <div class="card product-card">
+      <div class="card product-card" data-category="Luxury Vinyl Products" data-keywords="luxury vinyl plank lvp waterproof durable">
         <div class="placeholder-img">Image</div>
-        <h3>Carpet</h3>
-        <p>Carpet options for comfortable and finished rooms.</p>
+        <h3>Luxury Vinyl Plank</h3>
+        <p>Durable vinyl plank flooring for homes and businesses.</p>
       </div>
 
-      <div class="card product-card">
+      <div class="card product-card" data-category="Luxury Vinyl Products" data-keywords="vinyl tile luxury lvt waterproof">
         <div class="placeholder-img">Image</div>
-        <h3>VCT</h3>
-        <p>Vinyl composition tile for durable flooring needs.</p>
+        <h3>Luxury Vinyl Tile</h3>
+        <p>Vinyl tile option for a clean finished look.</p>
       </div>
 
-      <div class="card product-card">
+      <div class="card product-card" data-category="Carpet" data-keywords="carpet bedroom stairs soft flooring">
         <div class="placeholder-img">Image</div>
-        <h3>Trim/Moldings</h3>
-        <p>Finish work including trim and molding installation.</p>
+        <h3>Residential Carpet</h3>
+        <p>Carpet installation for bedrooms, stairs, and living spaces.</p>
+      </div>
+
+      <div class="card product-card" data-category="Carpet" data-keywords="commercial carpet office durable">
+        <div class="placeholder-img">Image</div>
+        <h3>Commercial Carpet</h3>
+        <p>Durable carpet options for business spaces.</p>
+      </div>
+
+      <div class="card product-card" data-category="VCT" data-keywords="vct vinyl composition tile commercial floor">
+        <div class="placeholder-img">Image</div>
+        <h3>Vinyl Composition Tile</h3>
+        <p>VCT flooring for commercial and high-traffic areas.</p>
+      </div>
+
+      <div class="card product-card" data-category="Trim/Moldings" data-keywords="trim molding baseboard transition finish work">
+        <div class="placeholder-img">Image</div>
+        <h3>Baseboard Trim</h3>
+        <p>Finish work for clean edges around flooring.</p>
+      </div>
+
+      <div class="card product-card" data-category="Trim/Moldings" data-keywords="transition strip molding doorway finish">
+        <div class="placeholder-img">Image</div>
+        <h3>Transition Strips</h3>
+        <p>Transitions between different flooring areas.</p>
       </div>
     </div>
   </main>
@@ -76,6 +103,7 @@
     <p>&copy; 2026 CS Flooring.</p>
   </footer>
 
+  <script src="js/products.js"></script>
   <script src="js/main.js"></script>
 </body>
 

@@ -23,7 +23,6 @@
 
   <main class="section form-page">
     <h1>Request a Free Measurement</h1>
-
     <p>
       All measurements and estimates are free. Submit this form and the owner will contact you to schedule a time
       to measure the space and review the work needed.
@@ -50,22 +49,25 @@
         <input id="address" type="text" placeholder="Job address" required />
       </label>
 
-      <label>
-        Type of Flooring Work
-        <select id="flooringType" required>
-          <option value="">Select an option</option>
-          <option>Subfloor Options</option>
-          <option>Luxury Vinyl Products</option>
-          <option>Carpet</option>
-          <option>VCT</option>
-          <option>Trim/Moldings (Finish Work)</option>
-        </select>
-      </label>
+      <div class="form-field">
+        <p><strong>Type of Flooring Work</strong></p>
 
-      <label>
-        Room Size / Square Footage
-        <input id="squareFootage" type="text" placeholder="Example: 400 sq ft or 12x15 room" />
-      </label>
+        <button type="button" class="btn secondary" onclick="toggleFlooringDropdown()">
+          Select all that apply
+        </button>
+
+        <div id="selectedFlooringDisplay">
+          No flooring work selected.
+        </div>
+
+        <div id="flooringDropdown" style="display: none;">
+          <label><input type="checkbox" name="flooringType" value="Subfloor Options" onchange="updateSelectedFlooringDisplay()" /> Subfloor Options</label>
+          <label><input type="checkbox" name="flooringType" value="Luxury Vinyl Products" onchange="updateSelectedFlooringDisplay()" /> Luxury Vinyl Products</label>
+          <label><input type="checkbox" name="flooringType" value="Carpet" onchange="updateSelectedFlooringDisplay()" /> Carpet</label>
+          <label><input type="checkbox" name="flooringType" value="VCT" onchange="updateSelectedFlooringDisplay()" /> VCT</label>
+          <label><input type="checkbox" name="flooringType" value="Trim/Moldings (Finish Work)" onchange="updateSelectedFlooringDisplay()" /> Trim/Moldings (Finish Work)</label>
+        </div>
+      </div>
 
       <label>
         Preferred Measurement Date
