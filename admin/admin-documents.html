@@ -21,14 +21,15 @@
   </aside>
 
   <main class="admin-main">
-    <h1>Estimate Files & Agreements</h1>
+    <h1>Owner Estimates & Agreements</h1>
 
-    <h2>Add Estimate</h2>
+    <h2>Add Owner Estimate</h2>
     <form id="estimateForm" class="form-card admin-form" onsubmit="event.preventDefault(); addEstimate();">
       <label>Job Number<input id="estimateJobNumber" type="text" required /></label>
       <label>Material Cost<input id="materialCost" type="number" step="0.01" required /></label>
       <label>Labor Cost<input id="laborCost" type="number" step="0.01" required /></label>
-      <button class="btn" type="submit">Save Estimate</button>
+      <label>Install Price<input id="installPrice" type="number" step="0.01" required /></label>
+      <button class="btn" type="submit">Save Owner Estimate</button>
     </form>
 
     <div id="estimates"></div>
@@ -43,11 +44,12 @@
     <div id="agreements"></div>
   </main>
 
-  <script src="js/storage.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/jobs.js"></script>
-  <script src="js/admin.js"></script>
-  <script src="js/main.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/jobs.js"></script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/documents.js"></script>
+  <script src="../js/main.js"></script>
 </body>
 
 </html>

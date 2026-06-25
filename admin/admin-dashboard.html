@@ -18,7 +18,7 @@
     <a href="admin-calendar.html">Calendar</a>
     <a href="admin-photos.html">Photos</a>
     <a href="admin-documents.html">Documents</a>
-    <a href="index.html">Public Site</a>
+    <a href="../index.html">Public Site</a>
   </aside>
 
   <main class="admin-main">
@@ -26,12 +26,12 @@
 
     <div class="dashboard-grid">
       <div class="card">
-        <h3>Open Requests</h3>
+        <h3>Open Measurement Requests</h3>
         <p id="requestCount">0</p>
       </div>
 
       <div class="card">
-        <h3>Upcoming Jobs</h3>
+        <h3>Active Jobs</h3>
         <p id="jobCount">0</p>
       </div>
 
@@ -47,18 +47,12 @@
     </div>
   </main>
 
-  <script src="js/storage.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/jobs.js"></script>
-  <script src="js/admin.js"></script>
-  <script src="js/main.js"></script>
-
-  <script>
-    document.getElementById("requestCount").textContent = getRequests().length;
-    document.getElementById("jobCount").textContent = getJobs().length;
-    document.getElementById("inventoryCount").textContent = getInventory().length;
-    document.getElementById("customerCount").textContent = getCustomers().filter(c => c.active).length;
-  </script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/jobs.js"></script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/inventory.js"></script>
+  <script src="../js/main.js"></script>
 </body>
 
 </html>

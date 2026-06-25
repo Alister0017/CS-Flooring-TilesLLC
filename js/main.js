@@ -34,4 +34,6 @@ window.onload = function () {
     if (document.getElementById("calendar")) {
         loadCalendar();
     }
+
+    loadDashboardCounts();
 };

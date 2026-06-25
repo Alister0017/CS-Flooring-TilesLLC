@@ -25,21 +25,33 @@
 
     <form id="inventoryForm" class="form-card admin-form" onsubmit="event.preventDefault(); addInventoryItem();">
       <label>Item Name<input id="itemName" type="text" required /></label>
-      <label>Type<input id="itemType" type="text" required /></label>
+
+      <label>
+        Category
+        <select id="itemType" required>
+          <option value="">Select category</option>
+          <option>Subfloor Options</option>
+          <option>Luxury Vinyl Products</option>
+          <option>Carpet</option>
+          <option>VCT</option>
+          <option>Trim/Moldings</option>
+        </select>
+      </label>
+
       <label>Unit Price<input id="unitPrice" type="number" step="0.01" required /></label>
       <label>Quantity<input id="quantity" type="number" required /></label>
-      <button class="btn" type="submit">Add Stock Item</button>
+
+      <button class="btn" type="submit">Add Inventory Item</button>
     </form>
 
     <h2>Current Inventory</h2>
     <div id="inventory"></div>
   </main>
 
-  <script src="js/storage.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/jobs.js"></script>
-  <script src="js/admin.js"></script>
-  <script src="js/main.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/inventory.js"></script>
+  <script src="../js/main.js"></script>
 </body>
 
 </html>

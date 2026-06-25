@@ -25,17 +25,19 @@ function lookupJob() {
         <h2>${job.jobNumber}</h2>
         <p><strong>Customer:</strong> ${job.customerName}</p>
         <p><strong>Status:</strong> ${job.status}</p>
+        <p><strong>Requested Work:</strong> ${job.flooringType}</p>
         <p><strong>Description:</strong> ${job.description}</p>
-        <p><strong>Flooring Type:</strong> ${job.flooringType}</p>
-        <p><strong>Preferred Date:</strong> ${job.preferredDate}</p>
+        <p><strong>Measurement Date:</strong> ${job.measurementDate || "Not scheduled yet"}</p>
+        <p><strong>Install Price:</strong> ${job.installPrice ? formatMoney(job.installPrice) : "Not available yet"}</p>
         <p><strong>Start Date:</strong> ${job.startDate || "Not scheduled yet"}</p>
         <p><strong>End Date:</strong> ${job.endDate || "Not scheduled yet"}</p>
     `;
 }
 
 function updateJobStatus(jobNumber, newStatus) {
-    const jobs = getJobs();
+    if (!newStatus) return;
 
+    const jobs = getJobs();
     const job = jobs.find(j => j.jobNumber === jobNumber);
 
     if (!job) {
