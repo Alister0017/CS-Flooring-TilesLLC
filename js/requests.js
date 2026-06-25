@@ -11,13 +11,13 @@ function submitRequest() {
         squareFootage: document.getElementById("squareFootage").value,
         preferredDate: document.getElementById("preferredDate").value,
         description: document.getElementById("description").value,
-        status: "Pending",
+        status: "Measurement Requested",
         createdAt: new Date().toLocaleString()
     };
 
     saveRequest(request);
 
-    showMessage("Request submitted successfully.");
+    showMessage("Measurement request submitted successfully. All measurements and estimates are free.");
 
     clearForm("requestForm");
 }
