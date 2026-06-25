@@ -23,6 +23,7 @@
 
   <main class="section form-page">
     <h1>Request a Free Measurement</h1>
+
     <p class="form-intro">
       All measurements and estimates are free. Submit this form and the owner will contact you to schedule a time
       to measure the space and review the work needed.
@@ -49,41 +50,50 @@
         <input id="address" type="text" placeholder="Job address" required />
       </label>
 
-      <div class="form-field">
-        <label class="field-label">Type of Flooring Work</label>
+      <div class="form-field flooring-select-field">
+        <div class="flooring-select-header">
+          <label class="field-label">Type of Flooring Work</label>
+
+          <button type="button" class="dropdown-summary-toggle" onclick="toggleFlooringDropdown()">
+            Show options
+          </button>
+        </div>
 
         <button type="button" class="dropdown-toggle" onclick="toggleFlooringDropdown()">
           Select all that apply
         </button>
 
         <div id="selectedFlooringDisplay" class="selected-display">
-          No flooring work selected.
+          <span class="empty-selection">No flooring work selected.</span>
         </div>
 
         <div id="flooringDropdown" class="dropdown-options">
-          <label>
-            <input type="checkbox" name="flooringType" value="Subfloor Options" onchange="updateSelectedFlooringDisplay()" />
+          <label class="dropdown-choice">
             <span>Subfloor Options</span>
+            <input type="checkbox" name="flooringType" value="Subfloor Options"
+              onchange="updateSelectedFlooringDisplay()" />
           </label>
 
-          <label>
-            <input type="checkbox" name="flooringType" value="Luxury Vinyl Products" onchange="updateSelectedFlooringDisplay()" />
+          <label class="dropdown-choice">
             <span>Luxury Vinyl Products</span>
+            <input type="checkbox" name="flooringType" value="Luxury Vinyl Products"
+              onchange="updateSelectedFlooringDisplay()" />
           </label>
 
-          <label>
-            <input type="checkbox" name="flooringType" value="Carpet" onchange="updateSelectedFlooringDisplay()" />
+          <label class="dropdown-choice">
             <span>Carpet</span>
+            <input type="checkbox" name="flooringType" value="Carpet" onchange="updateSelectedFlooringDisplay()" />
           </label>
 
-          <label>
-            <input type="checkbox" name="flooringType" value="VCT" onchange="updateSelectedFlooringDisplay()" />
+          <label class="dropdown-choice">
             <span>VCT</span>
+            <input type="checkbox" name="flooringType" value="VCT" onchange="updateSelectedFlooringDisplay()" />
           </label>
 
-          <label>
-            <input type="checkbox" name="flooringType" value="Trim/Moldings (Finish Work)" onchange="updateSelectedFlooringDisplay()" />
+          <label class="dropdown-choice">
             <span>Trim/Moldings (Finish Work)</span>
+            <input type="checkbox" name="flooringType" value="Trim/Moldings (Finish Work)"
+              onchange="updateSelectedFlooringDisplay()" />
           </label>
         </div>
       </div>

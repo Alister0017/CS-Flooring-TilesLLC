@@ -2,10 +2,17 @@
 
 function toggleFlooringDropdown() {
     const dropdown = document.getElementById("flooringDropdown");
+    const toggleText = document.querySelector(".dropdown-summary-toggle");
 
     if (!dropdown) return;
 
     dropdown.classList.toggle("open");
+
+    if (toggleText) {
+        toggleText.textContent = dropdown.classList.contains("open")
+            ? "Hide options"
+            : "Show options";
+    }
 }
 
 function getSelectedFlooringTypes() {
@@ -23,7 +30,7 @@ function updateSelectedFlooringDisplay() {
     if (!display) return;
 
     if (selected.length === 0) {
-        display.innerHTML = "No flooring work selected.";
+        display.innerHTML = `<span class="empty-selection">No flooring work selected.</span>`;
         return;
     }
 
@@ -61,8 +68,13 @@ function submitRequest() {
     updateSelectedFlooringDisplay();
 
     const dropdown = document.getElementById("flooringDropdown");
+    const toggleText = document.querySelector(".dropdown-summary-toggle");
 
     if (dropdown) {
         dropdown.classList.remove("open");
+    }
+
+    if (toggleText) {
+        toggleText.textContent = "Show options";
     }
 }
