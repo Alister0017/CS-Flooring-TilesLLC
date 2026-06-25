@@ -52,72 +52,28 @@ async function loadRequests() {
 }
 
 function acceptRequest(requestId) {
-    const requests = getRequests();
-    const request = requests.find(r => r.id === requestId);
-
-    if (!request) {
-        showMessage("Request not found.");
-        return;
-    }
-
-    const customerId = generateId("CUST");
-
-    const customer = {
-        customerId: customerId,
-        name: request.name,
-        email: request.email,
-        phone: request.phone,
-        address: request.address,
-        active: true,
-        createdAt: new Date().toLocaleString()
-    };
-
-    saveCustomer(customer);
-
-    const job = {
-        jobId: generateId("JOB"),
-        jobNumber: generateJobNumber(),
-        customerId: customerId,
-        customerName: request.name,
-        email: request.email,
-        phone: request.phone,
-        address: request.address,
-        flooringType: request.flooringType,
-        preferredDate: request.preferredDate,
-        description: request.description,
-        status: "Measurement Scheduled",
-        measurementDate: request.preferredDate || "",
-        startDate: "",
-        endDate: "",
-        installPrice: "",
-        estimateId: "",
-        agreementId: "",
-        createdAt: new Date().toLocaleString()
-    };
-
-    saveJob(job);
-
-    const updatedRequests = requests.filter(r => r.id !== requestId);
-    updateRequests(updatedRequests);
-
-    showMessage(`Job created: ${job.jobNumber}`);
-
-    loadRequests();
-
-    if (document.getElementById("jobs")) {
-        loadJobs();
-    }
+    showMessage("Accepting requests into Supabase jobs is the next step. This button is not connected yet.");
 }
 
-function declineRequest(requestId) {
-    const requests = getRequests();
-    const updatedRequests = requests.filter(r => r.id !== requestId);
+async function declineRequest(requestId) {
+    const { error } = await db
+        .from("measurement_requests")
+        .delete()
+        .eq("request_id", requestId);
 
-    updateRequests(updatedRequests);
+    if (error) {
+        console.error(error);
+        showMessage("Could not decline measurement request.");
+        return;
+    }
 
     showMessage("Measurement request declined.");
 
     loadRequests();
+
+    if (typeof loadDashboardCounts === "function") {
+        loadDashboardCounts();
+    }
 }
 
 function loadJobs() {
@@ -260,15 +216,24 @@ function toggleCustomerActive(customerId) {
     loadCustomers();
 }
 
-function loadDashboardCounts() {
+async function loadDashboardCounts() {
     const requestCount = document.getElementById("requestCount");
     const jobCount = document.getElementById("jobCount");
     const inventoryCount = document.getElementById("inventoryCount");
     const customerCount = document.getElementById("customerCount");
 
-    if (requestCount) requestCount.textContent = getRequests().length;
+    if (requestCount && typeof db !== "undefined") {
+        const { count, error } = await db
+            .from("measurement_requests")
+            .select("*", { count: "exact", head: true });
+
+        if (!error) {
+            requestCount.textContent = count;
+        }
+    }
+
     if (jobCount) jobCount.textContent = getJobs().length;
-    if (inventoryCount) requestCount.textContent = getInventory().length;
+    if (inventoryCount) inventoryCount.textContent = getInventory().length;
     if (customerCount) {
         customerCount.textContent = getCustomers().filter(customer => customer.active).length;
     }
