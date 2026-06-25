@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS Flooring | Home</title>
+  <title>CS Flooring | Request Measurement</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 
@@ -21,69 +21,73 @@
     </nav>
   </header>
 
-  <main>
-    <section class="hero">
-      <div>
-        <h1>Quality Flooring Installation You Can Trust</h1>
-        <p>
-          Professional flooring services for homes and businesses. Browse flooring options, view completed work,
-          and request a free measurement.
-        </p>
-        <a class="btn" href="request.html">Request a Free Measurement</a>
-      </div>
-    </section>
+  <main class="section form-page">
+    <h1>Request a Free Measurement</h1>
 
-    <section class="section">
-      <h2>Flooring Work Available</h2>
-      <div class="card-grid">
-        <div class="card">
-          <h3>Subfloor Options</h3>
-          <p>Subfloor preparation and options based on the condition of the space.</p>
-        </div>
+    <p>
+      All measurements and estimates are free. Submit this form and the owner will contact you to schedule a time
+      to measure the space and review the work needed.
+    </p>
 
-        <div class="card">
-          <h3>Luxury Vinyl Products</h3>
-          <p>Durable luxury vinyl products for residential and commercial spaces.</p>
-        </div>
+    <form id="requestForm" class="form-card" onsubmit="event.preventDefault(); submitRequest();">
+      <label>
+        Name
+        <input id="name" type="text" placeholder="Full name" required />
+      </label>
 
-        <div class="card">
-          <h3>Carpet</h3>
-          <p>Carpet installation for comfortable and finished rooms.</p>
-        </div>
+      <label>
+        Email
+        <input id="email" type="email" placeholder="Email address" required />
+      </label>
 
-        <div class="card">
-          <h3>VCT</h3>
-          <p>Vinyl composition tile options for durable flooring needs.</p>
-        </div>
+      <label>
+        Phone
+        <input id="phone" type="tel" placeholder="Phone number" required />
+      </label>
 
-        <div class="card">
-          <h3>Trim/Moldings</h3>
-          <p>Finish work including trim and molding installation.</p>
-        </div>
-      </div>
-    </section>
+      <label>
+        Address
+        <input id="address" type="text" placeholder="Job address" required />
+      </label>
 
-    <section class="section highlight">
-      <h2>Service Area</h2>
-      <p>
-        CS Flooring provides service throughout all of Connecticut, as well as select parts of Massachusetts and New York.
-        Please call to confirm availability for your specific location.
-      </p>
-    </section>
+      <label>
+        Type of Flooring Work
+        <select id="flooringType" required>
+          <option value="">Select an option</option>
+          <option>Subfloor Options</option>
+          <option>Luxury Vinyl Products</option>
+          <option>Carpet</option>
+          <option>VCT</option>
+          <option>Trim/Moldings (Finish Work)</option>
+        </select>
+      </label>
 
-    <section class="section highlight">
-      <h2>Free Measurements & Estimates</h2>
-      <p>
-        All measurements and estimates are free. Submit a measurement request and the owner will contact you to schedule
-        a time to look at the space and review the work needed.
-      </p>
-    </section>
+      <label>
+        Room Size / Square Footage
+        <input id="squareFootage" type="text" placeholder="Example: 400 sq ft or 12x15 room" />
+      </label>
+
+      <label>
+        Preferred Measurement Date
+        <input id="preferredDate" type="date" />
+      </label>
+
+      <label>
+        Description of Work Needed
+        <textarea id="description" placeholder="Describe the rooms, flooring condition, or work needed" required></textarea>
+      </label>
+
+      <button class="btn" type="submit">Submit Measurement Request</button>
+    </form>
   </main>
 
   <footer>
-    <p>&copy; 2026 CS Flooring. All rights reserved.</p>
+    <p>&copy; 2026 CS Flooring.</p>
   </footer>
 
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/requests.js"></script>
   <script src="js/main.js"></script>
 </body>
 
