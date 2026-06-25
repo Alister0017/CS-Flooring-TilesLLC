@@ -5,8 +5,7 @@ function toggleFlooringDropdown() {
 
     if (!dropdown) return;
 
-    dropdown.style.display =
-        dropdown.style.display === "none" ? "block" : "none";
+    dropdown.classList.toggle("open");
 }
 
 function getSelectedFlooringTypes() {
@@ -28,7 +27,9 @@ function updateSelectedFlooringDisplay() {
         return;
     }
 
-    display.innerHTML = selected.join(", ");
+    display.innerHTML = selected
+        .map(item => `<span class="selected-tag">${item}</span>`)
+        .join("");
 }
 
 function submitRequest() {
@@ -60,5 +61,8 @@ function submitRequest() {
     updateSelectedFlooringDisplay();
 
     const dropdown = document.getElementById("flooringDropdown");
-    if (dropdown) dropdown.style.display = "none";
+
+    if (dropdown) {
+        dropdown.classList.remove("open");
+    }
 }

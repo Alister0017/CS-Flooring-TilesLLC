@@ -23,7 +23,7 @@
 
   <main class="section form-page">
     <h1>Request a Free Measurement</h1>
-    <p>
+    <p class="form-intro">
       All measurements and estimates are free. Submit this form and the owner will contact you to schedule a time
       to measure the space and review the work needed.
     </p>
@@ -50,22 +50,41 @@
       </label>
 
       <div class="form-field">
-        <p><strong>Type of Flooring Work</strong></p>
+        <label class="field-label">Type of Flooring Work</label>
 
-        <button type="button" class="btn secondary" onclick="toggleFlooringDropdown()">
+        <button type="button" class="dropdown-toggle" onclick="toggleFlooringDropdown()">
           Select all that apply
         </button>
 
-        <div id="selectedFlooringDisplay">
+        <div id="selectedFlooringDisplay" class="selected-display">
           No flooring work selected.
         </div>
 
-        <div id="flooringDropdown" style="display: none;">
-          <label><input type="checkbox" name="flooringType" value="Subfloor Options" onchange="updateSelectedFlooringDisplay()" /> Subfloor Options</label>
-          <label><input type="checkbox" name="flooringType" value="Luxury Vinyl Products" onchange="updateSelectedFlooringDisplay()" /> Luxury Vinyl Products</label>
-          <label><input type="checkbox" name="flooringType" value="Carpet" onchange="updateSelectedFlooringDisplay()" /> Carpet</label>
-          <label><input type="checkbox" name="flooringType" value="VCT" onchange="updateSelectedFlooringDisplay()" /> VCT</label>
-          <label><input type="checkbox" name="flooringType" value="Trim/Moldings (Finish Work)" onchange="updateSelectedFlooringDisplay()" /> Trim/Moldings (Finish Work)</label>
+        <div id="flooringDropdown" class="dropdown-options">
+          <label>
+            <input type="checkbox" name="flooringType" value="Subfloor Options" onchange="updateSelectedFlooringDisplay()" />
+            <span>Subfloor Options</span>
+          </label>
+
+          <label>
+            <input type="checkbox" name="flooringType" value="Luxury Vinyl Products" onchange="updateSelectedFlooringDisplay()" />
+            <span>Luxury Vinyl Products</span>
+          </label>
+
+          <label>
+            <input type="checkbox" name="flooringType" value="Carpet" onchange="updateSelectedFlooringDisplay()" />
+            <span>Carpet</span>
+          </label>
+
+          <label>
+            <input type="checkbox" name="flooringType" value="VCT" onchange="updateSelectedFlooringDisplay()" />
+            <span>VCT</span>
+          </label>
+
+          <label>
+            <input type="checkbox" name="flooringType" value="Trim/Moldings (Finish Work)" onchange="updateSelectedFlooringDisplay()" />
+            <span>Trim/Moldings (Finish Work)</span>
+          </label>
         </div>
       </div>
 
