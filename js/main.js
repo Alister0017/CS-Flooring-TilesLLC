@@ -1,7 +1,15 @@
 // main.js
 
-window.onload = function () {
+window.onload = async function () {
     console.log("CS Flooring Loaded");
+
+    if (document.body.classList.contains("admin-body") && typeof protectAdminPage === "function") {
+        await protectAdminPage();
+    }
+
+    if (document.getElementById("requestCount") && typeof loadDashboardCounts === "function") {
+        loadDashboardCounts();
+    }
 
     if (document.getElementById("requests") && typeof loadRequests === "function") {
         loadRequests();
@@ -31,11 +39,7 @@ window.onload = function () {
         loadPhotos();
     }
 
-    if (document.getElementById("calendar") && typeof loadCalendar === "function") {
+    if (document.getElementById("calendarGrid") && typeof loadCalendar === "function") {
         loadCalendar();
-    }
-
-    if (typeof loadDashboardCounts === "function") {
-        loadDashboardCounts();
     }
 };
