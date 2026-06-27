@@ -22,25 +22,38 @@
   </header>
 
   <main class="section form-page">
-    <h1>Estimate</h1>
+    <h1>Estimate Lookup</h1>
 
-    <div class="form-card">
-      <h2>Estimate Information</h2>
-      <p>
-        Install pricing is determined by the owner after completing the free measurement.
-      </p>
-      <p>
-        If an estimate has been created for your job, it will be available through your job status page.
-      </p>
+    <p>
+      Enter your job number and email or phone number to view your estimate information.
+    </p>
 
-      <a class="btn" href="job-status.html">Check Job Status</a>
-    </div>
+    <form class="form-card" onsubmit="event.preventDefault(); lookupCustomerDocuments();">
+      <label>
+        Job Number
+        <input id="documentJobNumber" type="text" placeholder="Example: CS-2026-0001" required />
+      </label>
+
+      <label>
+        Email or Phone
+        <input id="documentContactInfo" type="text" placeholder="Email or phone number" required />
+      </label>
+
+      <button class="btn" type="submit">View Estimate</button>
+    </form>
+
+    <div id="documentResult" class="form-card"></div>
   </main>
 
   <footer>
     <p>&copy; 2026 CS Flooring.</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+
+  <script src="js/utils.js"></script>
+  <script src="js/documents.js"></script>
   <script src="js/main.js"></script>
 </body>
 

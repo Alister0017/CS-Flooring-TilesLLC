@@ -18,6 +18,7 @@
     <a href="admin-calendar.html">Calendar</a>
     <a href="admin-photos.html">Photos</a>
     <a href="admin-documents.html">Documents</a>
+    <button class="btn secondary" onclick="logoutAdmin()">Logout</button>
   </aside>
 
   <main class="admin-main">
@@ -29,6 +30,11 @@
     <h2>Accepted Jobs</h2>
     <div id="jobs"></div>
   </main>
+
+  <script src="../js/auth.js"></script>
+  <script>
+    protectAdminPage();
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../js/supabase-config.js"></script>

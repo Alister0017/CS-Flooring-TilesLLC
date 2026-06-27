@@ -21,45 +21,39 @@
     </nav>
   </header>
 
-  <main class="section">
-    <h1>Customer Job Page</h1>
+  <main class="section form-page">
+    <h1>Customer Job Documents</h1>
 
-    <div class="dashboard-grid">
-      <div class="card">
-        <h3>Status</h3>
-        <p>Job status will display here.</p>
-      </div>
+    <p>
+      Enter your job number and email or phone number to view available estimate and agreement information.
+    </p>
 
-      <div class="card">
-        <h3>Requested Work Type</h3>
-        <p>Flooring work type will display here.</p>
-      </div>
+    <form class="form-card" onsubmit="event.preventDefault(); lookupCustomerDocuments();">
+      <label>
+        Job Number
+        <input id="documentJobNumber" type="text" placeholder="Example: CS-2026-0001" required />
+      </label>
 
-      <div class="card">
-        <h3>Measurement Date</h3>
-        <p>Measurement date will display here once scheduled.</p>
-      </div>
+      <label>
+        Email or Phone
+        <input id="documentContactInfo" type="text" placeholder="Email or phone number" required />
+      </label>
 
-      <div class="card">
-        <h3>Estimate Status</h3>
-        <p>Estimate status will display here after the owner creates it.</p>
-      </div>
-    </div>
+      <button class="btn" type="submit">View Documents</button>
+    </form>
 
-    <section class="section small-section">
-      <h2>Documents</h2>
-      <p>
-        Final install pricing is only provided after the owner completes the measurement and creates the estimate.
-      </p>
-      <button class="btn">View Estimate</button>
-      <button class="btn secondary">View Agreement</button>
-    </section>
+    <div id="documentResult" class="form-card"></div>
   </main>
 
   <footer>
     <p>&copy; 2026 CS Flooring.</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+
+  <script src="js/utils.js"></script>
+  <script src="js/documents.js"></script>
   <script src="js/main.js"></script>
 </body>
 

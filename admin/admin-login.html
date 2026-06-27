@@ -12,12 +12,24 @@
   <main class="section form-page login-page">
     <h1>Owner Login</h1>
 
-    <form class="form-card" action="admin-dashboard.html">
-      <label>Email<input type="email" required /></label>
-      <label>Password<input type="password" required /></label>
+    <form id="loginForm" class="form-card" onsubmit="event.preventDefault(); loginAdmin();">
+      <label>
+        Email
+        <input id="loginEmail" type="email" required />
+      </label>
+
+      <label>
+        Password
+        <input id="loginPassword" type="password" required />
+      </label>
+
       <button class="btn" type="submit">Login</button>
     </form>
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/auth.js"></script>
 </body>
 
 </html>

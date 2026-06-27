@@ -21,19 +21,60 @@
   </aside>
 
   <main class="admin-main">
-    <h1>Calendar</h1>
-    <div id="calendar"></div>
+    <div class="calendar-page-header">
+      <div>
+        <h1>Calendar</h1>
+        <p>View measurement and install schedules.</p>
+      </div>
+    </div>
+
+    <section class="calendar-shell">
+      <div class="calendar-toolbar">
+        <button onclick="goToToday()">Today</button>
+
+        <div class="calendar-nav">
+          <button onclick="changeMonth(-1)">‹</button>
+          <button onclick="changeMonth(1)">›</button>
+        </div>
+
+        <h2 id="calendarMonthTitle">Month Year</h2>
+      </div>
+
+      <div class="calendar-layout">
+        <div>
+          <div class="calendar-weekdays">
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+          </div>
+
+          <div id="calendarGrid" class="calendar-grid">
+            <p>Loading calendar...</p>
+          </div>
+        </div>
+
+        <aside class="upcoming-panel">
+          <h3>Upcoming Events</h3>
+          <div id="upcomingEvents"></div>
+        </aside>
+      </div>
+    </section>
   </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    protectAdminPage();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
 
-<script src="../js/supabase-config.js"></script>
-
-<script src="../js/storage.js"></script>
-<script src="../js/utils.js"></script>
-<script src="../js/jobs.js"></script>
-<script src="../js/admin.js"></script>
-<script src="../js/main.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/calendar.js"></script>
+  <script src="../js/main.js"></script>
 </body>
 
 </html>

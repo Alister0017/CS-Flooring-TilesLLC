@@ -15,7 +15,7 @@
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
       <a href="gallery.html">Gallery</a>
-      <a href="request.html">Request Work</a>
+      <a href="request.html">Request Measurement</a>
       <a href="job-status.html">Job Status</a>
       <a href="contact.html">Contact</a>
     </nav>
@@ -25,13 +25,8 @@
     <h1>Completed Work</h1>
     <p>Browse examples of previous flooring jobs.</p>
 
-    <div class="gallery-grid">
-      <div class="gallery-item">Job Photo</div>
-      <div class="gallery-item">Job Photo</div>
-      <div class="gallery-item">Job Photo</div>
-      <div class="gallery-item">Job Photo</div>
-      <div class="gallery-item">Job Photo</div>
-      <div class="gallery-item">Job Photo</div>
+    <div id="galleryGrid" class="gallery-grid">
+      <p>Loading completed work...</p>
     </div>
   </main>
 
@@ -39,7 +34,16 @@
     <p>&copy; 2026 CS Flooring.</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+
+  <script src="js/utils.js"></script>
+  <script src="js/photos.js"></script>
   <script src="js/main.js"></script>
+
+  <script>
+    loadGalleryPhotos();
+  </script>
 </body>
 
 </html>

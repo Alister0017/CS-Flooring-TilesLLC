@@ -19,6 +19,7 @@
     <a href="admin-photos.html">Photos</a>
     <a href="admin-documents.html">Documents</a>
     <a href="../index.html">Public Site</a>
+    <button class="btn secondary" onclick="logoutAdmin()">Logout</button>
   </aside>
 
   <main class="admin-main">
@@ -47,15 +48,20 @@
     </div>
   </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    protectAdminPage();
+  </script>
 
-<script src="../js/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script src="../js/storage.js"></script>
-<script src="../js/utils.js"></script>
-<script src="../js/jobs.js"></script>
-<script src="../js/admin.js"></script>
-<script src="../js/main.js"></script>
+  <script src="../js/supabase-config.js"></script>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/jobs.js"></script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/main.js"></script>
 </body>
 
 </html>

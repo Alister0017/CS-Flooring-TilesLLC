@@ -18,31 +18,45 @@
     <a href="admin-calendar.html">Calendar</a>
     <a href="admin-photos.html">Photos</a>
     <a href="admin-documents.html">Documents</a>
+    <button class="btn secondary" onclick="logoutAdmin()">Logout</button>
   </aside>
 
   <main class="admin-main">
     <h1>Update Photos</h1>
 
     <form id="photoForm" class="form-card admin-form" onsubmit="event.preventDefault(); addPhoto();">
-      <label>Photo Title<input id="photoTitle" type="text" required /></label>
-      <label>Image URL<input id="photoUrl" type="text" required /></label>
-      <label>Description<textarea id="photoDescription"></textarea></label>
+      <label>
+        Photo Title
+        <input id="photoTitle" type="text" required />
+      </label>
+
+      <label>
+        Upload Image
+        <input id="photoFile" type="file" accept="image/*" required />
+      </label>
+
+      <label>
+        Description
+        <textarea id="photoDescription"></textarea>
+      </label>
+
       <button class="btn" type="submit">Save Photo</button>
     </form>
 
     <h2>Saved Photos</h2>
-    <div id="photos"></div>
+    <div id="photos" class="card-grid"></div>
   </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    protectAdminPage();
+  </script>
 
-<script src="../js/supabase-config.js"></script>
-
-<script src="../js/storage.js"></script>
-<script src="../js/utils.js"></script>
-<script src="../js/jobs.js"></script>
-<script src="../js/admin.js"></script>
-<script src="../js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/photos.js"></script>
+  <script src="../js/main.js"></script>
 </body>
 
 </html>
