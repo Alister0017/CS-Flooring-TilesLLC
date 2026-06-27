@@ -1,5 +1,13 @@
 // main.js
 
+function toggleMobileMenu() {
+    const nav = document.getElementById("siteNav");
+
+    if (!nav) return;
+
+    nav.classList.toggle("open");
+}
+
 window.onload = async function () {
     console.log("CS Flooring Loaded");
 
@@ -42,4 +50,6 @@ window.onload = async function () {
     if (document.getElementById("calendarGrid") && typeof loadCalendar === "function") {
         loadCalendar();
     }
+
+    
 };

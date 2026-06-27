@@ -1,31 +1,19 @@
-/* =========================
-   CS Flooring Modern Styles
-   ========================= */
-
 :root {
   --bg: #f7f4ef;
   --surface: #ffffff;
   --surface-soft: #fbf7f2;
   --surface-warm: #f1e7db;
-
   --text: #1f1b17;
   --muted: #6f6258;
-
   --primary: #2b211b;
-  --primary-light: #3b2c23;
   --accent: #a8743b;
   --accent-dark: #8f622f;
-  --accent-soft: #f0dfcc;
-
   --border: #dac7b4;
   --shadow: 0 10px 28px rgba(43, 33, 27, 0.09);
   --shadow-soft: 0 4px 14px rgba(43, 33, 27, 0.06);
-
   --radius: 16px;
   --radius-sm: 10px;
 }
-
-/* Reset */
 
 * {
   box-sizing: border-box;
@@ -49,10 +37,6 @@ img {
   max-width: 100%;
   display: block;
 }
-
-/* =========================
-   Public Header
-   ========================= */
 
 .site-header {
   position: sticky;
@@ -86,7 +70,6 @@ nav a {
   font-weight: 700;
   padding: 9px 12px;
   border-radius: 999px;
-  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 nav a:hover {
@@ -94,9 +77,9 @@ nav a:hover {
   color: #f2d1ad;
 }
 
-/* =========================
-   Sections / Hero
-   ========================= */
+.mobile-menu-btn {
+  display: none;
+}
 
 .hero {
   min-height: 430px;
@@ -139,10 +122,6 @@ nav a:hover {
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
-
-/* =========================
-   Cards / Layout Grids
-   ========================= */
 
 .card-grid,
 .dashboard-grid,
@@ -190,10 +169,6 @@ nav a:hover {
   background: linear-gradient(135deg, #efe5da, #fbf7f2);
 }
 
-/* =========================
-   Forms
-   ========================= */
-
 .form-page {
   max-width: 900px;
   margin: 0 auto;
@@ -225,7 +200,6 @@ textarea {
   font-size: 1rem;
   font-family: inherit;
   background-color: #fffdfb;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 input:focus,
@@ -241,10 +215,6 @@ textarea {
   resize: vertical;
 }
 
-/* =========================
-   Buttons
-   ========================= */
-
 .btn,
 button {
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));
@@ -256,7 +226,6 @@ button {
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
 }
 
 .btn:hover,
@@ -268,10 +237,6 @@ button:hover {
 .btn.secondary {
   background: #5f5148;
 }
-
-/* =========================
-   Filters
-   ========================= */
 
 .filters {
   margin: 24px 0;
@@ -291,10 +256,6 @@ button:hover {
   gap: 10px;
   flex-wrap: wrap;
 }
-
-/* =========================
-   Admin Layout
-   ========================= */
 
 .admin-body {
   display: flex;
@@ -319,7 +280,6 @@ button:hover {
 .admin-sidebar h2 {
   margin: 0 0 18px;
   font-size: 1.55rem;
-  letter-spacing: -0.04em;
 }
 
 .admin-sidebar a,
@@ -354,16 +314,11 @@ button:hover {
 .admin-main h1 {
   margin-top: 0;
   font-size: 2.2rem;
-  letter-spacing: -0.04em;
 }
 
 .admin-form {
   margin-bottom: 32px;
 }
-
-/* =========================
-   Tables
-   ========================= */
 
 table {
   width: 100%;
@@ -385,20 +340,12 @@ th {
   background-color: var(--surface-warm);
 }
 
-/* =========================
-   Footer
-   ========================= */
-
 footer {
   text-align: center;
   padding: 24px;
   background-color: var(--primary);
   color: white;
 }
-
-/* =========================
-   Measurement Multi-select
-   ========================= */
 
 .flooring-select-field {
   background-color: var(--surface-soft);
@@ -506,10 +453,6 @@ footer {
   flex-shrink: 0;
 }
 
-/* =========================
-   Images / Gallery
-   ========================= */
-
 .gallery-photo,
 .product-image {
   width: 100%;
@@ -523,10 +466,6 @@ footer {
 .gallery-card {
   overflow: hidden;
 }
-
-/* =========================
-   Admin Calendar
-   ========================= */
 
 .calendar-page-header {
   display: flex;
@@ -664,10 +603,6 @@ footer {
   box-shadow: none;
 }
 
-.calendar-event:hover {
-  transform: translateY(-1px);
-}
-
 .calendar-event span {
   display: block;
   font-weight: 900;
@@ -751,10 +686,6 @@ footer {
   border: 1px solid #8cc28f;
 }
 
-/* =========================
-   Responsive
-   ========================= */
-
 @media (max-width: 1000px) {
   .calendar-layout {
     grid-template-columns: 1fr;
@@ -771,21 +702,39 @@ footer {
 
 @media (max-width: 760px) {
   .site-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
     padding: 16px 20px;
     gap: 14px;
   }
 
-  nav {
+  .mobile-menu-btn {
+    display: block;
+    width: auto;
+    margin-left: auto;
+    padding: 10px 14px;
+    font-size: 1.4rem;
+    line-height: 1;
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .site-header nav {
+    display: none;
     width: 100%;
     flex-direction: column;
     gap: 8px;
+    padding-top: 12px;
   }
 
-  nav a {
+  .site-header nav.open {
+    display: flex;
+  }
+
+  .site-header nav a {
     width: 100%;
-    padding: 10px 0;
+    padding: 12px 0;
+    border-radius: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   }
 
