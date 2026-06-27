@@ -38,6 +38,4 @@ window.onload = function () {
     if (typeof loadDashboardCounts === "function") {
         loadDashboardCounts();
     }
-
-    protectAdminPage();
 };
