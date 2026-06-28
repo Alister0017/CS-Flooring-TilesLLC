@@ -1,0 +1,165 @@
+/* REQUEST PAGE */
+
+.request-page {
+  background:
+    radial-gradient(circle at top left, rgba(185, 139, 99, 0.14), transparent 30rem),
+    linear-gradient(180deg, var(--cream-50), var(--cream-100));
+}
+
+.request-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.request-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.2fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.request-info-card,
+.request-form-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 28px;
+}
+
+.request-info-card {
+  position: sticky;
+  top: 110px;
+}
+
+.request-info-card h2,
+.request-form-card h2 {
+  margin-bottom: 10px;
+}
+
+.request-benefit-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.request-benefit {
+  background: var(--cream-50);
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--bronze-500);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+
+.request-benefit strong {
+  color: var(--green-900);
+}
+
+.request-form-card {
+  display: grid;
+  gap: 22px;
+}
+
+.request-form-section {
+  display: grid;
+  gap: 16px;
+}
+
+.request-form-section h2 {
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.request-form-section:first-child h2 {
+  padding-top: 0;
+  border-top: none;
+}
+
+.request-field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.request-form-card label {
+  font-weight: 900;
+  color: var(--green-900);
+}
+
+.request-form-card input,
+.request-form-card textarea {
+  margin-top: 7px;
+}
+
+.request-form-card textarea {
+  min-height: 150px;
+}
+
+.request-submit-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.request-submit-row .btn {
+  width: auto;
+}
+
+.flooring-select-field {
+  background: var(--cream-50);
+}
+
+.dropdown-options.open {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.form-note {
+  margin-top: 0;
+}
+
+@media (max-width: 980px) {
+  .request-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .request-info-card {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .request-info-card,
+  .request-form-card {
+    padding: 20px;
+  }
+
+  .request-field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .request-submit-row .btn {
+    width: 100%;
+  }
+
+  .flooring-select-header {
+    align-items: flex-start;
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .dropdown-summary-toggle,
+  .dropdown-toggle {
+    width: 100%;
+    text-align: center;
+  }
+
+  .selected-display {
+    align-items: stretch;
+  }
+
+  .selected-tag {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}

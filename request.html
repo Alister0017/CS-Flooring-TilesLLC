@@ -6,7 +6,7 @@
   <title>CS Flooring & Tile LLC | Request Measurement</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
+<body class="request-page">
   <header class="site-header">
     <div class="logo">CS Flooring & Tile LLC</div>
     <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open navigation menu">☰</button>
@@ -19,43 +19,79 @@
       <a href="contact.html">Contact</a>
     </nav>
   </header>
-  <main class="section form-page">
-    <div class="section-heading">
-      <p class="eyebrow">Free Measurement</p>
-      <h1>Request a Free Measurement</h1>
-      <p>Tell us about your flooring project and Charles Sinotte will contact you to schedule a time to measure the space and review the work needed.</p>
-    </div>
-    <form id="requestForm" class="form-card" onsubmit="event.preventDefault(); submitRequest();">
-      <h2>Your Information</h2>
-      <label>Name<input id="name" type="text" placeholder="Full name" required /></label>
-      <label>Email<input id="email" type="email" placeholder="Email address" required /></label>
-      <label>Phone<input id="phone" type="tel" placeholder="Phone number" required /></label>
-      <h2>Project Details</h2>
-      <label>Job Address<input id="address" type="text" placeholder="Job address" required /></label>
-      <div class="form-field flooring-select-field">
-        <div class="flooring-select-header">
-          <label class="field-label">Type of Flooring Work</label>
-          <button type="button" class="dropdown-summary-toggle" onclick="toggleFlooringDropdown()">Show options</button>
-        </div>
-        <button type="button" class="dropdown-toggle" onclick="toggleFlooringDropdown()">Select all that apply</button>
-        <div id="selectedFlooringDisplay" class="selected-display">
-          <span class="empty-selection">No flooring work selected.</span>
-        </div>
-        <div id="flooringDropdown" class="dropdown-options">
-          <label class="dropdown-choice"><span>Subfloor Options</span><input type="checkbox" name="flooringType" value="Subfloor Options" onchange="updateSelectedFlooringDisplay()" /></label>
-          <label class="dropdown-choice"><span>Luxury Vinyl Products</span><input type="checkbox" name="flooringType" value="Luxury Vinyl Products" onchange="updateSelectedFlooringDisplay()" /></label>
-          <label class="dropdown-choice"><span>Carpet</span><input type="checkbox" name="flooringType" value="Carpet" onchange="updateSelectedFlooringDisplay()" /></label>
-          <label class="dropdown-choice"><span>VCT</span><input type="checkbox" name="flooringType" value="VCT" onchange="updateSelectedFlooringDisplay()" /></label>
-          <label class="dropdown-choice"><span>Trim/Moldings (Finish Work)</span><input type="checkbox" name="flooringType" value="Trim/Moldings (Finish Work)" onchange="updateSelectedFlooringDisplay()" /></label>
+  <main>
+    <section class="section page-hero">
+      <div class="section-heading">
+        <p class="eyebrow">Free Measurement</p>
+        <h1>Request a Free Measurement</h1>
+        <p>Tell us about your flooring project and Charles Sinotte will contact you to schedule a time to measure the space and review the work needed.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="request-shell">
+        <div class="request-layout">
+          <aside class="request-info-card">
+            <p class="eyebrow">What to Expect</p>
+            <h2>Start with a free on-site measurement.</h2>
+            <p>Submit the form and CS Flooring & Tile LLC will follow up to schedule a measurement, review your project, and discuss product options.</p>
+            <div class="request-benefit-list">
+              <div class="request-benefit">
+                <strong>Free measurements and estimates</strong>
+                <p>No cost to have your space measured and reviewed.</p>
+              </div>
+              <div class="request-benefit">
+                <strong>Owner involvement</strong>
+                <p>Charles Sinotte will review the project details and next steps.</p>
+              </div>
+              <div class="request-benefit">
+                <strong>Service area</strong>
+                <p>Serving Connecticut and select areas of Massachusetts and New York.</p>
+              </div>
+            </div>
+          </aside>
+          <form id="requestForm" class="request-form-card" onsubmit="event.preventDefault(); submitRequest();">
+            <section class="request-form-section">
+              <h2>Your Information</h2>
+              <div class="request-field-grid">
+                <label>Name<input id="name" type="text" placeholder="Full name" required /></label>
+                <label>Email<input id="email" type="email" placeholder="Email address" required /></label>
+              </div>
+              <label>Phone<input id="phone" type="tel" placeholder="Phone number" required /></label>
+            </section>
+            <section class="request-form-section">
+              <h2>Project Details</h2>
+              <label>Job Address<input id="address" type="text" placeholder="Job address" required /></label>
+              <div class="form-field flooring-select-field">
+                <div class="flooring-select-header">
+                  <label class="field-label">Type of Flooring Work</label>
+                  <button type="button" class="dropdown-summary-toggle" onclick="toggleFlooringDropdown()">Show options</button>
+                </div>
+                <button type="button" class="dropdown-toggle" onclick="toggleFlooringDropdown()">Select all that apply</button>
+                <div id="selectedFlooringDisplay" class="selected-display">
+                  <span class="empty-selection">No flooring work selected.</span>
+                </div>
+                <div id="flooringDropdown" class="dropdown-options">
+                  <label class="dropdown-choice"><span>Subfloor Options</span><input type="checkbox" name="flooringType" value="Subfloor Options" onchange="updateSelectedFlooringDisplay()" /></label>
+                  <label class="dropdown-choice"><span>Luxury Vinyl Products</span><input type="checkbox" name="flooringType" value="Luxury Vinyl Products" onchange="updateSelectedFlooringDisplay()" /></label>
+                  <label class="dropdown-choice"><span>Carpet</span><input type="checkbox" name="flooringType" value="Carpet" onchange="updateSelectedFlooringDisplay()" /></label>
+                  <label class="dropdown-choice"><span>Ceramic Tile</span><input type="checkbox" name="flooringType" value="Ceramic Tile" onchange="updateSelectedFlooringDisplay()" /></label>
+                  <label class="dropdown-choice"><span>VCT</span><input type="checkbox" name="flooringType" value="VCT" onchange="updateSelectedFlooringDisplay()" /></label>
+                  <label class="dropdown-choice"><span>Trim/Moldings</span><input type="checkbox" name="flooringType" value="Trim/Moldings" onchange="updateSelectedFlooringDisplay()" /></label>
+                </div>
+              </div>
+              <label>Preferred Measurement Date<input id="preferredDate" type="date" /></label>
+              <label>Description of Work Needed<textarea id="description" placeholder="Describe the rooms, flooring condition, product interest, or work needed" required></textarea></label>
+            </section>
+            <div class="form-note">
+              <strong>Note:</strong> All measurements and estimates are free. Final pricing is provided after the owner reviews the project.
+            </div>
+            <div class="request-submit-row">
+              <button class="btn" type="submit">Submit Measurement Request</button>
+            </div>
+          </form>
         </div>
       </div>
-      <label>Preferred Measurement Date<input id="preferredDate" type="date" /></label>
-      <label>Description of Work Needed<textarea id="description" placeholder="Describe the rooms, flooring condition, product interest, or work needed" required></textarea></label>
-      <div class="form-note">
-        <strong>Note:</strong> All measurements and estimates are free. Final pricing is provided after the owner reviews the project.
-      </div>
-      <button class="btn" type="submit">Submit Measurement Request</button>
-    </form>
+    </section>
   </main>
   <footer class="site-footer">
     <div>
