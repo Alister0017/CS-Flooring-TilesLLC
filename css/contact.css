@@ -1,0 +1,137 @@
+/* ==========================================================
+   CONTACT PAGE
+   ========================================================== */
+
+.contact-page {
+  background:
+    radial-gradient(circle at top left, rgba(185, 139, 99, 0.14), transparent 30rem),
+    linear-gradient(180deg, var(--cream-50), var(--cream-100));
+}
+
+.contact-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.contact-info-card,
+.contact-form-card,
+.contact-detail-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 28px;
+}
+
+.contact-info-card h2,
+.contact-form-card h2 {
+  margin-bottom: 10px;
+}
+
+.contact-detail-grid {
+  display: grid;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.contact-detail-card {
+  padding: 18px;
+}
+
+.contact-detail-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 5px;
+}
+
+.contact-detail-card strong,
+.contact-detail-card a {
+  color: var(--green-900);
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.contact-detail-card a:hover {
+  color: var(--bronze-700);
+}
+
+.service-area-note {
+  margin-top: 22px;
+  background: var(--cream-50);
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--bronze-500);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+
+.contact-form-card form {
+  display: grid;
+  gap: 18px;
+}
+
+.contact-form-card label {
+  font-weight: 900;
+  color: var(--green-900);
+}
+
+.contact-form-card textarea {
+  min-height: 160px;
+}
+
+.contact-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.contact-actions .btn {
+  width: auto;
+}
+
+.contact-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.contact-mini-card {
+  background: var(--cream-50);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.contact-mini-card h3 {
+  margin-top: 0;
+}
+
+@media (max-width: 900px) {
+  .contact-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .contact-info-card,
+  .contact-form-card,
+  .contact-detail-card {
+    padding: 20px;
+  }
+
+  .contact-actions,
+  .contact-actions .btn {
+    width: 100%;
+  }
+}
