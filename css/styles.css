@@ -2,9 +2,16 @@
 @import url("base.css");
 @import url("layout.css");
 @import url("components.css");
-@import url("forms.css");
+
+@import url("home.css");
 @import url("products.css");
 @import url("gallery.css");
-@import url("admin.css");
+
+@import url("request.css");
+@import url("job-status.css");
+@import url("contact.css");
+
 @import url("calendar.css");
+@import url("admin.css");
+
 @import url("responsive.css");

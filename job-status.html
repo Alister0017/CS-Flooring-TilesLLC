@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS Flooring | Job Status</title>
+  <title>CS Flooring & Tile LLC | Job Status</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-
-<body>
+<body class="job-status-page">
   <header class="site-header">
-  <div class="logo">CS Flooring</div>
-
-  <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open navigation menu">
-    ☰
-  </button>
-
-  <nav id="siteNav">
+    <div class="logo">CS Flooring & Tile LLC</div>
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open navigation menu">☰</button>
+    <nav id="siteNav">
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
       <a href="gallery.html">Gallery</a>
@@ -25,38 +19,57 @@
       <a href="contact.html">Contact</a>
     </nav>
   </header>
-
-  <main class="section form-page">
-    <h1>Check Your Job Status</h1>
-    <p>Enter your job number and email or phone number to view your project.</p>
-
-    <form class="form-card" onsubmit="event.preventDefault(); lookupJob();">
-      <label>
-        Job Number
-        <input id="jobNumber" type="text" placeholder="Example: CS-2026-0001" required />
-      </label>
-
-      <label>
-        Email or Phone
-        <input id="contactInfo" type="text" placeholder="Email or phone number" required />
-      </label>
-
-      <button class="btn" type="submit">View Job</button>
-    </form>
-
-    <div id="result" class="form-card"></div>
+  <main>
+    <section class="section page-hero">
+      <div class="section-heading job-status-intro">
+        <p class="eyebrow">Project Tracking</p>
+        <h1>Track Your Flooring Project</h1>
+        <p>Enter your job number and the email or phone number connected to your project to view your current project status.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="job-status-shell">
+        <form class="job-search-card" onsubmit="event.preventDefault(); lookupJob();">
+          <h2>Check Job Status</h2>
+          <p>Use the job number provided after your measurement request is accepted.</p>
+          <div class="job-search-grid">
+            <label>Job Number<input id="jobNumber" type="text" placeholder="Example: CS-2026-0001" required /></label>
+            <label>Email or Phone<input id="contactInfo" type="text" placeholder="Email address or phone number" required /></label>
+            <button class="btn" type="submit">Track Project</button>
+          </div>
+        </form>
+        <div id="result" class="job-status-result">
+          <div class="job-status-empty">
+            <h3>Enter your project details to begin.</h3>
+            <p>Your project timeline will appear here after your job number and contact information are verified.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section cta-section">
+      <div class="cta-card">
+        <p class="eyebrow">Need Help?</p>
+        <h2>Can’t find your job number?</h2>
+        <p>Contact CS Flooring & Tile LLC and include the name, phone number, or email used for your measurement request.</p>
+        <a class="btn" href="contact.html">Contact Us</a>
+      </div>
+    </section>
   </main>
-
-  <footer>
-    <p>&copy; 2026 CS Flooring.</p>
+  <footer class="site-footer">
+    <div>
+      <h2>CS Flooring & Tile LLC</h2>
+      <p>Four Generations of Trusted Floor Professionals</p>
+    </div>
+    <div>
+      <p><strong>Owner & Founder:</strong> Charles Sinotte</p>
+      <p><strong>Services:</strong> Luxury Vinyl, Carpet, Ceramic Tile, VCT, Subfloor Options, Trim & Moldings</p>
+      <p>&copy; 2026 CS Flooring & Tile LLC. All rights reserved.</p>
+    </div>
   </footer>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
-
   <script src="js/utils.js"></script>
   <script src="js/jobs.js"></script>
   <script src="js/main.js"></script>
 </body>
-
 </html>
