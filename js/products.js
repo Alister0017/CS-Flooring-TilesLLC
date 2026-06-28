@@ -24,7 +24,6 @@ async function loadProducts() {
   }
 
   allProducts = data || [];
-
   applyCategoryFromUrl();
   filterProducts();
 }
@@ -64,13 +63,7 @@ function updateCategoryUI() {
   }
 
   buttons.forEach(button => {
-    const buttonCategory = button.dataset.category;
-
-    if (buttonCategory === selectedCategory) {
-      button.classList.add("active");
-    } else {
-      button.classList.remove("active");
-    }
+    button.classList.toggle("active", button.dataset.category === selectedCategory);
   });
 }
 
@@ -79,10 +72,10 @@ function filterProducts() {
   const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
   const filteredProducts = allProducts.filter(product => {
-    const name = product.item_name ? product.item_name.toLowerCase() : "";
-    const category = product.category ? product.category.toLowerCase() : "";
+    const floorType = product.category ? product.category.toLowerCase() : "";
+    const styleName = product.item_name ? product.item_name.toLowerCase() : "";
+    const tags = product.tags ? String(product.tags).toLowerCase() : "";
     const description = product.description ? product.description.toLowerCase() : "";
-    const manufacturer = product.manufacturer ? product.manufacturer.toLowerCase() : "";
     const price = product.unit_price ? String(product.unit_price) : "";
 
     const matchesCategory =
@@ -91,10 +84,10 @@ function filterProducts() {
 
     const matchesSearch =
       searchTerm === "" ||
-      name.includes(searchTerm) ||
-      category.includes(searchTerm) ||
+      floorType.includes(searchTerm) ||
+      styleName.includes(searchTerm) ||
+      tags.includes(searchTerm) ||
       description.includes(searchTerm) ||
-      manufacturer.includes(searchTerm) ||
       price.includes(searchTerm);
 
     return matchesCategory && matchesSearch;
@@ -131,12 +124,14 @@ function renderProducts(products) {
     const div = document.createElement("div");
     div.className = "product-card-v2";
 
-    const imageHTML = product.image_url
-      ? `<img src="${product.image_url}" alt="${product.item_name}" class="product-image-v2">`
-      : `<div class="product-image-placeholder">Product Image</div>`;
+    const floorType = product.category || "Flooring Product";
+    const styleName = product.item_name || "Unnamed Product";
+    const price = product.unit_price ? `${formatMoney(product.unit_price)} / sq ft` : "Price available after measurement";
+    const tagList = normalizeProductTags(product.tags);
 
-    const category = product.category || "Flooring Product";
-    const price = product.unit_price ? formatMoney(product.unit_price) : "Price provided after measurement";
+    const imageHTML = product.image_url
+      ? `<img src="${product.image_url}" alt="${styleName}" class="product-image-v2">`
+      : `<div class="product-image-placeholder">Product Image</div>`;
 
     div.innerHTML = `
       <div class="product-image-wrap">
@@ -145,33 +140,49 @@ function renderProducts(products) {
       </div>
 
       <div class="product-card-body">
-        <p class="product-category">${category}</p>
-        <h3>${product.item_name}</h3>
+        <p class="product-category">${floorType}</p>
+        <h3>${styleName}</h3>
 
-        <div class="product-meta">
+        <div class="product-info-list">
           <div>
-            <span>Category</span>
-            <strong>${category}</strong>
+            <span>Type of Floor</span>
+            <strong>${floorType}</strong>
           </div>
 
           <div>
-            <span>Product Price</span>
+            <span>Style Name</span>
+            <strong>${styleName}</strong>
+          </div>
+
+          <div>
+            <span>Price Per Sq Ft</span>
             <strong>${price}</strong>
           </div>
         </div>
 
-        <p class="product-description">
-          ${product.description || "Final installation pricing is determined after the free measurement."}
-        </p>
-
-        <a class="card-link product-request-link" href="request.html">
-          Request Measurement
-        </a>
+        ${
+          tagList.length > 0
+            ? `<div class="product-tag-row">${tagList.map(tag => `<span>${tag}</span>`).join("")}</div>`
+            : `<div class="product-tag-row empty-tag-row"><span>No tags listed</span></div>`
+        }
       </div>
     `;
 
     grid.appendChild(div);
   });
+}
+
+function normalizeProductTags(tags) {
+  if (!tags) return [];
+
+  if (Array.isArray(tags)) {
+    return tags.filter(Boolean);
+  }
+
+  return String(tags)
+    .split(",")
+    .map(tag => tag.trim())
+    .filter(Boolean);
 }
 
 function clearProductFilters() {
