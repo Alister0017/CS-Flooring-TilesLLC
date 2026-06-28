@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS Flooring | Request Measurement</title>
+  <title>CS Flooring & Tile LLC | Request Measurement</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-
 <body>
   <header class="site-header">
-  <div class="logo">CS Flooring</div>
-
-  <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open navigation menu">
-    ☰
-  </button>
-
-  <nav id="siteNav">
+    <div class="logo">CS Flooring & Tile LLC</div>
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open navigation menu">☰</button>
+    <nav id="siteNav">
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
       <a href="gallery.html">Gallery</a>
@@ -25,108 +19,59 @@
       <a href="contact.html">Contact</a>
     </nav>
   </header>
-
   <main class="section form-page">
-    <h1>Request a Free Measurement</h1>
-
-    <p class="form-intro">
-      All measurements and estimates are free. Submit this form and the owner will contact you to schedule a time
-      to measure the space and review the work needed.
-    </p>
-
+    <div class="section-heading">
+      <p class="eyebrow">Free Measurement</p>
+      <h1>Request a Free Measurement</h1>
+      <p>Tell us about your flooring project and Charles Sinotte will contact you to schedule a time to measure the space and review the work needed.</p>
+    </div>
     <form id="requestForm" class="form-card" onsubmit="event.preventDefault(); submitRequest();">
-      <label>
-        Name
-        <input id="name" type="text" placeholder="Full name" required />
-      </label>
-
-      <label>
-        Email
-        <input id="email" type="email" placeholder="Email address" required />
-      </label>
-
-      <label>
-        Phone
-        <input id="phone" type="tel" placeholder="Phone number" required />
-      </label>
-
-      <label>
-        Address
-        <input id="address" type="text" placeholder="Job address" required />
-      </label>
-
+      <h2>Your Information</h2>
+      <label>Name<input id="name" type="text" placeholder="Full name" required /></label>
+      <label>Email<input id="email" type="email" placeholder="Email address" required /></label>
+      <label>Phone<input id="phone" type="tel" placeholder="Phone number" required /></label>
+      <h2>Project Details</h2>
+      <label>Job Address<input id="address" type="text" placeholder="Job address" required /></label>
       <div class="form-field flooring-select-field">
         <div class="flooring-select-header">
           <label class="field-label">Type of Flooring Work</label>
-
-          <button type="button" class="dropdown-summary-toggle" onclick="toggleFlooringDropdown()">
-            Show options
-          </button>
+          <button type="button" class="dropdown-summary-toggle" onclick="toggleFlooringDropdown()">Show options</button>
         </div>
-
-        <button type="button" class="dropdown-toggle" onclick="toggleFlooringDropdown()">
-          Select all that apply
-        </button>
-
+        <button type="button" class="dropdown-toggle" onclick="toggleFlooringDropdown()">Select all that apply</button>
         <div id="selectedFlooringDisplay" class="selected-display">
           <span class="empty-selection">No flooring work selected.</span>
         </div>
-
         <div id="flooringDropdown" class="dropdown-options">
-          <label class="dropdown-choice">
-            <span>Subfloor Options</span>
-            <input type="checkbox" name="flooringType" value="Subfloor Options"
-              onchange="updateSelectedFlooringDisplay()" />
-          </label>
-
-          <label class="dropdown-choice">
-            <span>Luxury Vinyl Products</span>
-            <input type="checkbox" name="flooringType" value="Luxury Vinyl Products"
-              onchange="updateSelectedFlooringDisplay()" />
-          </label>
-
-          <label class="dropdown-choice">
-            <span>Carpet</span>
-            <input type="checkbox" name="flooringType" value="Carpet" onchange="updateSelectedFlooringDisplay()" />
-          </label>
-
-          <label class="dropdown-choice">
-            <span>VCT</span>
-            <input type="checkbox" name="flooringType" value="VCT" onchange="updateSelectedFlooringDisplay()" />
-          </label>
-
-          <label class="dropdown-choice">
-            <span>Trim/Moldings (Finish Work)</span>
-            <input type="checkbox" name="flooringType" value="Trim/Moldings (Finish Work)"
-              onchange="updateSelectedFlooringDisplay()" />
-          </label>
+          <label class="dropdown-choice"><span>Subfloor Options</span><input type="checkbox" name="flooringType" value="Subfloor Options" onchange="updateSelectedFlooringDisplay()" /></label>
+          <label class="dropdown-choice"><span>Luxury Vinyl Products</span><input type="checkbox" name="flooringType" value="Luxury Vinyl Products" onchange="updateSelectedFlooringDisplay()" /></label>
+          <label class="dropdown-choice"><span>Carpet</span><input type="checkbox" name="flooringType" value="Carpet" onchange="updateSelectedFlooringDisplay()" /></label>
+          <label class="dropdown-choice"><span>VCT</span><input type="checkbox" name="flooringType" value="VCT" onchange="updateSelectedFlooringDisplay()" /></label>
+          <label class="dropdown-choice"><span>Trim/Moldings (Finish Work)</span><input type="checkbox" name="flooringType" value="Trim/Moldings (Finish Work)" onchange="updateSelectedFlooringDisplay()" /></label>
         </div>
       </div>
-
-      <label>
-        Preferred Measurement Date
-        <input id="preferredDate" type="date" />
-      </label>
-
-      <label>
-        Description of Work Needed
-        <textarea id="description" placeholder="Describe the rooms, flooring condition, or work needed" required></textarea>
-      </label>
-
+      <label>Preferred Measurement Date<input id="preferredDate" type="date" /></label>
+      <label>Description of Work Needed<textarea id="description" placeholder="Describe the rooms, flooring condition, product interest, or work needed" required></textarea></label>
+      <div class="form-note">
+        <strong>Note:</strong> All measurements and estimates are free. Final pricing is provided after the owner reviews the project.
+      </div>
       <button class="btn" type="submit">Submit Measurement Request</button>
     </form>
   </main>
-
-  <footer>
-    <p>&copy; 2026 CS Flooring.</p>
+  <footer class="site-footer">
+    <div>
+      <h2>CS Flooring & Tile LLC</h2>
+      <p>Four Generations of Trusted Floor Professionals</p>
+    </div>
+    <div>
+      <p><strong>Owner & Founder:</strong> Charles Sinotte</p>
+      <p><strong>Services:</strong> Luxury Vinyl, Carpet, Ceramic Tile, VCT, Subfloor Options, Trim & Moldings</p>
+      <p>&copy; 2026 CS Flooring & Tile LLC. All rights reserved.</p>
+    </div>
   </footer>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase-config.js"></script>
-
-<script src="js/utils.js"></script>
-<script src="js/requests.js"></script>
-<script src="js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/requests.js"></script>
+  <script src="js/main.js"></script>
 </body>
-
 </html>
