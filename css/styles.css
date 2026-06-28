@@ -719,10 +719,11 @@ footer p,
   color: var(--green-800);
 }
 
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
-  gap: 24px;
+.product-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(320px,360px));
+    gap:28px;
+    justify-content:center;
 }
 
 .product-card-v2 {
