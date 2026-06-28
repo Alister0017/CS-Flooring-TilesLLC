@@ -45,6 +45,7 @@ function setCategory(category) {
   filterProducts();
 
   const url = new URL(window.location);
+
   if (category === "All") {
     url.searchParams.delete("category");
   } else {
@@ -121,12 +122,14 @@ function renderProducts(products) {
   }
 
   products.forEach(product => {
-    const div = document.createElement("div");
+    const div = document.createElement("article");
     div.className = "product-card-v2";
 
     const floorType = product.category || "Flooring Product";
     const styleName = product.item_name || "Unnamed Product";
-    const price = product.unit_price ? `${formatMoney(product.unit_price)} / sq ft` : "Price available after measurement";
+    const price = product.unit_price
+      ? `${formatMoney(product.unit_price)} / sq ft`
+      : "Price available after measurement";
     const tagList = normalizeProductTags(product.tags);
 
     const imageHTML = product.image_url
@@ -138,28 +141,23 @@ function renderProducts(products) {
         ${imageHTML}
         <span class="product-badge">Available</span>
       </div>
-
       <div class="product-card-body">
         <p class="product-category">${floorType}</p>
         <h3>${styleName}</h3>
-
-        <div class="product-info-list">
+        <dl class="product-info-list">
           <div>
-            <span>Type of Floor</span>
-            <strong>${floorType}</strong>
+            <dt>Type of Floor</dt>
+            <dd>${floorType}</dd>
           </div>
-
           <div>
-            <span>Style Name</span>
-            <strong>${styleName}</strong>
+            <dt>Style Name</dt>
+            <dd>${styleName}</dd>
           </div>
-
           <div>
-            <span>Price Per Sq Ft</span>
-            <strong>${price}</strong>
+            <dt>Price Per Sq Ft</dt>
+            <dd>${price}</dd>
           </div>
-        </div>
-
+        </dl>
         ${
           tagList.length > 0
             ? `<div class="product-tag-row">${tagList.map(tag => `<span>${tag}</span>`).join("")}</div>`
