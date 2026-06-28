@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CS Flooring & Tile LLC | Job Status</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
+
 <body class="job-status-page">
   <header class="site-header">
     <div class="logo">CS Flooring & Tile LLC</div>
@@ -24,18 +26,38 @@
       <div class="section-heading job-status-intro">
         <p class="eyebrow">Project Tracking</p>
         <h1>Track Your Flooring Project</h1>
-        <p>Enter your job number and the email or phone number connected to your project to view your current project status.</p>
+        <p>Enter your job number and the email or phone number connected to your project to view your current project
+          status.</p>
       </div>
     </section>
     <section class="section">
       <div class="job-status-shell">
         <form class="job-search-card" onsubmit="event.preventDefault(); lookupJob();">
+          <p class="eyebrow">Secure Project Lookup</p>
           <h2>Check Job Status</h2>
-          <p>Use the job number provided after your measurement request is accepted.</p>
+          <p>Enter both your job number and the email or phone number connected to your project.</p>
+
           <div class="job-search-grid">
-            <label>Job Number<input id="jobNumber" type="text" placeholder="Example: CS-2026-0001" required /></label>
-            <label>Email or Phone<input id="contactInfo" type="text" placeholder="Email address or phone number" required /></label>
+            <label>
+              Job Number
+              <small>Example: CS-2026-0001</small>
+              <input id="jobNumber" type="text" placeholder="CS-2026-0001" required />
+            </label>
+
+            <label>
+              Email Address or Phone Number
+              <small>Must match the information used on your request.</small>
+              <input id="contactInfo" type="text" placeholder="Email address or phone number" required />
+            </label>
+
             <button class="btn" type="submit">Track Project</button>
+          </div>
+
+          <div class="job-search-help">
+            <strong>Need help finding your job number?</strong>
+            <p>If you misplaced your job number, contact CS Flooring & Tile LLC and we’ll be happy to help.</p>
+            <p><a href="tel:12036264209">(203) 626-4209</a> · <a
+                href="mailto:Charliesinotte1@gmail.com">Charliesinotte1@gmail.com</a></p>
           </div>
         </form>
         <div id="result" class="job-status-result">
@@ -50,7 +72,8 @@
       <div class="cta-card">
         <p class="eyebrow">Need Help?</p>
         <h2>Can’t find your job number?</h2>
-        <p>Contact CS Flooring & Tile LLC and include the name, phone number, or email used for your measurement request.</p>
+        <p>Contact CS Flooring & Tile LLC and include the name, phone number, or email used for your measurement
+          request.</p>
         <a class="btn" href="contact.html">Contact Us</a>
       </div>
     </section>
@@ -72,4 +95,5 @@
   <script src="js/jobs.js"></script>
   <script src="js/main.js"></script>
 </body>
+
 </html>

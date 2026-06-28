@@ -385,6 +385,7 @@
 /* Mobile */
 
 @media (max-width: 900px) {
+
   .job-search-grid,
   .job-result-layout {
     grid-template-columns: 1fr;
@@ -396,6 +397,7 @@
 }
 
 @media (max-width: 760px) {
+
   .job-search-card,
   .job-result-card,
   .job-summary-card,
@@ -412,5 +414,53 @@
   .job-number-pill,
   .status-pill {
     width: 100%;
+  }
+
+  .job-search-grid {
+    grid-template-columns: 1fr;
+    max-width: 620px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .job-search-grid label small {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .job-search-grid button {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .job-search-help {
+    max-width: 620px;
+    margin: 22px auto 0;
+    padding: 16px;
+    background: var(--cream-50);
+    border: 1px solid rgba(185, 139, 99, 0.45);
+    border-left: 5px solid var(--bronze-500);
+    border-radius: var(--radius-sm);
+  }
+
+  .job-search-help strong {
+    color: var(--green-900);
+  }
+
+  .job-search-help p {
+    margin: 6px 0 0;
+  }
+
+  .job-search-help a {
+    color: var(--green-900);
+    font-weight: 900;
+    text-decoration: none;
+  }
+
+  .job-search-help a:hover {
+    color: var(--bronze-700);
   }
 }
