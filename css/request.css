@@ -2,7 +2,8 @@
 
 .request-page {
   background:
-    radial-gradient(circle at top left, rgba(185, 139, 99, 0.14), transparent 30rem),
+    radial-gradient(circle at top left, rgba(185, 139, 99, 0.18), transparent 30rem),
+    radial-gradient(circle at bottom right, rgba(16, 53, 31, 0.12), transparent 34rem),
     linear-gradient(180deg, var(--cream-50), var(--cream-100));
 }
 
@@ -18,44 +19,62 @@
   align-items: start;
 }
 
-.request-info-card,
-.request-form-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-soft);
-}
+/* LEFT INFO CARD */
 
 .request-info-card {
   position: sticky;
   top: 110px;
-  padding: 28px;
+  background:
+    linear-gradient(180deg, var(--green-800), var(--green-950));
+  color: var(--white);
+  border: 1px solid rgba(185, 139, 99, 0.55);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 30px;
+  overflow: hidden;
+}
+
+.request-info-card::before {
+  content: "";
+  display: block;
+  height: 4px;
+  background: linear-gradient(90deg, var(--bronze-500), var(--bronze-soft));
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.request-info-card .eyebrow {
+  color: var(--bronze-soft);
 }
 
 .request-info-card h2 {
-  margin-bottom: 12px;
+  color: var(--white);
+  margin-bottom: 14px;
 }
 
 .request-info-card p {
+  color: rgba(255, 255, 255, 0.78);
   margin-top: 0;
 }
 
 .request-benefit-list {
   display: grid;
   gap: 12px;
-  margin: 22px 0;
+  margin: 24px 0;
 }
 
 .request-benefit {
-  background: var(--cream-50);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(185, 139, 99, 0.38);
   border-left: 5px solid var(--bronze-500);
   border-radius: var(--radius-sm);
-  padding: 14px;
+  padding: 15px;
 }
 
 .request-benefit strong {
-  color: var(--green-900);
+  color: var(--bronze-soft);
   display: block;
   margin-bottom: 4px;
 }
@@ -65,28 +84,41 @@
 }
 
 .request-contact-box {
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(185, 139, 99, 0.35);
   padding-top: 20px;
   margin-top: 22px;
 }
 
 .request-contact-box a {
-  color: var(--green-900);
+  color: var(--white);
   font-weight: 900;
   text-decoration: none;
 }
 
 .request-contact-box a:hover {
-  color: var(--bronze-700);
+  color: var(--bronze-soft);
 }
 
+/* FORM CARD */
+
 .request-form-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
   overflow: hidden;
 }
 
 .request-form-section {
-  padding: 28px;
+  padding: 30px;
   border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--white), #fffdf9);
+}
+
+.request-form-section:nth-child(even) {
+  background:
+    radial-gradient(circle at top right, rgba(185, 139, 99, 0.08), transparent 22rem),
+    var(--white);
 }
 
 .request-form-section:last-of-type {
@@ -94,7 +126,21 @@
 }
 
 .request-form-section h2 {
-  margin-bottom: 18px;
+  margin-bottom: 20px;
+  color: var(--green-900);
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.request-form-section h2::after {
+  content: "";
+  width: 72px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--bronze-500), var(--green-800));
+  border-radius: 999px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
 }
 
 .request-field-grid {
@@ -112,11 +158,21 @@
 .request-form-card input,
 .request-form-card textarea {
   margin-top: 7px;
+  border-color: rgba(185, 139, 99, 0.45);
+  background-color: #fffdf9;
+}
+
+.request-form-card input:focus,
+.request-form-card textarea:focus {
+  border-color: var(--bronze-500);
+  box-shadow: 0 0 0 4px rgba(185, 139, 99, 0.2);
 }
 
 .request-form-card textarea {
   min-height: 160px;
 }
+
+/* PROJECT TYPE CARDS */
 
 .project-type-grid {
   display: grid;
@@ -130,11 +186,12 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 58px;
-  background: var(--cream-50);
+  min-height: 62px;
+  background:
+    linear-gradient(180deg, #fffdf9, var(--cream-50));
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 14px;
+  padding: 15px;
   cursor: pointer;
   transition: 0.18s ease;
 }
@@ -142,6 +199,7 @@
 .project-type-card:hover {
   border-color: var(--bronze-500);
   box-shadow: var(--shadow-soft);
+  transform: translateY(-1px);
 }
 
 .project-type-card input {
@@ -157,14 +215,23 @@
 }
 
 .project-type-card:has(input:checked) {
-  background: rgba(16, 53, 31, 0.08);
+  background:
+    linear-gradient(180deg, rgba(16, 53, 31, 0.12), rgba(185, 139, 99, 0.12));
   border-color: var(--bronze-500);
-  box-shadow: 0 0 0 3px rgba(185, 139, 99, 0.14);
+  box-shadow: 0 0 0 3px rgba(185, 139, 99, 0.16);
 }
 
 .selected-display {
   margin-top: 14px;
 }
+
+.selected-tag {
+  background: var(--green-800);
+  color: var(--white);
+  border-color: var(--bronze-500);
+}
+
+/* TIME OPTIONS */
 
 .time-preference-grid {
   display: grid;
@@ -176,11 +243,18 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: var(--cream-50);
+  background:
+    linear-gradient(180deg, #fffdf9, var(--cream-50));
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 13px;
+  padding: 14px;
   cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.time-option:hover {
+  border-color: var(--bronze-500);
+  transform: translateY(-1px);
 }
 
 .time-option input {
@@ -190,30 +264,61 @@
   accent-color: var(--bronze-600);
 }
 
-.time-option:has(input:checked) {
-  background: rgba(16, 53, 31, 0.08);
-  border-color: var(--bronze-500);
+.time-option span {
+  font-weight: 900;
+  color: var(--green-900);
 }
 
+.time-option:has(input:checked) {
+  background:
+    linear-gradient(180deg, rgba(16, 53, 31, 0.12), rgba(185, 139, 99, 0.12));
+  border-color: var(--bronze-500);
+  box-shadow: 0 0 0 3px rgba(185, 139, 99, 0.16);
+}
+
+/* NOTE + SUBMIT */
+
 .form-note {
-  margin: 0 28px 22px;
+  margin: 0 30px 22px;
+  background:
+    linear-gradient(180deg, var(--cream-50), #fffdf9);
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--bronze-500);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  color: var(--muted);
+}
+
+.form-note strong {
+  color: var(--green-900);
 }
 
 .request-submit-row {
-  padding: 0 28px 28px;
+  padding: 0 30px 30px;
 }
 
 .request-submit-row .btn {
   width: 100%;
-  padding: 15px 18px;
+  padding: 16px 18px;
   font-size: 1rem;
+  background:
+    linear-gradient(180deg, var(--bronze-500), var(--bronze-700));
+  border: 1px solid rgba(185, 139, 99, 0.5);
+}
+
+.request-submit-row .btn:hover {
+  background:
+    linear-gradient(180deg, var(--green-700), var(--green-950));
 }
 
 .request-submit-help {
   text-align: center;
   margin: 12px 0 0;
   font-size: 0.92rem;
+  color: var(--muted);
 }
+
+/* RESPONSIVE */
 
 @media (max-width: 980px) {
   .request-layout {
@@ -228,7 +333,7 @@
 @media (max-width: 760px) {
   .request-info-card,
   .request-form-section {
-    padding: 20px;
+    padding: 22px;
   }
 
   .request-field-grid,
@@ -241,15 +346,15 @@
   }
 
   .form-note {
-    margin: 0 20px 20px;
+    margin: 0 22px 22px;
   }
 
   .request-submit-row {
-    padding: 0 20px 22px;
+    padding: 0 22px 24px;
   }
 
   .project-type-card,
   .time-option {
-    min-height: 54px;
+    min-height: 56px;
   }
 }
