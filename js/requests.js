@@ -8,21 +8,6 @@ function getSelectedFlooringTypes() {
     return Array.from(checkedBoxes).map(box => box.value);
 }
 
-function updateSelectedFlooringDisplay() {
-    const selected = getSelectedFlooringTypes();
-    const display = document.getElementById("selectedFlooringDisplay");
-
-    if (!display) return;
-
-    if (selected.length === 0) {
-        display.innerHTML = `<span class="empty-selection">No flooring work selected.</span>`;
-        return;
-    }
-
-    display.innerHTML = selected
-        .map(item => `<span class="selected-tag">${item}</span>`)
-        .join("");
-}
 
 async function submitRequest() {
     const selectedFlooringTypes = getSelectedFlooringTypes();
