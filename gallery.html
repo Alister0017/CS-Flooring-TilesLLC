@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS Flooring | Gallery</title>
+  <title>CS Flooring & Tile LLC | Gallery</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-
 <body>
   <header class="site-header">
-  <div class="logo">CS Flooring</div>
-
-  <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open navigation menu">
-    ☰
-  </button>
-
-  <nav id="siteNav">
+    <div class="logo">CS Flooring & Tile LLC</div>
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open navigation menu">☰</button>
+    <nav id="siteNav">
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
       <a href="gallery.html">Gallery</a>
@@ -25,30 +19,68 @@
       <a href="contact.html">Contact</a>
     </nav>
   </header>
-
-  <main class="section">
-    <h1>Completed Work</h1>
-    <p>Browse examples of previous flooring jobs.</p>
-
-    <div id="galleryGrid" class="gallery-grid">
-      <p>Loading completed work...</p>
-    </div>
+  <main>
+    <section class="section page-hero">
+      <div class="section-heading">
+        <p class="eyebrow">Completed Work</p>
+        <h1>Gallery of Completed Flooring Projects</h1>
+        <p>Browse examples of flooring installations completed by CS Flooring & Tile LLC.</p>
+      </div>
+    </section>
+    <section class="section gallery-showroom">
+      <div class="gallery-filter-card">
+        <div class="gallery-search-wrap">
+          <label for="gallerySearch">Search Completed Work</label>
+          <input id="gallerySearch" type="text" placeholder="Search by title, category, or tag..." oninput="filterGalleryPhotos()" />
+        </div>
+        <div class="category-buttons">
+          <button class="category-pill gallery-category-pill active" data-category="All" onclick="setGalleryCategory('All')">All</button>
+          <button class="category-pill gallery-category-pill" data-category="Subfloor Options" onclick="setGalleryCategory('Subfloor Options')">Subfloor Options</button>
+          <button class="category-pill gallery-category-pill" data-category="Luxury Vinyl Products" onclick="setGalleryCategory('Luxury Vinyl Products')">Luxury Vinyl</button>
+          <button class="category-pill gallery-category-pill" data-category="Carpet" onclick="setGalleryCategory('Carpet')">Carpet</button>
+          <button class="category-pill gallery-category-pill" data-category="Ceramic Tile" onclick="setGalleryCategory('Ceramic Tile')">Ceramic Tile</button>
+          <button class="category-pill gallery-category-pill" data-category="VCT" onclick="setGalleryCategory('VCT')">VCT</button>
+          <button class="category-pill gallery-category-pill" data-category="Trim/Moldings" onclick="setGalleryCategory('Trim/Moldings')">Trim & Moldings</button>
+        </div>
+      </div>
+      <div class="gallery-heading-row">
+        <div>
+          <p class="eyebrow">Portfolio</p>
+          <h2 id="galleryCategoryTitle">All Completed Work</h2>
+        </div>
+        <p id="galleryCount" class="gallery-count">Loading projects...</p>
+      </div>
+      <div id="galleryGrid" class="gallery-grid-v2">
+        <p>Loading completed work...</p>
+      </div>
+    </section>
+    <section class="section cta-section">
+      <div class="cta-card">
+        <p class="eyebrow">Like What You See?</p>
+        <h2>Start with a free measurement.</h2>
+        <p>Submit a request and Charles Sinotte will contact you to schedule a time to review your flooring project.</p>
+        <a class="btn" href="request.html">Request Free Measurement</a>
+      </div>
+    </section>
   </main>
-
-  <footer>
-    <p>&copy; 2026 CS Flooring.</p>
+  <footer class="site-footer">
+    <div>
+      <h2>CS Flooring & Tile LLC</h2>
+      <p>Four Generations of Trusted Floor Professionals</p>
+    </div>
+    <div>
+      <p><strong>Owner & Founder:</strong> Charles Sinotte</p>
+      <p><strong>Services:</strong> Luxury Vinyl, Carpet, Ceramic Tile, VCT, Subfloor Options, Trim & Moldings</p>
+      <p>&copy; 2026 CS Flooring & Tile LLC. All rights reserved.</p>
+    </div>
   </footer>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
-
   <script src="js/utils.js"></script>
   <script src="js/photos.js"></script>
   <script src="js/main.js"></script>
-
   <script>
     loadGalleryPhotos();
   </script>
 </body>
-
 </html>
