@@ -26,7 +26,7 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
   padding: 34px;
-  margin: 0 auto 38px;
+  margin: 0 auto 50px;
   max-width: 980px;
   position: relative;
   overflow: hidden;
@@ -127,7 +127,7 @@
 /* Result Area */
 
 .job-status-result {
-  margin-top: 28px;
+  margin-top: 40px;
 }
 
 .job-result-layout {
