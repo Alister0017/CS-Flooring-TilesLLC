@@ -1,20 +1,5 @@
 // requests.js
 
-function toggleFlooringDropdown() {
-    const dropdown = document.getElementById("flooringDropdown");
-    const toggleText = document.querySelector(".dropdown-summary-toggle");
-
-    if (!dropdown) return;
-
-    dropdown.classList.toggle("open");
-
-    if (toggleText) {
-        toggleText.textContent = dropdown.classList.contains("open")
-            ? "Hide options"
-            : "Show options";
-    }
-}
-
 function getSelectedFlooringTypes() {
     const checkedBoxes = document.querySelectorAll(
         'input[name="flooringType"]:checked'
