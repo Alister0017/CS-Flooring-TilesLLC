@@ -1,6 +1,7 @@
 // jobList.js
 
 let allJobs = [];
+let allPendingRequests = [];
 
 const JOB_STATUS_GROUPS = [
   "Measurement Scheduled",
@@ -14,7 +15,7 @@ const JOB_STATUS_GROUPS = [
 ];
 
 window.addEventListener("load", () => {
-  loadJobList();
+  loadJobListPage();
 
   const searchInput = document.getElementById("jobSearch");
   const statusFilter = document.getElementById("jobStatusFilter");
@@ -27,10 +28,154 @@ window.addEventListener("load", () => {
 
   if (newJobButton) {
     newJobButton.addEventListener("click", () => {
-      alert("New Job workflow will be added next.");
+      alert("New Job workflow will be added later.");
     });
   }
 });
+
+async function loadJobListPage() {
+  await Promise.all([
+    loadPendingMeasurementRequests(),
+    loadJobList()
+  ]);
+}
+
+async function loadPendingMeasurementRequests() {
+  const container = document.getElementById("pendingRequests");
+  const count = document.getElementById("pendingRequestCount");
+
+  if (!container) return;
+
+  container.innerHTML = `<div class="admin-empty-state">Loading measurement requests...</div>`;
+
+  const { data, error } = await db
+    .from("measurement_requests")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    container.innerHTML = `<div class="admin-empty-state">Could not load measurement requests.</div>`;
+    if (count) count.textContent = "0";
+    return;
+  }
+
+  allPendingRequests = data || [];
+
+  if (count) {
+    count.textContent = allPendingRequests.length;
+  }
+
+  renderPendingRequests();
+}
+
+function renderPendingRequests() {
+  const container = document.getElementById("pendingRequests");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  if (!allPendingRequests || allPendingRequests.length === 0) {
+    container.innerHTML = `<div class="admin-empty-state">No pending measurement requests.</div>`;
+    return;
+  }
+
+  allPendingRequests.forEach(request => {
+    const flooringTypes = formatJobFlooringTypes(request.flooring_type);
+
+    const card = document.createElement("article");
+    card.className = "pending-request-card";
+
+    card.innerHTML = `
+      <div class="pending-request-body">
+        <div class="pending-request-header">
+          <div>
+            <p class="eyebrow">Measurement Request</p>
+            <h3>${request.customer_name || "Unnamed Customer"}</h3>
+          </div>
+          <span class="admin-status-pill pending">Pending</span>
+        </div>
+
+        <div class="pending-request-details">
+          <div class="pending-request-item">
+            <span>Requested Work</span>
+            <strong>${flooringTypes || "Not listed"}</strong>
+          </div>
+
+          <div class="pending-request-item">
+            <span>Phone</span>
+            <strong>${request.phone || "Not listed"}</strong>
+          </div>
+
+          <div class="pending-request-item">
+            <span>Email</span>
+            <strong>${request.email || "Not listed"}</strong>
+          </div>
+
+          <div class="pending-request-item">
+            <span>Address</span>
+            <strong>${request.address || "Not listed"}</strong>
+          </div>
+
+          <div class="pending-request-item">
+            <span>Preferred Measurement Date</span>
+            <strong>${formatJobDate(request.preferred_measurement_date) || "Not provided"}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="pending-request-footer">
+        <button class="btn" type="button" onclick="acceptPendingRequest('${request.request_id}')">
+          Accept Request
+        </button>
+
+        <button class="btn secondary" type="button" onclick="declinePendingRequest('${request.request_id}')">
+          Decline
+        </button>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+async function acceptPendingRequest(requestId) {
+  if (typeof acceptRequest !== "function") {
+    showMessage("Accept request function not found.");
+    return;
+  }
+
+  await acceptRequest(requestId);
+  await loadJobListPage();
+
+  if (typeof loadDashboardCounts === "function") {
+    loadDashboardCounts();
+  }
+}
+
+async function declinePendingRequest(requestId) {
+  if (!confirm("Decline this measurement request?")) return;
+
+  if (typeof declineRequest === "function") {
+    await declineRequest(requestId);
+    await loadJobListPage();
+    return;
+  }
+
+  const { error } = await db
+    .from("measurement_requests")
+    .delete()
+    .eq("request_id", requestId);
+
+  if (error) {
+    console.error(error);
+    showMessage("Could not decline measurement request.");
+    return;
+  }
+
+  showMessage("Measurement request declined.");
+  await loadJobListPage();
+}
 
 async function loadJobList() {
   const container = document.getElementById("jobListGroups");
@@ -132,8 +277,8 @@ function renderJobGroups(jobs, selectedStatus) {
   if (!jobs || jobs.length === 0) {
     container.innerHTML = `
       <div class="admin-empty-state">
-        <h3>No jobs found.</h3>
-        <p>Try changing your search or status filter.</p>
+        <h3>No accepted jobs found.</h3>
+        <p>Accepted measurement requests will appear here as jobs.</p>
       </div>
     `;
     return;
@@ -159,6 +304,7 @@ function renderJobGroups(jobs, selectedStatus) {
           <span class="job-count">${groupJobs.length}</span>
         </div>
       </div>
+
       <div class="job-grid">
         ${groupJobs.map(job => renderJobCard(job)).join("")}
       </div>
@@ -183,7 +329,10 @@ function renderJobCard(job) {
             <p class="job-number">${job.job_number || "No Job Number"}</p>
             <h3>${customerName}</h3>
           </div>
-          <span class="${getJobStatusClass(normalizedStatus)}">${normalizedStatus}</span>
+
+          <span class="${getJobStatusClass(normalizedStatus)}">
+            ${normalizedStatus}
+          </span>
         </div>
 
         <div class="job-card-details">

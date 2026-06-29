@@ -58,6 +58,19 @@
       </nav>
     </header>
 
+    <section class="job-request-panel">
+      <div class="job-group-header">
+        <div class="job-group-title">
+          <h2>Pending Measurement Requests</h2>
+          <span id="pendingRequestCount" class="job-count">0</span>
+        </div>
+      </div>
+
+      <div id="pendingRequests" class="pending-request-grid">
+        <div class="admin-empty-state">Loading measurement requests...</div>
+      </div>
+    </section>
+
     <section class="admin-toolbar">
       <input id="jobSearch" type="search" placeholder="Search jobs, customers, address..." />
 
@@ -93,6 +106,7 @@
   <script src="../js/storage.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/admin.js"></script>
+  <script src="../js/jobs.js"></script>
   <script src="../js/jobList.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/auth.js"></script>
