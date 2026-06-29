@@ -1,64 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS Flooring | Admin Dashboard</title>
+  <title>CS Flooring & Tile LLC | Admin Dashboard</title>
   <link rel="stylesheet" href="../css/styles.css" />
 </head>
-
 <body class="admin-body">
   <aside class="admin-sidebar">
-    <h2>CS Flooring</h2>
-    <a href="admin-dashboard.html">Dashboard</a>
-    <a href="admin-inventory.html">Inventory</a>
-    <a href="admin-customers.html">Customers</a>
-    <a href="admin-jobs.html">Jobs</a>
-    <a href="admin-calendar.html">Calendar</a>
-    <a href="admin-photos.html">Photos</a>
-    <a href="admin-documents.html">Documents</a>
-    <a href="../index.html">Public Site</a>
-    <button class="btn secondary" onclick="logoutAdmin()">Logout</button>
-  </aside>
-
-  <main class="admin-main">
-    <h1>Owner Dashboard</h1>
-
-    <div class="dashboard-grid">
-      <div class="card">
-        <h3>Open Measurement Requests</h3>
-        <p id="requestCount">0</p>
-      </div>
-
-      <div class="card">
-        <h3>Active Jobs</h3>
-        <p id="jobCount">0</p>
-      </div>
-
-      <div class="card">
-        <h3>Inventory Items</h3>
-        <p id="inventoryCount">0</p>
-      </div>
-
-      <div class="card">
-        <h3>Active Customers</h3>
-        <p id="customerCount">0</p>
-      </div>
+    <div class="admin-brand">
+      <h2>CS Flooring</h2>
+      <p>Admin Portal</p>
     </div>
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Main</p>
+      <a class="active" href="admin-dashboard.html">Dashboard</a>
+    </div>
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Operations</p>
+      <a href="admin-customerList.html">Customers</a>
+      <a href="admin-jobList.html">Jobs</a>
+      <a href="admin-calendar.html">Calendar</a>
+    </div>
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Documents</p>
+      <a href="admin-estimates.html">Estimates</a>
+      <a href="admin-agreements.html">Agreements</a>
+      <a href="admin-materialCalc.html">Material Calculator</a>
+    </div>
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Website</p>
+      <a href="admin-inventory.html">Inventory</a>
+      <a href="admin-photos.html">Photos</a>
+      <a href="../index.html">Public Site</a>
+    </div>
+    <button class="admin-logout" onclick="logoutAdmin()">Logout</button>
+  </aside>
+  <main class="admin-main">
+    <header class="admin-dashboard-header">
+      <h1 class="admin-business-title">CS Flooring & Tile LLC</h1>
+      <div class="admin-title-row">
+        <h1>Business Dashboard</h1>
+        <p id="adminCurrentDate" class="admin-current-date"></p>
+      </div>
+      <nav class="admin-breadcrumb">
+        <span class="current">Dashboard</span>
+      </nav>
+    </header>
+    <section class="dashboard-layout">
+      <div class="admin-stat-grid">
+        <a class="admin-stat-card interactive" href="admin-jobList.html">
+          <span>Pending Requests</span>
+          <strong id="requestCount">0</strong>
+          <p>Measurement requests waiting for review.</p>
+        </a>
+        <a class="admin-stat-card interactive" href="admin-jobList.html">
+          <span>Active Jobs</span>
+          <strong id="jobCount">0</strong>
+          <p>Accepted jobs currently in the system.</p>
+        </a>
+        <a class="admin-stat-card interactive" href="admin-customerList.html">
+          <span>Customers</span>
+          <strong id="customerCount">0</strong>
+          <p>Active customer profiles.</p>
+        </a>
+        <a class="admin-stat-card interactive" href="admin-inventory.html">
+          <span>Inventory</span>
+          <strong id="inventoryCount">0</strong>
+          <p>Products listed in inventory.</p>
+        </a>
+      </div>
+      <div class="dashboard-two-column">
+        <section class="dashboard-panel">
+          <div class="dashboard-panel-header">
+            <h2>Upcoming Schedule</h2>
+            <a href="admin-calendar.html">View Calendar</a>
+          </div>
+          <div id="dashboardSchedule" class="dashboard-list">
+            <div class="dashboard-empty">No upcoming schedule items yet.</div>
+          </div>
+        </section>
+        <section class="dashboard-panel">
+          <div class="dashboard-panel-header">
+            <h2>Quick Actions</h2>
+          </div>
+          <div class="admin-action-grid">
+            <a class="admin-action-card" href="admin-jobList.html">
+              <strong>New Job</strong>
+              <span>Create or manage customer jobs.</span>
+            </a>
+            <a class="admin-action-card" href="admin-estimates.html">
+              <strong>New Estimate</strong>
+              <span>Build a customer estimate.</span>
+            </a>
+            <a class="admin-action-card" href="admin-inventory.html">
+              <strong>Add Inventory</strong>
+              <span>Add or edit flooring products.</span>
+            </a>
+            <a class="admin-action-card" href="admin-photos.html">
+              <strong>Upload Photos</strong>
+              <span>Add completed work photos.</span>
+            </a>
+          </div>
+        </section>
+      </div>
+      <div class="dashboard-two-column">
+        <section class="dashboard-panel">
+          <div class="dashboard-panel-header">
+            <h2>Recent Activity</h2>
+          </div>
+          <div id="dashboardActivity" class="dashboard-activity-list">
+            <div class="dashboard-empty">Recent activity will appear here as work is completed.</div>
+          </div>
+        </section>
+        <section class="dashboard-panel">
+          <div class="dashboard-panel-header">
+            <h2>Business Overview</h2>
+          </div>
+          <div class="dashboard-overview-grid">
+            <div class="dashboard-overview-row">
+              <span>Pending Requests</span>
+              <strong id="overviewPendingCount">0</strong>
+            </div>
+            <div class="dashboard-overview-row">
+              <span>Measurement Scheduled</span>
+              <strong id="overviewMeasurementCount">0</strong>
+            </div>
+            <div class="dashboard-overview-row">
+              <span>In Progress</span>
+              <strong id="overviewInProgressCount">0</strong>
+            </div>
+            <div class="dashboard-overview-row">
+              <span>Completed</span>
+              <strong id="overviewCompletedCount">0</strong>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
   </main>
-
-
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <script src="../js/supabase-config.js"></script>
-
   <script src="../js/storage.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/admin.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/auth.js"></script>
 </body>
-
 </html>

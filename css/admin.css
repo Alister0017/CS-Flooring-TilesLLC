@@ -1,84 +1,27 @@
-.admin-body {
-    display: flex;
-    min-height: 100vh;
-    background: radial-gradient(circle at top right, rgba(185, 139, 99, .13), transparent 35rem), var(--cream-50)
-}
+/* ==========================================================
+   ADMIN STYLES
+   ========================================================== */
 
-.admin-sidebar {
-    width: 265px;
-    background: linear-gradient(180deg, var(--green-800), var(--green-950));
-    color: var(--white);
-    padding: 30px 22px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex-shrink: 0;
-    border-right: 3px solid var(--bronze-500);
-    box-shadow: 12px 0 32px rgba(7, 24, 15, .22)
-}
+@import url("admin-layout.css");
+@import url("admin-dashboard.css");
 
-.admin-sidebar h2 {
-    font-family: "Cormorant Garamond", Georgia, serif;
-    color: var(--bronze-500);
-    margin: 0 0 20px;
-    font-size: 2rem
-}
+@import url("admin-cards.css");
+@import url("admin-forms.css");
+@import url("admin-tables.css");
 
-.admin-sidebar a,
-.admin-sidebar button {
-    color: var(--white);
-    text-decoration: none;
-    font-weight: 850;
-    padding: 12px 14px;
-    border-radius: 12px;
-    background: transparent;
-    text-align: left
-}
+@import url("admin-customerList.css");
+@import url("admin-customer.css");
 
-.admin-sidebar a:hover,
-.admin-sidebar button:hover {
-    background: rgba(185, 139, 99, .16);
-    color: var(--bronze-soft);
-    box-shadow: none
-}
+@import url("admin-jobList.css");
+@import url("admin-job.css");
 
-.admin-sidebar .secondary {
-    margin-top: auto;
-    background: rgba(185, 139, 99, .18)
-}
+@import url("admin-calendar.css");
 
-.admin-main {
-    flex: 1;
-    min-width: 0;
-    padding: 46px
-}
+@import url("admin-estimates.css");
+@import url("admin-agreements.css");
+@import url("admin-materialCalc.css");
 
-.admin-main h1 {
-    margin-top: 0;
-    color: var(--green-900)
-}
+@import url("admin-inventory.css");
+@import url("admin-photos.css");
 
-.admin-form {
-    margin-bottom: 34px
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: var(--white);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow-soft)
-}
-
-th,
-td {
-    padding: 14px;
-    border-bottom: 1px solid var(--border);
-    text-align: left
-}
-
-th {
-    background-color: var(--green-800);
-    color: var(--white)
-}
+@import url("admin-responsive.css");

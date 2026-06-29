@@ -1,0 +1,197 @@
+/* ==========================================================
+   ADMIN CARDS
+   ========================================================== */
+
+.admin-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-card::before {
+  content: "";
+  display: block;
+  height: 4px;
+  background: linear-gradient(90deg, var(--bronze-500), var(--green-800));
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.admin-card h2,
+.admin-card h3 {
+  margin-top: 0;
+}
+
+.admin-card p:last-child {
+  margin-bottom: 0;
+}
+
+.admin-card.interactive {
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.admin-card.interactive:hover {
+  transform: translateY(-4px);
+  border-color: var(--bronze-500);
+  box-shadow: var(--shadow);
+}
+
+.admin-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+  gap: 18px;
+}
+
+.admin-stat-card {
+  background:
+    radial-gradient(circle at top right, rgba(185, 139, 99, 0.12), transparent 12rem),
+    var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-stat-card::before {
+  content: "";
+  display: block;
+  width: 5px;
+  background: linear-gradient(180deg, var(--bronze-500), var(--green-800));
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.admin-stat-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.admin-stat-card strong {
+  display: block;
+  color: var(--green-900);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 2.7rem;
+  line-height: 1;
+}
+
+.admin-stat-card p {
+  margin: 8px 0 0;
+  font-size: 0.92rem;
+}
+
+.admin-info-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-info-item {
+  background: var(--cream-50);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+
+.admin-info-item span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.73rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.admin-info-item strong {
+  color: var(--green-900);
+}
+
+.admin-action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  gap: 14px;
+}
+
+.admin-action-card {
+  background:
+    linear-gradient(180deg, var(--green-800), var(--green-950));
+  color: var(--white);
+  border: 1px solid rgba(185, 139, 99, 0.45);
+  border-radius: var(--radius);
+  padding: 18px;
+  text-decoration: none;
+  box-shadow: var(--shadow-soft);
+  transition: 0.18s ease;
+}
+
+.admin-action-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+  border-color: var(--bronze-500);
+}
+
+.admin-action-card strong {
+  display: block;
+  color: var(--bronze-soft);
+  margin-bottom: 5px;
+}
+
+.admin-action-card span {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.92rem;
+}
+
+.admin-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 7px 11px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  background: var(--cream-100);
+  color: var(--green-900);
+  border: 1px solid var(--border);
+}
+
+.admin-status-pill.pending {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  border-color: var(--bronze-500);
+}
+
+.admin-status-pill.active,
+.admin-status-pill.in-progress {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border-color: #82b88b;
+}
+
+.admin-status-pill.completed {
+  background: var(--green-800);
+  color: var(--white);
+  border-color: var(--green-800);
+}
+
+.admin-status-pill.cancelled,
+.admin-status-pill.danger {
+  background: #f3eeee;
+  color: #6b2d2d;
+  border-color: #c9a2a2;
+}
