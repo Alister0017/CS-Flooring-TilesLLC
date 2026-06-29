@@ -15,7 +15,18 @@
     <!-- ===============================
          SIDEBAR
     ================================ -->
+    <div class="admin-mobile-bar">
+        <div class="admin-mobile-brand">
+            <strong>CS Flooring</strong>
+            <span>Admin Portal</span>
+        </div>
 
+        <button class="admin-menu-toggle" type="button" onclick="toggleAdminNav()" aria-label="Open admin menu">
+            ☰
+        </button>
+    </div>
+
+    <div class="admin-sidebar-backdrop" onclick="closeAdminNav()"></div>
     <aside class="admin-sidebar">
 
         <div class="admin-brand">
@@ -90,11 +101,7 @@
 
         <section class="admin-toolbar">
 
-            <input
-                id="customerSearch"
-                type="search"
-                placeholder="Search customers..."
-            >
+            <input id="customerSearch" type="search" placeholder="Search customers...">
 
             <select id="customerSort">
 
@@ -114,9 +121,7 @@
              CUSTOMER GRID
         ================================ -->
 
-        <section
-            id="customerGrid"
-            class="customer-grid">
+        <section id="customerGrid" class="customer-grid">
 
             <div class="admin-empty-state">
                 Loading customers...

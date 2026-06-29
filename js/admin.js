@@ -40,3 +40,11 @@ async function loadDashboardCounts() {
         if (!error) customerCount.textContent = count;
     }
 }
+
+function toggleAdminNav() {
+  document.body.classList.toggle("admin-nav-open");
+}
+
+function closeAdminNav() {
+  document.body.classList.remove("admin-nav-open");
+}

@@ -1,0 +1,103 @@
+/* ==========================================================
+   ADMIN MOBILE NAV
+   ========================================================== */
+
+.admin-mobile-bar {
+  display: none;
+}
+
+.admin-sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .admin-body {
+    display: block;
+    padding-top: 74px;
+  }
+
+  .admin-mobile-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 74px;
+    z-index: 1000;
+    padding: 0 18px;
+    background: linear-gradient(180deg, var(--green-800), var(--green-950));
+    border-bottom: 3px solid var(--bronze-500);
+    box-shadow: 0 10px 24px rgba(7, 24, 15, 0.22);
+  }
+
+  .admin-mobile-brand {
+    display: grid;
+    gap: 2px;
+  }
+
+  .admin-mobile-brand strong {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    color: var(--bronze-500);
+    font-size: 1.45rem;
+    line-height: 1;
+  }
+
+  .admin-mobile-brand span {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .admin-menu-toggle {
+    width: 46px;
+    height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(185, 139, 99, 0.16);
+    border: 1px solid rgba(185, 139, 99, 0.42);
+    border-radius: 12px;
+    color: var(--white);
+    font-size: 1.55rem;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1100;
+    width: min(82vw, 315px);
+    height: 100vh;
+    min-height: 100vh;
+    transform: translateX(-105%);
+    transition: transform 0.22s ease;
+    overflow-y: auto;
+  }
+
+  .admin-body.admin-nav-open .admin-sidebar {
+    transform: translateX(0);
+  }
+
+  .admin-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    background: rgba(7, 24, 15, 0.52);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+  }
+
+  .admin-body.admin-nav-open .admin-sidebar-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .admin-main {
+    padding: 26px 18px;
+  }
+}
