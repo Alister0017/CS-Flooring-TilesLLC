@@ -136,31 +136,78 @@ async function acceptRequest(requestId) {
     return;
   }
 
-  const customer = {
-    customer_name: request.customer_name,
-    email: request.email,
-    phone: request.phone,
-    address: request.address,
-    active: true
-  };
+  const cleanEmail = request.email ? request.email.trim().toLowerCase() : "";
+  const cleanPhone = request.phone ? request.phone.replace(/\D/g, "") : "";
 
-  const { data: createdCustomer, error: customerError } = await db
-    .from("customers")
-    .insert([customer])
-    .select()
-    .single();
+  let existingCustomer = null;
 
-  if (customerError) {
-    console.error(customerError);
-    showMessage("Could not create customer.");
-    return;
+  if (cleanEmail || cleanPhone) {
+    const { data: customers, error: findCustomerError } = await db
+      .from("customers")
+      .select("*")
+      .or(`email.eq.${cleanEmail},phone.eq.${request.phone}`);
+
+    if (findCustomerError) {
+      console.error(findCustomerError);
+      showMessage("Could not check existing customers.");
+      return;
+    }
+
+    existingCustomer = customers?.find(customer => {
+      const customerEmail = customer.email ? customer.email.trim().toLowerCase() : "";
+      const customerPhone = customer.phone ? customer.phone.replace(/\D/g, "") : "";
+
+      return (
+        (cleanEmail && customerEmail === cleanEmail) ||
+        (cleanPhone && customerPhone === cleanPhone)
+      );
+    });
+  }
+
+  let customerId;
+
+  if (existingCustomer) {
+    customerId = existingCustomer.customer_id;
+
+    await db
+      .from("customers")
+      .update({
+        customer_name: request.customer_name || existingCustomer.customer_name,
+        email: request.email || existingCustomer.email,
+        phone: request.phone || existingCustomer.phone,
+        address: request.address || existingCustomer.address,
+        active: true
+      })
+      .eq("customer_id", customerId);
+  } else {
+    const customer = {
+      customer_name: request.customer_name,
+      email: request.email,
+      phone: request.phone,
+      address: request.address,
+      active: true
+    };
+
+    const { data: createdCustomer, error: customerError } = await db
+      .from("customers")
+      .insert([customer])
+      .select()
+      .single();
+
+    if (customerError) {
+      console.error(customerError);
+      showMessage("Could not create customer.");
+      return;
+    }
+
+    customerId = createdCustomer.customer_id;
   }
 
   const jobNumber = await generateSupabaseJobNumber();
 
   const job = {
     job_number: jobNumber,
-    customer_id: createdCustomer.customer_id,
+    customer_id: customerId,
     flooring_type: request.flooring_type,
     description: request.description,
     measurement_date: request.preferred_measurement_date || null,
@@ -191,7 +238,11 @@ async function acceptRequest(requestId) {
     console.error(deleteError);
     showMessage("Job created, but request could not be removed.");
   } else {
-    showMessage(`Job created: ${jobNumber}`);
+    showMessage(
+      existingCustomer
+        ? `Job created for existing customer: ${jobNumber}`
+        : `Job created for new customer: ${jobNumber}`
+    );
   }
 
   loadRequests();
