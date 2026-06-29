@@ -1,0 +1,172 @@
+/* ==========================================================
+   CUSTOMER LIST
+   ========================================================== */
+
+.customer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 22px;
+    margin-top: 8px;
+}
+
+.customer-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all .18s ease;
+}
+
+.customer-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 5px;
+    background: linear-gradient(180deg,
+            var(--bronze-500),
+            var(--green-800));
+}
+
+.customer-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--bronze-500);
+    box-shadow: var(--shadow);
+}
+
+.customer-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.customer-card-header h2 {
+    margin: 2px 0 0;
+    color: var(--green-900);
+}
+
+.customer-contact-grid {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.customer-address-item strong {
+    display: block;
+    line-height: 1.45;
+}
+
+.customer-card-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.customer-card-stats div {
+    background: var(--cream-50);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    text-align: center;
+}
+
+.customer-card-stats span {
+    display: block;
+    color: var(--muted);
+    font-size: .72rem;
+    font-weight: 900;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.customer-card-stats strong {
+    display: block;
+    color: var(--green-900);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 1.55rem;
+}
+
+.customer-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    color: var(--green-900);
+    font-weight: 800;
+    transition: color .18s ease;
+}
+
+.customer-card:hover .customer-card-footer {
+    color: var(--bronze-700);
+}
+
+.customer-card-footer strong {
+    font-size: 1.3rem;
+    transition: transform .18s ease;
+}
+
+.customer-card:hover .customer-card-footer strong {
+    transform: translateX(4px);
+}
+
+/* ================= Toolbar ================= */
+
+#customerSearch {
+    min-width: 320px;
+}
+
+#customerSort {
+    min-width: 170px;
+}
+
+#newCustomerButton {
+    margin-left: auto;
+}
+
+/* ================= Empty State ================= */
+
+.customer-grid .admin-empty-state {
+    grid-column: 1 / -1;
+}
+
+/* ================= Responsive ================= */
+
+@media (max-width: 950px) {
+
+    .customer-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .customer-card {
+        padding: 20px;
+    }
+
+    .customer-card-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .customer-card-stats {
+        grid-template-columns: 1fr;
+    }
+
+    #customerSearch,
+    #customerSort,
+    #newCustomerButton {
+        width: 100%;
+        min-width: 0;
+    }
+
+}
