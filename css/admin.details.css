@@ -1,0 +1,311 @@
+/* ==========================================================
+   ADMIN DETAIL PAGES
+   Shared styles for:
+   - Customer
+   - Job
+   - Estimate
+   - Agreement
+   - Invoice
+   - Inventory Item
+   ========================================================== */
+
+/* ==========================================================
+   PAGE LAYOUT
+   ========================================================== */
+
+.detail-layout{
+    display:grid;
+    gap:24px;
+}
+
+/* ==========================================================
+   SUMMARY
+   ========================================================== */
+
+.detail-summary{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:24px;
+}
+
+.detail-card{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-soft);
+    padding:24px;
+    position:relative;
+    overflow:hidden;
+}
+
+.detail-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:4px;
+    background:linear-gradient(
+        90deg,
+        var(--bronze-500),
+        var(--green-800)
+    );
+}
+
+.detail-card h2{
+    margin:0 0 20px;
+    color:var(--green-900);
+}
+
+/* ==========================================================
+   INFORMATION GRID
+   ========================================================== */
+
+.detail-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+}
+
+.detail-item{
+    background:var(--cream-50);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:14px;
+}
+
+.detail-item.full-width{
+    grid-column:1 / -1;
+}
+
+.detail-item span{
+    display:block;
+    margin-bottom:5px;
+
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-weight:900;
+    color:var(--muted);
+}
+
+.detail-item strong{
+    display:block;
+    color:var(--green-900);
+    line-height:1.45;
+    font-weight:700;
+}
+
+/* ==========================================================
+   STAT GRID
+   ========================================================== */
+
+.detail-stat-grid{
+    display:grid;
+    gap:14px;
+}
+
+.detail-stat{
+    background:var(--cream-50);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:18px;
+    text-align:center;
+}
+
+.detail-stat span{
+    display:block;
+    margin-bottom:6px;
+
+    color:var(--muted);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-weight:900;
+}
+
+.detail-stat strong{
+    display:block;
+    color:var(--green-900);
+    font-size:2rem;
+    font-family:"Cormorant Garamond",serif;
+}
+
+/* ==========================================================
+   CONTENT SECTION
+   ========================================================== */
+
+.detail-section{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-soft);
+    padding:24px;
+    position:relative;
+    overflow:hidden;
+}
+
+.detail-section::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:4px;
+    background:linear-gradient(
+        90deg,
+        var(--bronze-500),
+        var(--green-800)
+    );
+}
+
+.detail-section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.detail-section-header h2{
+    margin:0;
+}
+
+.detail-section-header a{
+    color:var(--green-800);
+    text-decoration:none;
+    font-weight:800;
+}
+
+.detail-section-header a:hover{
+    color:var(--bronze-700);
+}
+
+/* ==========================================================
+   SIMPLE ROWS
+   ========================================================== */
+
+.detail-list{
+    display:grid;
+    gap:14px;
+}
+
+.detail-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:18px;
+
+    background:var(--cream-50);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+
+    padding:16px;
+}
+
+.detail-row:hover{
+    border-color:var(--bronze-500);
+}
+
+.detail-row-left{
+    display:grid;
+    gap:3px;
+}
+
+.detail-row-left strong{
+    color:var(--green-900);
+}
+
+.detail-row-left span{
+    color:var(--muted);
+    font-size:.9rem;
+}
+
+/* ==========================================================
+   TIMELINE
+   ========================================================== */
+
+.detail-timeline{
+    display:grid;
+    gap:18px;
+}
+
+.detail-timeline-item{
+    display:grid;
+    grid-template-columns:36px 1fr;
+    gap:14px;
+}
+
+.detail-timeline-dot{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+
+    background:var(--green-800);
+    border:2px solid var(--bronze-500);
+}
+
+.detail-timeline-content strong{
+    display:block;
+    color:var(--green-900);
+}
+
+.detail-timeline-content span{
+    color:var(--muted);
+    font-size:.9rem;
+}
+
+/* ==========================================================
+   NOTES
+   ========================================================== */
+
+.detail-notes textarea{
+    width:100%;
+    min-height:180px;
+    resize:vertical;
+}
+
+/* ==========================================================
+   ACTION BAR
+   ========================================================== */
+
+.detail-actions{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:14px;
+}
+
+.detail-actions .btn,
+.detail-actions .btn-secondary{
+    width:100%;
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media (max-width:1000px){
+
+    .detail-summary{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media (max-width:760px){
+
+    .detail-grid{
+        grid-template-columns:1fr;
+    }
+
+    .detail-section-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+    }
+
+    .detail-row{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+}
