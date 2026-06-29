@@ -1,50 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS Flooring | Jobs</title>
+  <title>CS Flooring & Tile LLC | Jobs</title>
   <link rel="stylesheet" href="../css/styles.css" />
 </head>
-
 <body class="admin-body">
   <aside class="admin-sidebar">
-    <h2>CS Flooring</h2>
-    <a href="admin-dashboard.html">Dashboard</a>
-    <a href="admin-inventory.html">Inventory</a>
-    <a href="admin-customers.html">Customers</a>
-    <a href="admin-jobs.html">Jobs</a>
-    <a href="admin-calendar.html">Calendar</a>
-    <a href="admin-photos.html">Photos</a>
-    <a href="admin-documents.html">Documents</a>
-    <button class="btn secondary" onclick="logoutAdmin()">Logout</button>
+    <div class="admin-brand">
+      <h2>CS Flooring</h2>
+      <p>Admin Portal</p>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Main</p>
+      <a href="admin-dashboard.html">Dashboard</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Operations</p>
+      <a href="admin-customerList.html">Customers</a>
+      <a class="active" href="admin-jobList.html">Jobs</a>
+      <a href="admin-calendar.html">Calendar</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Documents</p>
+      <a href="admin-estimates.html">Estimates</a>
+      <a href="admin-agreements.html">Agreements</a>
+      <a href="admin-materialCalc.html">Material Calculator</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Website</p>
+      <a href="admin-inventory.html">Inventory</a>
+      <a href="admin-photos.html">Photos</a>
+      <a href="../index.html">Public Website</a>
+    </div>
+
+    <button class="admin-logout" onclick="logoutAdmin()">Logout</button>
   </aside>
 
   <main class="admin-main">
-    <h1>Jobs</h1>
+    <header class="admin-dashboard-header">
+      <h1 class="admin-business-title">CS Flooring & Tile LLC</h1>
 
-    <h2>Pending Measurement Requests</h2>
-    <div id="requests"></div>
+      <div class="admin-title-row">
+        <h1>Job List</h1>
+        <p id="adminCurrentDate" class="admin-current-date"></p>
+      </div>
 
-    <h2>Accepted Jobs</h2>
-    <div id="jobs"></div>
+      <nav class="admin-breadcrumb">
+        <a href="admin-dashboard.html">Dashboard</a>
+        <span>/</span>
+        <span class="current">Jobs</span>
+      </nav>
+    </header>
+
+    <section class="admin-toolbar">
+      <input id="jobSearch" type="search" placeholder="Search jobs, customers, address..." />
+
+      <select id="jobStatusFilter">
+        <option value="All">All Statuses</option>
+        <option value="Measurement Scheduled">Measurement Scheduled</option>
+        <option value="Measurement Completed">Measurement Completed</option>
+        <option value="Estimate Sent">Estimate Sent</option>
+        <option value="Deposit Received">Deposit Received</option>
+        <option value="Installation Scheduled">Installation Scheduled</option>
+        <option value="Installation In Progress">Installation In Progress</option>
+        <option value="Final Walkthrough">Final Walkthrough</option>
+        <option value="Completed">Completed</option>
+      </select>
+
+      <select id="jobSort">
+        <option value="recent">Most Recent</option>
+        <option value="jobNumber">Job Number</option>
+        <option value="customer">Customer Name</option>
+        <option value="status">Status</option>
+      </select>
+
+      <button class="btn" id="newJobButton">+ New Job</button>
+    </section>
+
+    <section id="jobListGroups" class="job-list-groups">
+      <div class="admin-empty-state">Loading jobs...</div>
+    </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <script src="../js/supabase-config.js"></script>
-
   <script src="../js/storage.js"></script>
   <script src="../js/utils.js"></script>
-
-  <!-- Page-specific JS -->
-  <script src="../js/jobs.js"></script>
-  <!-- or jobs.js, inventory.js, calendar.js, etc. -->
-
+  <script src="../js/admin.js"></script>
+  <script src="../js/jobList.js"></script>
   <script src="../js/main.js"></script>
-
   <script src="../js/auth.js"></script>
 </body>
-
 </html>

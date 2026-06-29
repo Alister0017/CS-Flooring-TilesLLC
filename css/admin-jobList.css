@@ -1,0 +1,215 @@
+/* ==========================================================
+   JOB LIST
+   ========================================================== */
+
+.job-list-groups {
+    display: grid;
+    gap: 32px;
+}
+
+/* ================= Status Section ================= */
+
+.job-group {
+    display: grid;
+    gap: 18px;
+}
+
+.job-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+}
+
+.job-group-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.job-group-title h2 {
+    margin: 0;
+    color: var(--green-900);
+}
+
+.job-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: var(--green-800);
+    color: var(--white);
+    font-weight: 800;
+    font-size: .9rem;
+}
+
+/* ================= Grid ================= */
+
+.job-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(380px,1fr));
+    gap: 18px;
+}
+
+/* ================= Job Card ================= */
+
+.job-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    cursor: pointer;
+    transition: .18s ease;
+    position: relative;
+}
+
+.job-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 5px;
+    background: linear-gradient(
+        180deg,
+        var(--bronze-500),
+        var(--green-800)
+    );
+}
+
+.job-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--bronze-500);
+    box-shadow: var(--shadow);
+}
+
+.job-card-body {
+    padding: 22px;
+}
+
+.job-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.job-card-header h3 {
+    margin: 0;
+    color: var(--green-900);
+}
+
+.job-number {
+    color: var(--bronze-700);
+    font-size: .82rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.job-card-details {
+    display: grid;
+    gap: 14px;
+}
+
+.job-detail {
+    background: var(--cream-50);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+}
+
+.job-detail span {
+    display: block;
+    color: var(--muted);
+    font-size: .72rem;
+    text-transform: uppercase;
+    font-weight: 900;
+    letter-spacing: .06em;
+    margin-bottom: 5px;
+}
+
+.job-detail strong {
+    display: block;
+    color: var(--green-900);
+    line-height: 1.4;
+}
+
+/* ================= Footer ================= */
+
+.job-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 22px;
+    border-top: 1px solid var(--border);
+    background: var(--cream-50);
+    font-weight: 800;
+    color: var(--green-900);
+}
+
+.job-card-footer strong {
+    transition: transform .18s ease;
+}
+
+.job-card:hover .job-card-footer strong {
+    transform: translateX(4px);
+}
+
+/* ================= Toolbar ================= */
+
+#jobSearch {
+    min-width: 320px;
+}
+
+#jobStatusFilter,
+#jobSort {
+    min-width: 180px;
+}
+
+#newJobButton {
+    margin-left: auto;
+}
+
+/* ================= Empty State ================= */
+
+.job-group .admin-empty-state {
+    margin-top: 10px;
+}
+
+/* ================= Responsive ================= */
+
+@media (max-width: 1000px) {
+
+    .job-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 760px) {
+
+    #jobSearch,
+    #jobStatusFilter,
+    #jobSort,
+    #newJobButton {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .job-card-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .job-group-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+}
