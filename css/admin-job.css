@@ -92,3 +92,12 @@
     grid-template-columns: 1fr;
   }
 }
+
+.job-command-card.danger {
+  background: linear-gradient(180deg, #6b2d2d, #3f1515);
+  border-color: #c9a2a2;
+}
+
+.job-command-card.danger strong {
+  color: #f8dada;
+}

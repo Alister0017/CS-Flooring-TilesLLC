@@ -172,17 +172,21 @@ function renderJobDetail(job) {
           <strong>Mark Complete</strong>
           <span>Move this job to completed status.</span>
         </button>
+
+        <button class="job-command-card danger" type="button" onclick="deleteJob('${job.job_number}')">
+          <strong>Delete Job</strong>
+          <span>Permanently remove this job.</span>
+        </button>
       </div>
     </section>
 
     <section class="detail-section">
       <div class="detail-section-header">
         <h2>Customer</h2>
-        ${
-          customer.customer_id
-            ? `<a href="admin-customer.html?id=${customer.customer_id}">View Customer</a>`
-            : ""
-        }
+        ${customer.customer_id
+      ? `<a href="admin-customer.html?id=${customer.customer_id}">View Customer</a>`
+      : ""
+    }
       </div>
 
       <div class="detail-grid">
@@ -401,4 +405,26 @@ function formatJobDetailDate(dateString) {
     day: "numeric",
     year: "numeric"
   });
+}
+
+async function deleteJob(jobNumber) {
+  const confirmed = confirm(
+    "Delete this job permanently? This cannot be undone."
+  );
+
+  if (!confirmed) return;
+
+  const { error } = await db
+    .from("jobs")
+    .delete()
+    .eq("job_number", jobNumber);
+
+  if (error) {
+    console.error(error);
+    showMessage("Could not delete job.");
+    return;
+  }
+
+  showMessage("Job deleted.");
+  window.location.href = "admin-jobList.html";
 }
