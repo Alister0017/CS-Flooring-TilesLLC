@@ -322,7 +322,7 @@ function renderJobCard(job) {
   const normalizedStatus = normalizeJobStatus(job.status);
 
   return `
-    <article class="job-card" onclick="window.location.href='admin-job.html?id=${job.job_number}'">
+    <article class="job-card" onclick="window.location.href='admin-jobs.html?id=${job.job_number}'">
       <div class="job-card-body">
         <div class="job-card-header">
           <div>
