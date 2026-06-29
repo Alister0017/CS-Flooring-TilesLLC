@@ -1,77 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS Flooring & Tile LLC | Customer Profile</title>
-  <link rel="stylesheet" href="../css/styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CS Flooring & Tile LLC | Customers</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
+
 <body class="admin-body">
-  <aside class="admin-sidebar">
-    <div class="admin-brand">
-      <h2>CS Flooring</h2>
-      <p>Admin Portal</p>
-    </div>
 
-    <div class="admin-nav-group">
-      <p class="admin-nav-label">Main</p>
-      <a href="admin-dashboard.html">Dashboard</a>
-    </div>
+    <!-- ===============================
+         SIDEBAR
+    ================================ -->
 
-    <div class="admin-nav-group">
-      <p class="admin-nav-label">Operations</p>
-      <a class="active" href="admin-customerList.html">Customers</a>
-      <a href="admin-jobList.html">Jobs</a>
-      <a href="admin-calendar.html">Calendar</a>
-    </div>
+    <aside class="admin-sidebar">
 
-    <div class="admin-nav-group">
-      <p class="admin-nav-label">Documents</p>
-      <a href="admin-estimates.html">Estimates</a>
-      <a href="admin-agreements.html">Agreements</a>
-      <a href="admin-materialCalc.html">Material Calculator</a>
-    </div>
+        <div class="admin-brand">
+            <h2>CS Flooring</h2>
+            <p>Admin Portal</p>
+        </div>
 
-    <div class="admin-nav-group">
-      <p class="admin-nav-label">Website</p>
-      <a href="admin-inventory.html">Inventory</a>
-      <a href="admin-photos.html">Photos</a>
-      <a href="../index.html">Public Website</a>
-    </div>
+        <div class="admin-nav-group">
+            <p class="admin-nav-label">Main</p>
 
-    <button class="admin-logout" onclick="logoutAdmin()">Logout</button>
-  </aside>
+            <a href="admin-dashboard.html">Dashboard</a>
+        </div>
 
-  <main class="admin-main">
-    <header class="admin-dashboard-header">
-      <h1 class="admin-business-title">CS Flooring & Tile LLC</h1>
+        <div class="admin-nav-group">
+            <p class="admin-nav-label">Operations</p>
 
-      <div class="admin-title-row">
-        <h1 id="customerPageTitle">Customer Profile</h1>
-        <p id="adminCurrentDate" class="admin-current-date"></p>
-      </div>
+            <a class="active" href="admin-customerList.html">Customers</a>
+            <a href="admin-jobList.html">Jobs</a>
+            <a href="admin-calendar.html">Calendar</a>
+        </div>
 
-      <nav class="admin-breadcrumb">
-        <a href="admin-dashboard.html">Dashboard</a>
-        <span>/</span>
-        <a href="admin-customerList.html">Customers</a>
-        <span>/</span>
-        <span id="customerBreadcrumbName" class="current">Customer</span>
-      </nav>
-    </header>
+        <div class="admin-nav-group">
+            <p class="admin-nav-label">Documents</p>
 
-    <section id="customerProfile" class="customer-profile-layout">
-      <div class="admin-empty-state">Loading customer profile...</div>
-    </section>
-  </main>
+            <a href="admin-estimates.html">Estimates</a>
+            <a href="admin-agreements.html">Agreements</a>
+            <a href="admin-materialCalc.html">Material Calculator</a>
+        </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js"></script>
-  <script src="../js/storage.js"></script>
-  <script src="../js/utils.js"></script>
-  <script src="../js/admin.js"></script>
-  <script src="../js/customer.js"></script>
-  <script src="../js/main.js"></script>
-  <script src="../js/auth.js"></script>
+        <div class="admin-nav-group">
+            <p class="admin-nav-label">Website</p>
+
+            <a href="admin-inventory.html">Inventory</a>
+            <a href="admin-photos.html">Photos</a>
+            <a href="../index.html">Public Website</a>
+        </div>
+
+        <button class="admin-logout" onclick="logoutAdmin()">
+            Logout
+        </button>
+
+    </aside>
+
+    <!-- ===============================
+         MAIN
+    ================================ -->
+
+    <main class="admin-main">
+
+        <header class="admin-dashboard-header">
+
+            <h1 class="admin-business-title">
+                CS Flooring & Tile LLC
+            </h1>
+
+            <div class="admin-title-row">
+                <h1>Customers</h1>
+                <p id="adminCurrentDate" class="admin-current-date"></p>
+            </div>
+
+            <nav class="admin-breadcrumb">
+                <a href="admin-dashboard.html">Dashboard</a>
+                <span>/</span>
+                <span class="current">Customers</span>
+            </nav>
+
+        </header>
+
+        <!-- ===============================
+             TOOLBAR
+        ================================ -->
+
+        <section class="admin-toolbar">
+
+            <input
+                id="customerSearch"
+                type="search"
+                placeholder="Search customers..."
+            >
+
+            <select id="customerSort">
+
+                <option value="recent">Newest First</option>
+                <option value="name">Customer Name</option>
+                <option value="jobs">Most Jobs</option>
+
+            </select>
+
+            <button class="btn" id="newCustomerButton">
+                + New Job
+            </button>
+
+        </section>
+
+        <!-- ===============================
+             CUSTOMER GRID
+        ================================ -->
+
+        <section
+            id="customerGrid"
+            class="customer-grid">
+
+            <div class="admin-empty-state">
+                Loading customers...
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ===============================
+         SCRIPTS
+    ================================ -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/admin.js"></script>
+    <script src="../js/customerList.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/auth.js"></script>
+
 </body>
+
 </html>
