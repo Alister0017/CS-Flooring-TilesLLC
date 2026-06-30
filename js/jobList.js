@@ -34,6 +34,8 @@ window.addEventListener("load", () => {
   if (newJobButton) {
     newJobButton.addEventListener("click", openNewJobWizard);
   }
+
+  applyJobListUrlFilters();
 });
 
 async function loadJobListPage() {
@@ -618,6 +620,9 @@ function renderFilteredJobs() {
 
   const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
   const selectedStatus = statusFilter ? statusFilter.value : "All";
+
+  const params = new URLSearchParams(window.location.search);
+  const urlStatus = params.get("status");
   const sortBy = sortSelect ? sortSelect.value : "recent";
 
   let jobs = allJobs.filter(job => {
@@ -635,9 +640,12 @@ function renderFilteredJobs() {
       address.includes(searchTerm) ||
       flooringTypes.includes(searchTerm);
 
+    const normalizedJobStatus = normalizeJobStatus(job.status);
+
     const matchesStatus =
-      selectedStatus === "All" ||
-      normalizeJobStatus(job.status) === selectedStatus;
+      urlStatus === "active"
+        ? !["Completed", "Closed", "Cancelled"].includes(normalizedJobStatus)
+        : selectedStatus === "All" || normalizedJobStatus === selectedStatus;
 
     return matchesSearch && matchesStatus;
   });
@@ -820,4 +828,35 @@ function truncateText(text, maxLength) {
   if (!text) return "";
   if (text.length <= maxLength) return text;
   return `${text.substring(0, maxLength).trim()}...`;
+}
+
+function applyJobListUrlFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get("status");
+  const view = params.get("view");
+
+  const statusFilter = document.getElementById("jobStatusFilter");
+
+  if (statusFilter && status) {
+    if (status === "active") {
+      statusFilter.value = "All";
+    } else {
+      statusFilter.value = status;
+    }
+  }
+
+  if (view === "pending") {
+    setTimeout(() => {
+      document.querySelector(".job-request-panel")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 400);
+  }
+
+  if (status === "Completed") {
+    setTimeout(() => {
+      document.getElementById("jobStatusFilter")?.dispatchEvent(new Event("change"));
+    }, 300);
+  }
 }
