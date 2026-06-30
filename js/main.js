@@ -1,55 +1,64 @@
 // main.js
 
 function toggleMobileMenu() {
-    const nav = document.getElementById("siteNav");
+  const nav = document.getElementById("siteNav");
 
-    if (!nav) return;
+  if (!nav) return;
 
-    nav.classList.toggle("open");
+  nav.classList.toggle("open");
 }
 
-window.onload = async function () {
-    console.log("CS Flooring Loaded");
+window.addEventListener("load", async () => {
+  console.log("CS Flooring Loaded");
 
-    if (document.body.classList.contains("admin-body") && typeof protectAdminPage === "function") {
-        await protectAdminPage();
-    }
+  const isAdminPage = document.body.classList.contains("admin-body");
 
-    if (document.getElementById("requestCount") && typeof loadDashboardCounts === "function") {
-        loadDashboardCounts();
-    }
+  if (isAdminPage && typeof protectAdminPage === "function") {
+    await protectAdminPage();
+  }
 
-    if (document.getElementById("requests") && typeof loadRequests === "function") {
-        loadRequests();
-    }
+  const requestCount = document.getElementById("requestCount");
+  if (requestCount && typeof loadDashboardCounts === "function") {
+    loadDashboardCounts();
+  }
 
-    if (document.getElementById("jobs") && typeof loadJobs === "function") {
-        loadJobs();
-    }
+  const requestsContainer = document.getElementById("requests");
+  if (requestsContainer && typeof loadRequests === "function") {
+    loadRequests();
+  }
 
-    if (document.getElementById("customers") && typeof loadCustomers === "function") {
-        loadCustomers();
-    }
+  const jobsContainer = document.getElementById("jobs");
+  if (jobsContainer && typeof loadJobs === "function") {
+    loadJobs();
+  }
 
-    if (document.getElementById("inventory") && typeof loadInventory === "function") {
-        loadInventory();
-    }
+  const customersContainer = document.getElementById("customers");
+  if (customersContainer && typeof loadCustomers === "function") {
+    loadCustomers();
+  }
 
-    if (document.getElementById("estimates") && typeof loadEstimates === "function") {
-        loadEstimates();
-    }
+  const inventoryContainer = document.getElementById("inventory");
+  if (inventoryContainer && typeof loadInventory === "function") {
+    loadInventory();
+  }
 
-    if (document.getElementById("agreements") && typeof loadAgreements === "function") {
-        loadAgreements();
-    }
+  const estimatesContainer = document.getElementById("estimates");
+  if (estimatesContainer && typeof loadEstimates === "function") {
+    loadEstimates();
+  }
 
-    if (document.getElementById("photos") && typeof loadPhotos === "function") {
-        loadPhotos();
-    }
+  const agreementsContainer = document.getElementById("agreements");
+  if (agreementsContainer && typeof loadAgreements === "function") {
+    loadAgreements();
+  }
 
-    if (document.getElementById("calendarGrid") && typeof loadCalendar === "function") {
-        loadCalendar();
-    }
+  const photosContainer = document.getElementById("photos");
+  if (photosContainer && typeof loadPhotos === "function") {
+    loadPhotos();
+  }
 
-    
-};
+  const calendarGrid = document.getElementById("calendarGrid");
+  if (calendarGrid && typeof loadCalendar === "function") {
+    loadCalendar();
+  }
+});

@@ -3,13 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>CS Flooring & Tile LLC | Request Measurement</title>
+
   <link rel="stylesheet" href="css/styles.css" />
 </head>
+
 <body class="request-page">
   <header class="site-header">
     <div class="logo">CS Flooring & Tile LLC</div>
-    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open navigation menu">☰</button>
+
+    <button
+      class="mobile-menu-btn"
+      onclick="toggleMobileMenu()"
+      aria-label="Open navigation menu">
+      ☰
+    </button>
+
     <nav id="siteNav">
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
@@ -19,101 +29,183 @@
       <a href="contact.html">Contact</a>
     </nav>
   </header>
+
   <main>
     <section class="section page-hero">
       <div class="section-heading">
         <p class="eyebrow">Free Measurement</p>
         <h1>Request a Free Measurement</h1>
-        <p>Tell us about your flooring project and Charles Sinotte will contact you to schedule a time to measure the space and review the work needed.</p>
+        <p>
+          Tell us about your flooring project and Charles Sinotte will contact you to schedule a time to measure the space and review the work needed.
+        </p>
       </div>
     </section>
+
     <section class="section">
       <div class="request-shell">
         <div class="request-layout">
           <aside class="request-info-card">
             <p class="eyebrow">What to Expect</p>
             <h2>Start with a free on-site measurement.</h2>
-            <p>Submit the form and CS Flooring & Tile LLC will follow up to schedule a measurement, review your project, and discuss product options.</p>
+            <p>
+              Submit the form and CS Flooring & Tile LLC will follow up to schedule a measurement, review your project, and discuss product options.
+            </p>
+
             <div class="request-benefit-list">
-              <div class="request-benefit"><strong>Free measurements and estimates</strong><p>No cost to have your space measured and reviewed.</p></div>
-              <div class="request-benefit"><strong>Owner involvement</strong><p>Charles Sinotte will review the project details and next steps.</p></div>
-              <div class="request-benefit"><strong>Service area</strong><p>Serving Connecticut and select areas of Massachusetts and New York.</p></div>
+              <div class="request-benefit">
+                <strong>Free measurements and estimates</strong>
+                <p>No cost to have your space measured and reviewed.</p>
+              </div>
+
+              <div class="request-benefit">
+                <strong>Owner involvement</strong>
+                <p>Charles Sinotte will review the project details and next steps.</p>
+              </div>
+
+              <div class="request-benefit">
+                <strong>Service area</strong>
+                <p>Serving Connecticut and select areas of Massachusetts and New York.</p>
+              </div>
             </div>
+
             <div class="request-contact-box">
               <p class="eyebrow">Questions?</p>
               <p><a href="tel:12036264209">(203) 626-4209</a></p>
               <p><a href="mailto:Charliesinotte1@gmail.com">Charliesinotte1@gmail.com</a></p>
             </div>
           </aside>
-          <form id="requestForm" class="request-form-card" onsubmit="event.preventDefault(); submitRequest();">
+
+          <form
+            id="requestForm"
+            class="request-form-card"
+            onsubmit="event.preventDefault(); submitRequest();">
+
             <section class="request-form-section">
               <h2>Your Information</h2>
+
               <div class="request-field-grid">
-                <label>Name<input id="name" type="text" placeholder="Full name" required /></label>
-                <label>Email<input id="email" type="email" placeholder="Email address" required /></label>
+                <label>
+                  Name
+                  <input id="name" type="text" placeholder="Full name" required />
+                </label>
+
+                <label>
+                  Email
+                  <input id="email" type="email" placeholder="Email address" required />
+                </label>
               </div>
-              <label>Phone<input id="phone" type="tel" placeholder="Phone number" required /></label>
+
+              <label>
+                Phone
+                <input id="phone" type="tel" placeholder="Phone number" required />
+              </label>
             </section>
+
             <section class="request-form-section">
               <h2>Project Information</h2>
-              <label>Job Address<input id="address" type="text" placeholder="Job address" required /></label>
+
+              <label>
+                Job Address
+                <input id="address" type="text" placeholder="Job address" required />
+              </label>
+
               <div>
                 <p class="request-field-label">Type of Flooring Work</p>
-                <div class="project-type-grid">
-                  <label class="project-type-card"><input type="checkbox" name="flooringType" value="Subfloor Options" onchange="updateSelectedFlooringDisplay()" /><span>Subfloor Options</span></label>
-                  <label class="project-type-card"><input type="checkbox" name="flooringType" value="Luxury Vinyl Products" onchange="updateSelectedFlooringDisplay()" /><span>Luxury Vinyl</span></label>
-                  <label class="project-type-card"><input type="checkbox" name="flooringType" value="Carpet" onchange="updateSelectedFlooringDisplay()" /><span>Carpet</span></label>
-                  <label class="project-type-card"><input type="checkbox" name="flooringType" value="Ceramic Tile" onchange="updateSelectedFlooringDisplay()" /><span>Ceramic Tile</span></label>
-                  <label class="project-type-card"><input type="checkbox" name="flooringType" value="VCT" onchange="updateSelectedFlooringDisplay()" /><span>VCT</span></label>
-                  <label class="project-type-card"><input type="checkbox" name="flooringType" value="Trim/Moldings" onchange="updateSelectedFlooringDisplay()" /><span>Trim & Moldings</span></label>
+
+                <div id="flooringTypeGrid" class="project-type-grid">
+                  <!-- Flooring options are loaded from flooringTypes.js -->
                 </div>
+
                 <div id="selectedFlooringDisplay" class="selected-display">
                   <span class="empty-selection">No flooring work selected.</span>
                 </div>
               </div>
+
               <div class="request-field-grid">
-                <label>Preferred Measurement Date<input id="preferredDate" type="date" /></label>
+                <label>
+                  Preferred Measurement Date
+                  <input id="preferredDate" type="date" />
+                </label>
+
                 <div>
                   <p class="request-field-label">Preferred Time</p>
+
                   <div class="time-preference-grid">
-                    <label class="time-option"><input type="radio" name="preferredTime" value="Morning" /><span>Morning</span></label>
-                    <label class="time-option"><input type="radio" name="preferredTime" value="Afternoon" /><span>Afternoon</span></label>
-                    <label class="time-option"><input type="radio" name="preferredTime" value="Evening" /><span>Evening</span></label>
+                    <label class="time-option">
+                      <input type="radio" name="preferredTime" value="Morning" />
+                      <span>Morning</span>
+                    </label>
+
+                    <label class="time-option">
+                      <input type="radio" name="preferredTime" value="Afternoon" />
+                      <span>Afternoon</span>
+                    </label>
+
+                    <label class="time-option">
+                      <input type="radio" name="preferredTime" value="Evening" />
+                      <span>Evening</span>
+                    </label>
                   </div>
                 </div>
               </div>
             </section>
+
             <section class="request-form-section">
               <h2>Project Description</h2>
-              <label>Description of Work Needed<textarea id="description" placeholder="Describe the rooms, flooring condition, product interest, or work needed" required></textarea></label>
+
+              <label>
+                Description of Work Needed
+                <textarea
+                  id="description"
+                  placeholder="Describe the rooms, flooring condition, product interest, or work needed"
+                  required></textarea>
+              </label>
             </section>
+
             <div class="form-note">
               <strong>Note:</strong> All measurements and estimates are free. Final pricing is provided after the owner reviews the project.
             </div>
+
             <div class="request-submit-row">
               <button class="btn" type="submit">Request Free Measurement</button>
-              <p class="request-submit-help">CS Flooring & Tile LLC will follow up to schedule your measurement.</p>
+              <p class="request-submit-help">
+                CS Flooring & Tile LLC will follow up to schedule your measurement.
+              </p>
             </div>
           </form>
         </div>
       </div>
     </section>
   </main>
+
   <footer class="site-footer">
     <div>
       <h2>CS Flooring & Tile LLC</h2>
       <p>Four Generations of Trusted Floor Professionals</p>
     </div>
+
     <div>
       <p><strong>Owner & Founder:</strong> Charles Sinotte</p>
       <p><strong>Services:</strong> Luxury Vinyl, Carpet, Ceramic Tile, VCT, Subfloor Options, Trim & Moldings</p>
       <p>&copy; 2026 CS Flooring & Tile LLC. All rights reserved.</p>
     </div>
   </footer>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script src="js/supabase-config.js"></script>
+
+  <script src="js/config/constants.js"></script>
+  <script src="js/config/dbTables.js"></script>
+  <script src="js/config/statuses.js"></script>
+  <script src="js/config/flooringTypes.js"></script>
+  <script src="js/config/routes.js"></script>
+
   <script src="js/utils.js"></script>
-  <script src="js/requests.js"></script>
+
+  <script src="js/services/requestService.js"></script>
+
+  <script src="js/public/requests.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

@@ -1,102 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS Flooring | Documents</title>
-  <link rel="stylesheet" href="../css/styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>CS Flooring & Tile LLC | Estimates</title>
+
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body class="admin-body">
+
   <div class="admin-mobile-bar">
     <div class="admin-mobile-brand">
       <strong>CS Flooring</strong>
       <span>Admin Portal</span>
     </div>
 
-    <button class="admin-menu-toggle" type="button" onclick="toggleAdminNav()" aria-label="Open admin menu">
+    <button class="admin-menu-toggle"
+            type="button"
+            onclick="toggleAdminNav()"
+            aria-label="Open admin menu">
       ☰
     </button>
   </div>
 
   <div class="admin-sidebar-backdrop" onclick="closeAdminNav()"></div>
+
   <aside class="admin-sidebar">
-    <h2>CS Flooring</h2>
-    <a href="admin-dashboard.html">Dashboard</a>
-    <a href="admin-inventory.html">Inventory</a>
-    <a href="admin-customers.html">Customers</a>
-    <a href="admin-jobs.html">Jobs</a>
-    <a href="admin-calendar.html">Calendar</a>
-    <a href="admin-photos.html">Photos</a>
-    <a href="admin-documents.html">Documents</a>
-    <button class="btn secondary" onclick="logoutAdmin()">Logout</button>
+    <div class="admin-brand">
+      <h2>CS Flooring</h2>
+      <p>Admin Portal</p>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Main</p>
+      <a href="admin-dashboard.html">Dashboard</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Operations</p>
+      <a href="admin-customerList.html">Customers</a>
+      <a href="admin-jobList.html">Jobs</a>
+      <a href="admin-calendar.html">Calendar</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Documents</p>
+      <a href="admin-estimates.html">Estimates</a>
+      <a href="admin-agreements.html">Agreements</a>
+      <a class="active" href="admin-invoices.html">Invoices</a>
+      <a href="admin-materialCalc.html">Material Calculator</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Website</p>
+      <a href="admin-inventory.html">Inventory</a>
+      <a href="admin-photos.html">Photos</a>
+      <a href="../index.html">Public Website</a>
+    </div>
+
+    <button class="admin-logout" onclick="logoutAdmin()">Logout</button>
   </aside>
 
   <main class="admin-main">
-    <h1>Owner Estimates & Agreements</h1>
 
-    <h2>Add Owner Estimate</h2>
-    <form id="estimateForm" class="form-card admin-form" onsubmit="event.preventDefault(); addEstimate();">
-      <label>
-        Job Number
-        <input id="estimateJobNumber" type="text" placeholder="Example: CS-2026-0001" required />
-      </label>
+    <header class="admin-dashboard-header">
 
-      <label>
-        Material Cost
-        <input id="materialCost" type="number" step="0.01" required />
-      </label>
+      <h1 class="admin-business-title">
+        CS Flooring & Tile LLC
+      </h1>
 
-      <label>
-        Labor Cost
-        <input id="laborCost" type="number" step="0.01" required />
-      </label>
+      <div class="admin-title-row">
+        <h1>Owner Estimates</h1>
+        <p id="adminCurrentDate" class="admin-current-date"></p>
+      </div>
 
-      <label>
-        Install Price
-        <input id="installPrice" type="number" step="0.01" required />
-      </label>
+      <nav class="admin-breadcrumb">
+        <a href="admin-dashboard.html">Dashboard</a>
+        <span>/</span>
+        <span class="current">Estimates</span>
+      </nav>
 
-      <button class="btn" type="submit">Save Owner Estimate</button>
-    </form>
+    </header>
 
-    <h2>Saved Estimates</h2>
-    <div id="estimates"></div>
+    <section class="admin-card">
 
-    <h2>Add Agreement</h2>
-    <form id="agreementForm" class="form-card admin-form" onsubmit="event.preventDefault(); addAgreement();">
-      <label>
-        Job Number
-        <input id="agreementJobNumber" type="text" placeholder="Example: CS-2026-0001" required />
-      </label>
+      <div class="admin-section-header">
+        <h2>Create Estimate</h2>
+      </div>
 
-      <label>
-        Agreement Notes
-        <textarea id="agreementNotes" required></textarea>
-      </label>
+      <form id="estimateForm"
+            class="admin-form"
+            onsubmit="event.preventDefault(); saveEstimate();">
 
-      <button class="btn" type="submit">Save Agreement</button>
-    </form>
+        <div class="admin-form-grid">
 
-    <h2>Saved Agreements</h2>
-    <div id="agreements"></div>
+          <div class="admin-form-field">
+            <label for="estimateJobNumber">
+              Job Number
+            </label>
+
+            <input
+              id="estimateJobNumber"
+              type="text"
+              placeholder="CS-2026-0001"
+              required>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="estimateTaxRate">
+              Tax Rate (%)
+            </label>
+
+            <input
+              id="estimateTaxRate"
+              type="number"
+              step="0.01"
+              value="6.35">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="estimateDiscount">
+              Discount
+            </label>
+
+            <input
+              id="estimateDiscount"
+              type="number"
+              step="0.01"
+              value="0">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="estimateDeposit">
+              Deposit
+            </label>
+
+            <input
+              id="estimateDeposit"
+              type="number"
+              step="0.01"
+              value="0">
+          </div>
+
+          <div class="admin-form-field full-width">
+            <label for="estimateNotes">
+              Notes
+            </label>
+
+            <textarea
+              id="estimateNotes"
+              placeholder="Optional estimate notes..."></textarea>
+          </div>
+
+        </div>
+
+        <div class="estimate-items-section">
+
+          <div class="admin-section-header">
+            <h3>Estimate Items</h3>
+
+            <button
+              type="button"
+              class="btn secondary"
+              onclick="addEstimateItemRow()">
+              + Add Line Item
+            </button>
+          </div>
+
+          <div id="estimateItems"></div>
+
+        </div>
+
+        <div class="estimate-summary">
+
+          <div>
+            <span>Subtotal</span>
+            <strong id="estimateSubtotal">$0.00</strong>
+          </div>
+
+          <div>
+            <span>Tax</span>
+            <strong id="estimateTax">$0.00</strong>
+          </div>
+
+          <div>
+            <span>Total</span>
+            <strong id="estimateTotal">$0.00</strong>
+          </div>
+
+          <div>
+            <span>Balance Due</span>
+            <strong id="estimateBalance">$0.00</strong>
+          </div>
+
+        </div>
+
+        <button class="btn" type="submit">
+          Save Estimate
+        </button>
+
+      </form>
+
+    </section>
+
+    <section class="admin-card">
+
+      <div class="admin-section-header">
+        <h2>Saved Estimates</h2>
+      </div>
+
+      <div id="estimates" class="estimate-grid">
+        <div class="admin-empty-state">
+          Loading estimates...
+        </div>
+      </div>
+
+    </section>
+
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script src="../js/supabase-config.js"></script>
 
-  <script src="../js/storage.js"></script>
+  <script src="../js/config/constants.js"></script>
+  <script src="../js/config/dbTables.js"></script>
+  <script src="../js/config/statuses.js"></script>
+  <script src="../js/config/routes.js"></script>
+
   <script src="../js/utils.js"></script>
-<script src="../js/admin-modals.js"></script>
-  <!-- Page-specific JS -->
-  <script src="../js/documents.js"></script>
-  <!-- or jobs.js, inventory.js, calendar.js, etc. -->
+
+  <script src="../js/services/jobService.js"></script>
+  <script src="../js/services/estimateService.js"></script>
+
+  <script src="../js/admin/admin-modals.js"></script>
+  <script src="../js/admin/admin.js"></script>
+  <script src="../js/admin/estimates.js"></script>
 
   <script src="../js/main.js"></script>
-
   <script src="../js/auth.js"></script>
-</body>
 
+</body>
 </html>

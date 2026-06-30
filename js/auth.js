@@ -15,18 +15,18 @@ async function loginAdmin() {
         return;
     }
 
-    window.location.href = "admin-dashboard.html";
+    window.location.href = ROUTES.DASHBOARD;
 }
 
 async function protectAdminPage() {
     const { data, error } = await db.auth.getSession();
 
     if (error || !data.session) {
-        window.location.href = "admin-login.html";
+        window.location.href = ROUTES.LOGIN;
     }
 }
 
 async function logoutAdmin() {
     await db.auth.signOut();
-    window.location.href = "admin-login.html";
+    window.location.href = ROUTES.LOGIN;
 }

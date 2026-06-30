@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS Flooring | Photos</title>
-  <link rel="stylesheet" href="../css/styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>CS Flooring & Tile LLC | Photos</title>
+
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body class="admin-body">
+
   <div class="admin-mobile-bar">
     <div class="admin-mobile-brand">
       <strong>CS Flooring</strong>
@@ -21,59 +23,154 @@
   </div>
 
   <div class="admin-sidebar-backdrop" onclick="closeAdminNav()"></div>
-  <aside class="admin-sidebar">
-    <h2>CS Flooring</h2>
-    <a href="admin-dashboard.html">Dashboard</a>
-    <a href="admin-inventory.html">Inventory</a>
-    <a href="admin-customers.html">Customers</a>
-    <a href="admin-jobs.html">Jobs</a>
-    <a href="admin-calendar.html">Calendar</a>
-    <a href="admin-photos.html">Photos</a>
-    <a href="admin-documents.html">Documents</a>
-    <button class="btn secondary" onclick="logoutAdmin()">Logout</button>
+
+ <aside class="admin-sidebar">
+    <div class="admin-brand">
+      <h2>CS Flooring</h2>
+      <p>Admin Portal</p>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Main</p>
+      <a href="admin-dashboard.html">Dashboard</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Operations</p>
+      <a href="admin-customerList.html">Customers</a>
+      <a href="admin-jobList.html">Jobs</a>
+      <a href="admin-calendar.html">Calendar</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Documents</p>
+      <a href="admin-estimates.html">Estimates</a>
+      <a href="admin-agreements.html">Agreements</a>
+      <a class="active" href="admin-invoices.html">Invoices</a>
+      <a href="admin-materialCalc.html">Material Calculator</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Website</p>
+      <a href="admin-inventory.html">Inventory</a>
+      <a href="admin-photos.html">Photos</a>
+      <a href="../index.html">Public Website</a>
+    </div>
+
+    <button class="admin-logout" onclick="logoutAdmin()">Logout</button>
   </aside>
 
   <main class="admin-main">
-    <h1>Update Photos</h1>
 
-    <form id="photoForm" class="form-card admin-form" onsubmit="event.preventDefault(); addPhoto();">
-      <label>
-        Photo Title
-        <input id="photoTitle" type="text" required />
-      </label>
+    <header class="admin-dashboard-header">
+      <h1 class="admin-business-title">CS Flooring & Tile LLC</h1>
 
-      <label>
-        Upload Image
-        <input id="photoFile" type="file" accept="image/*" required />
-      </label>
+      <div class="admin-title-row">
+        <h1>Photos</h1>
+        <p id="adminCurrentDate" class="admin-current-date"></p>
+      </div>
 
-      <label>
-        Description
-        <textarea id="photoDescription"></textarea>
-      </label>
+      <nav class="admin-breadcrumb">
+        <a href="admin-dashboard.html">Dashboard</a>
+        <span>/</span>
+        <span class="current">Photos</span>
+      </nav>
+    </header>
 
-      <button class="btn" type="submit">Save Photo</button>
-    </form>
+    <section class="admin-card">
+      <div class="admin-section-header">
+        <h2>Upload Job Photo</h2>
+      </div>
 
-    <h2>Saved Photos</h2>
-    <div id="photos" class="card-grid"></div>
+      <form id="photoForm" class="admin-form" onsubmit="event.preventDefault(); addPhoto();">
+        <div class="admin-form-grid">
+
+          <div class="admin-form-field">
+            <label for="photoJobNumber">Job Number</label>
+            <input id="photoJobNumber" type="text" placeholder="CS-2026-0001" required>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="photoCategory">Category</label>
+            <select id="photoCategory" required>
+              <option value="">Select Category</option>
+              <option>Before</option>
+              <option>Progress</option>
+              <option>After</option>
+              <option>Completed Work</option>
+              <option>Product</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="photoCaption">Caption</label>
+            <input id="photoCaption" type="text" placeholder="Short photo caption">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="photoFile">Upload Image</label>
+            <input id="photoFile" type="file" accept="image/*" required>
+          </div>
+
+          <div class="admin-form-field full-width">
+            <label for="photoNotes">Notes</label>
+            <textarea id="photoNotes" placeholder="Optional internal notes or project details"></textarea>
+          </div>
+
+          <div class="admin-form-field">
+            <label class="checkbox-row">
+              <input id="showInGallery" type="checkbox">
+              Show on public gallery
+            </label>
+          </div>
+
+          <div class="admin-form-field">
+            <label class="checkbox-row">
+              <input id="isCoverPhoto" type="checkbox">
+              Mark as cover photo
+            </label>
+          </div>
+
+        </div>
+
+        <button class="btn" type="submit">Save Photo</button>
+      </form>
+    </section>
+
+    <section class="admin-card">
+      <div class="admin-section-header">
+        <h2>Saved Photos</h2>
+      </div>
+
+      <div id="photos" class="photo-admin-grid">
+        <div class="admin-empty-state">Loading photos...</div>
+      </div>
+    </section>
+
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script src="../js/supabase-config.js"></script>
 
-  <script src="../js/storage.js"></script>
+  <script src="../js/config/constants.js"></script>
+  <script src="../js/config/dbTables.js"></script>
+  <script src="../js/config/statuses.js"></script>
+  <script src="../js/config/flooringTypes.js"></script>
+  <script src="../js/config/routes.js"></script>
+
   <script src="../js/utils.js"></script>
-<script src="../js/admin-modals.js"></script>
-  <!-- Page-specific JS -->
-  <script src="../js/photos.js"></script>
-  <!-- or jobs.js, inventory.js, calendar.js, etc. -->
+
+  <script src="../js/services/jobService.js"></script>
+  <script src="../js/services/photoService.js"></script>
+
+  <script src="../js/admin/admin-modals.js"></script>
+  <script src="../js/admin/admin.js"></script>
+  <script src="../js/admin/photos.js"></script>
 
   <script src="../js/main.js"></script>
-
   <script src="../js/auth.js"></script>
 
 </body>
-
 </html>

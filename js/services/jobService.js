@@ -8,7 +8,7 @@ const JobService = {
 
   async getJobs() {
     const { data, error } = await db
-      .from("jobs")
+      .from(TABLES.JOBS)
       .select(`
         *,
         customers (
@@ -29,7 +29,7 @@ const JobService = {
 
   async getJob(jobNumber) {
     const { data, error } = await db
-      .from("jobs")
+      .from(TABLES.JOBS)
       .select(`
         *,
         customers (
@@ -51,7 +51,7 @@ const JobService = {
 
   async getJobsByCustomer(customerId) {
     const { data, error } = await db
-      .from("jobs")
+      .from(TABLES.JOBS)
       .select("*")
       .eq("customer_id", customerId)
       .order("created_at", { ascending: false });
@@ -67,30 +67,34 @@ const JobService = {
   ========================================================== */
 
   async createJob(job) {
-
     const jobNumber =
       job.job_number ||
       (typeof generateSupabaseJobNumber === "function"
         ? await generateSupabaseJobNumber()
-        : `CS-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`);
+        : `${JOB.PREFIX}-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`);
 
     const payload = {
       job_number: jobNumber,
       customer_id: job.customer_id,
-      flooring_type: job.flooring_type || [],
+      flooring_type: Array.isArray(job.flooring_type)
+        ? job.flooring_type
+        : job.flooring_type
+          ? [job.flooring_type]
+          : [],
       description: job.description || null,
       measurement_date: job.measurement_date || null,
       install_start_date: job.install_start_date || null,
       install_end_date: job.install_end_date || null,
       install_price: job.install_price || null,
-      status: job.status || "Measurement Scheduled",
+      status: job.status || JOB_STATUS.MEASUREMENT_SCHEDULED,
       estimate_id: job.estimate_id || null,
       agreement_id: job.agreement_id || null,
+      invoice_id: job.invoice_id || null,
       notes: job.notes || null
     };
 
     const { data, error } = await db
-      .from("jobs")
+      .from(TABLES.JOBS)
       .insert([payload])
       .select()
       .single();
@@ -106,10 +110,12 @@ const JobService = {
   ========================================================== */
 
   async updateJob(jobNumber, updates) {
-
     const { data, error } = await db
-      .from("jobs")
-      .update(updates)
+      .from(TABLES.JOBS)
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
       .eq("job_number", jobNumber)
       .select()
       .single();
@@ -121,19 +127,35 @@ const JobService = {
   },
 
   async updateStatus(jobNumber, status) {
-
     return await this.updateJob(jobNumber, {
       status
     });
-
   },
 
   async saveNotes(jobNumber, notes) {
-
     return await this.updateJob(jobNumber, {
       notes
     });
+  },
 
+  async linkEstimate(jobNumber, estimateId) {
+    return await this.updateJob(jobNumber, {
+      estimate_id: estimateId,
+      status: JOB_STATUS.ESTIMATE_SENT
+    });
+  },
+
+  async linkAgreement(jobNumber, agreementId) {
+    return await this.updateJob(jobNumber, {
+      agreement_id: agreementId,
+      status: JOB_STATUS.AGREEMENT_CREATED
+    });
+  },
+
+  async linkInvoice(jobNumber, invoiceId) {
+    return await this.updateJob(jobNumber, {
+      invoice_id: invoiceId
+    });
   },
 
   /* ==========================================================
@@ -141,26 +163,25 @@ const JobService = {
   ========================================================== */
 
   async deleteJob(jobNumber) {
-
     const { error } = await db
-      .from("jobs")
+      .from(TABLES.JOBS)
       .delete()
       .eq("job_number", jobNumber);
 
-    return { error };
-
+    return {
+      error
+    };
   },
 
   /* ==========================================================
      DASHBOARD
   ========================================================== */
 
-  async getUpcomingMeasurements(limit = 5) {
-
+  async getUpcomingMeasurements(limit = PAGINATION.DASHBOARD_RECENT) {
     const today = new Date().toISOString().split("T")[0];
 
     const { data, error } = await db
-      .from("jobs")
+      .from(TABLES.JOBS)
       .select(`
         job_number,
         measurement_date,
@@ -172,25 +193,21 @@ const JobService = {
         )
       `)
       .gte("measurement_date", today)
-      .neq("status", "Completed")
-      .order("measurement_date", {
-        ascending: true
-      })
+      .not("status", "in", this.getClosedStatusFilter())
+      .order("measurement_date", { ascending: true })
       .limit(limit);
 
     return {
       data: data || [],
       error
     };
-
   },
 
-  async getUpcomingInstallations(limit = 5) {
-
+  async getUpcomingInstallations(limit = PAGINATION.DASHBOARD_RECENT) {
     const today = new Date().toISOString().split("T")[0];
 
     const { data, error } = await db
-      .from("jobs")
+      .from(TABLES.JOBS)
       .select(`
         job_number,
         install_start_date,
@@ -202,68 +219,19 @@ const JobService = {
         )
       `)
       .gte("install_start_date", today)
-      .not("status", "in", '("Completed","Closed","Cancelled")')
-      .order("install_start_date", {
-        ascending: true
-      })
+      .not("status", "in", this.getClosedStatusFilter())
+      .order("install_start_date", { ascending: true })
       .limit(limit);
 
     return {
       data: data || [],
       error
     };
-
   },
-
-  /* ==========================================================
-     COUNTS
-  ========================================================== */
-
-  async getActiveJobCount() {
-
-    const { count, error } = await db
-      .from("jobs")
-      .select("*", {
-        count: "exact",
-        head: true
-      })
-      .not("status", "in", '("Completed","Closed","Cancelled")');
-
-    return {
-      count: count || 0,
-      error
-    };
-
-  },
-
-  async getCompletedJobCount() {
-
-    const { count, error } = await db
-      .from("jobs")
-      .select("*", {
-        count: "exact",
-        head: true
-      })
-      .in("status", [
-        "Completed",
-        "Closed"
-      ]);
-
-    return {
-      count: count || 0,
-      error
-    };
-
-  },
-
-  /* ==========================================================
-     TIMELINE
-  ========================================================== */
 
   async getRecentJobs(limit = 10) {
-
     const { data, error } = await db
-      .from("jobs")
+      .from(TABLES.JOBS)
       .select(`
         job_number,
         status,
@@ -272,16 +240,58 @@ const JobService = {
           customer_name
         )
       `)
-      .order("created_at", {
-        ascending: false
-      })
+      .order("created_at", { ascending: false })
       .limit(limit);
 
     return {
       data: data || [],
       error
     };
+  },
 
+  /* ==========================================================
+     COUNTS
+  ========================================================== */
+
+  async getActiveJobCount() {
+    const { count, error } = await db
+      .from(TABLES.JOBS)
+      .select("*", {
+        count: "exact",
+        head: true
+      })
+      .not("status", "in", this.getClosedStatusFilter());
+
+    return {
+      count: count || 0,
+      error
+    };
+  },
+
+  async getCompletedJobCount() {
+    const { count, error } = await db
+      .from(TABLES.JOBS)
+      .select("*", {
+        count: "exact",
+        head: true
+      })
+      .in("status", [
+        JOB_STATUS.COMPLETED,
+        JOB_STATUS.CLOSED
+      ]);
+
+    return {
+      count: count || 0,
+      error
+    };
+  },
+
+  /* ==========================================================
+     HELPERS
+  ========================================================== */
+
+  getClosedStatusFilter() {
+    return `("${JOB_STATUS.COMPLETED}","${JOB_STATUS.CLOSED}","${JOB_STATUS.CANCELLED}")`;
   }
 
 };

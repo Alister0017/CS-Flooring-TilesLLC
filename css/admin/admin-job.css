@@ -1,0 +1,196 @@
+/* ==========================================================
+   JOB DETAILS
+   Unique styles only
+   Shared layout comes from admin-details.css
+========================================================== */
+
+.job-detail-layout{
+  display:grid;
+  gap:24px;
+}
+
+.job-summary{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:24px;
+}
+
+.job-info-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+}
+
+/* ==========================================================
+   PROJECT PROGRESS
+========================================================== */
+
+.job-progress-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+}
+
+.job-progress-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:var(--cream-50);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:14px;
+  color:var(--muted);
+  font-weight:800;
+}
+
+.job-progress-item.complete{
+  background:rgba(30,87,56,.08);
+  border-color:rgba(30,87,56,.35);
+  color:var(--green-900);
+}
+
+.job-progress-icon{
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--white);
+  border:1px solid var(--border);
+  font-weight:900;
+}
+
+.job-progress-item.complete .job-progress-icon{
+  background:var(--green-800);
+  border-color:var(--bronze-500);
+  color:var(--white);
+}
+
+.job-progress-item strong{
+  line-height:1.25;
+}
+
+/* ==========================================================
+   COMMAND CENTER
+========================================================== */
+
+.job-command-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:14px;
+}
+
+.job-command-card{
+  background:linear-gradient(180deg,var(--green-800),var(--green-950));
+  color:var(--white);
+  border:1px solid rgba(185,139,99,.45);
+  border-radius:var(--radius);
+  padding:18px;
+  text-decoration:none;
+  box-shadow:var(--shadow-soft);
+  transition:.18s ease;
+  cursor:pointer;
+}
+
+.job-command-card:hover{
+  transform:translateY(-3px);
+  box-shadow:var(--shadow);
+  border-color:var(--bronze-500);
+}
+
+.job-command-card strong{
+  display:block;
+  color:var(--bronze-soft);
+  margin-bottom:5px;
+}
+
+.job-command-card span{
+  color:rgba(255,255,255,.78);
+  font-size:.92rem;
+}
+
+.job-command-card.danger{
+  background:linear-gradient(180deg,#6b2d2d,#3f1515);
+  border-color:#c9a2a2;
+}
+
+.job-command-card.danger strong{
+  color:#f8dada;
+}
+
+/* ==========================================================
+   TIMELINE
+========================================================== */
+
+.detail-timeline{
+  display:grid;
+  gap:18px;
+}
+
+.detail-timeline-item{
+  display:grid;
+  grid-template-columns:36px 1fr;
+  gap:14px;
+}
+
+.detail-timeline-dot{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:var(--green-800);
+  border:2px solid var(--bronze-500);
+}
+
+.detail-timeline-content{
+  display:grid;
+  gap:4px;
+}
+
+.detail-timeline-content strong{
+  color:var(--green-900);
+}
+
+.detail-timeline-content span{
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+/* ==========================================================
+   NOTES
+========================================================== */
+
+.job-notes{
+  display:grid;
+  gap:14px;
+}
+
+.job-notes textarea{
+  width:100%;
+  min-height:180px;
+  resize:vertical;
+}
+
+.job-notes .btn{
+  justify-self:start;
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width:1000px){
+  .job-summary{
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:760px){
+  .job-info-grid{
+    grid-template-columns:1fr;
+  }
+
+  .job-progress-grid{
+    grid-template-columns:1fr;
+  }
+}

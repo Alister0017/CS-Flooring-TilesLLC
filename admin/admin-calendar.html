@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS Flooring | Calendar</title>
+
+  <title>CS Flooring & Tile LLC | Calendar</title>
+
   <link rel="stylesheet" href="../css/styles.css" />
 </head>
 
@@ -21,33 +22,66 @@
   </div>
 
   <div class="admin-sidebar-backdrop" onclick="closeAdminNav()"></div>
+
   <aside class="admin-sidebar">
-    <h2>CS Flooring</h2>
-    <a href="admin-dashboard.html">Dashboard</a>
-    <a href="admin-inventory.html">Inventory</a>
-    <a href="admin-customers.html">Customers</a>
-    <a href="admin-jobs.html">Jobs</a>
-    <a href="admin-calendar.html">Calendar</a>
-    <a href="admin-photos.html">Photos</a>
-    <a href="admin-documents.html">Documents</a>
-    <button class="btn secondary" onclick="logoutAdmin()">Logout</button>
+    <div class="admin-brand">
+      <h2>CS Flooring</h2>
+      <p>Admin Portal</p>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Main</p>
+      <a href="admin-dashboard.html">Dashboard</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Operations</p>
+      <a href="admin-customerList.html">Customers</a>
+      <a href="admin-jobList.html">Jobs</a>
+      <a href="admin-calendar.html">Calendar</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Documents</p>
+      <a href="admin-estimates.html">Estimates</a>
+      <a href="admin-agreements.html">Agreements</a>
+      <a class="active" href="admin-invoices.html">Invoices</a>
+      <a href="admin-materialCalc.html">Material Calculator</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Website</p>
+      <a href="admin-inventory.html">Inventory</a>
+      <a href="admin-photos.html">Photos</a>
+      <a href="../index.html">Public Website</a>
+    </div>
+
+    <button class="admin-logout" onclick="logoutAdmin()">Logout</button>
   </aside>
 
   <main class="admin-main">
-    <div class="calendar-page-header">
-      <div>
+    <header class="admin-dashboard-header">
+      <h1 class="admin-business-title">CS Flooring & Tile LLC</h1>
+
+      <div class="admin-title-row">
         <h1>Calendar</h1>
-        <p>View measurement and install schedules.</p>
+        <p id="adminCurrentDate" class="admin-current-date"></p>
       </div>
-    </div>
+
+      <nav class="admin-breadcrumb">
+        <a href="admin-dashboard.html">Dashboard</a>
+        <span>/</span>
+        <span class="current">Calendar</span>
+      </nav>
+    </header>
 
     <section class="calendar-shell">
       <div class="calendar-toolbar">
-        <button onclick="goToToday()">Today</button>
+        <button class="btn secondary" type="button" onclick="goToToday()">Today</button>
 
         <div class="calendar-nav">
-          <button onclick="changeMonth(-1)">‹</button>
-          <button onclick="changeMonth(1)">›</button>
+          <button type="button" onclick="changeMonth(-1)" aria-label="Previous month">‹</button>
+          <button type="button" onclick="changeMonth(1)" aria-label="Next month">›</button>
         </div>
 
         <h2 id="calendarMonthTitle">Month Year</h2>
@@ -79,12 +113,23 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js"></script>
-  <script src="../js/utils.js"></script>
-  <script src="../js/auth.js"></script>
-  <script src="../js/admin-modals.js"></script>
-  <script src="../js/calendar.js"></script>
-  <script src="../js/main.js"></script>
-</body>
 
+  <script src="../js/supabase-config.js"></script>
+
+  <script src="../js/config/constants.js"></script>
+  <script src="../js/config/dbTables.js"></script>
+  <script src="../js/config/statuses.js"></script>
+  <script src="../js/config/routes.js"></script>
+
+  <script src="../js/utils.js"></script>
+
+  <script src="../js/services/jobService.js"></script>
+
+  <script src="../js/admin/admin-modals.js"></script>
+  <script src="../js/admin/admin.js"></script>
+  <script src="../js/admin/calendar.js"></script>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/auth.js"></script>
+</body>
 </html>

@@ -1,0 +1,361 @@
+/* ==========================================================
+   INVOICES PAGE
+========================================================== */
+
+.invoice-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(420px,1fr));
+  gap:24px;
+}
+
+/* ==========================================================
+   FORM
+========================================================== */
+
+#invoiceForm{
+  display:grid;
+  gap:24px;
+}
+
+#invoiceForm textarea{
+  min-height:120px;
+  resize:vertical;
+}
+
+#invoiceForm .admin-form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+
+#invoiceForm .full-width{
+  grid-column:1/-1;
+}
+
+/* ==========================================================
+   LINE ITEMS
+========================================================== */
+
+.invoice-items-section{
+  display:grid;
+  gap:18px;
+  margin-top:28px;
+}
+
+.invoice-item-row{
+  display:grid;
+  grid-template-columns:2fr 120px 120px 150px 140px auto;
+  gap:12px;
+  align-items:end;
+  padding:18px;
+  background:var(--cream-50);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+}
+
+.invoice-item-field{
+  display:grid;
+  gap:6px;
+}
+
+.invoice-item-field label{
+  font-size:.75rem;
+  font-weight:800;
+  color:var(--green-900);
+  text-transform:uppercase;
+}
+
+.description-field{
+  min-width:240px;
+}
+
+.invoice-line-total{
+  display:grid;
+  gap:4px;
+  text-align:right;
+}
+
+.invoice-line-total span{
+  font-size:.72rem;
+  color:var(--muted);
+  font-weight:800;
+  text-transform:uppercase;
+}
+
+.invoice-line-total strong{
+  color:var(--green-900);
+}
+
+/* ==========================================================
+   SUMMARY
+========================================================== */
+
+.invoice-summary{
+  margin-top:28px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+}
+
+.invoice-summary>div{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px;
+  display:grid;
+  gap:6px;
+}
+
+.invoice-summary span{
+  font-size:.75rem;
+  color:var(--muted);
+  text-transform:uppercase;
+  font-weight:800;
+}
+
+.invoice-summary strong{
+  color:var(--green-900);
+  font-size:1.2rem;
+}
+
+/* ==========================================================
+   CARD
+========================================================== */
+
+.invoice-card{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  padding:22px;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-soft);
+  transition:.18s ease;
+}
+
+.invoice-card:hover{
+  transform:translateY(-3px);
+  border-color:var(--bronze-500);
+  box-shadow:var(--shadow);
+}
+
+.invoice-card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+}
+
+.invoice-card-header h3{
+  margin:2px 0 0;
+  color:var(--green-900);
+}
+
+.invoice-card-details{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.invoice-card-details>div{
+  background:var(--cream-50);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:12px;
+}
+
+.invoice-card-details span{
+  display:block;
+  font-size:.74rem;
+  color:var(--muted);
+  font-weight:800;
+  text-transform:uppercase;
+  margin-bottom:4px;
+}
+
+.invoice-card-details strong{
+  color:var(--green-900);
+}
+
+.invoice-card-notes{
+  display:grid;
+  gap:6px;
+  border-top:1px solid var(--border);
+  padding-top:16px;
+}
+
+.invoice-card-notes span{
+  font-size:.75rem;
+  color:var(--muted);
+  text-transform:uppercase;
+  font-weight:800;
+}
+
+.invoice-card-notes p{
+  margin:0;
+  line-height:1.5;
+}
+
+.invoice-card-actions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:auto;
+}
+
+.invoice-card-actions .btn{
+  width:100%;
+}
+
+/* ==========================================================
+   MODAL
+========================================================== */
+
+.invoice-modal-summary{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-bottom:24px;
+}
+
+.invoice-modal-summary>div{
+  background:var(--cream-50);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:14px;
+}
+
+.invoice-modal-summary span{
+  display:block;
+  font-size:.72rem;
+  color:var(--muted);
+  font-weight:800;
+  text-transform:uppercase;
+  margin-bottom:4px;
+}
+
+.invoice-modal-summary strong{
+  color:var(--green-900);
+}
+
+.invoice-modal-section{
+  margin-bottom:24px;
+}
+
+.invoice-modal-section h3{
+  color:var(--green-900);
+  margin-bottom:12px;
+}
+
+.invoice-modal-items{
+  display:grid;
+  gap:12px;
+}
+
+.invoice-modal-item{
+  display:grid;
+  grid-template-columns:2fr 1fr auto;
+  gap:16px;
+  align-items:center;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  background:var(--white);
+}
+
+.invoice-payment-list{
+  display:grid;
+  gap:12px;
+}
+
+.invoice-payment-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  background:var(--cream-50);
+}
+
+.invoice-payment-row strong{
+  color:var(--green-900);
+}
+
+.invoice-payment-row span{
+  color:var(--muted);
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:1200px){
+
+  .invoice-item-row{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .invoice-line-total{
+    text-align:left;
+  }
+
+}
+
+@media(max-width:900px){
+
+  .invoice-grid{
+    grid-template-columns:1fr;
+  }
+
+  .invoice-summary{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .invoice-modal-summary{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+}
+
+@media(max-width:700px){
+
+  #invoiceForm .admin-form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .invoice-card-header{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .invoice-card-details{
+    grid-template-columns:1fr;
+  }
+
+  .invoice-card-actions{
+    grid-template-columns:1fr;
+  }
+
+  .invoice-summary{
+    grid-template-columns:1fr;
+  }
+
+  .invoice-modal-summary{
+    grid-template-columns:1fr;
+  }
+
+  .invoice-modal-item{
+    grid-template-columns:1fr;
+  }
+
+}
+
+@media(max-width:550px){
+
+  .invoice-item-row{
+    grid-template-columns:1fr;
+  }
+
+}

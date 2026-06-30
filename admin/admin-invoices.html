@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>CS Flooring & Tile LLC | Inventory</title>
+  <title>CS Flooring & Tile LLC | Invoices</title>
 
   <link rel="stylesheet" href="../css/styles.css">
 </head>
@@ -17,11 +17,7 @@
       <span>Admin Portal</span>
     </div>
 
-    <button
-      class="admin-menu-toggle"
-      type="button"
-      onclick="toggleAdminNav()"
-      aria-label="Open admin menu">
+    <button class="admin-menu-toggle" type="button" onclick="toggleAdminNav()" aria-label="Open admin menu">
       ☰
     </button>
   </div>
@@ -67,120 +63,113 @@
   <main class="admin-main">
 
     <header class="admin-dashboard-header">
-
-      <h1 class="admin-business-title">
-        CS Flooring & Tile LLC
-      </h1>
+      <h1 class="admin-business-title">CS Flooring & Tile LLC</h1>
 
       <div class="admin-title-row">
-        <h1>Inventory</h1>
+        <h1>Invoices</h1>
         <p id="adminCurrentDate" class="admin-current-date"></p>
       </div>
 
       <nav class="admin-breadcrumb">
         <a href="admin-dashboard.html">Dashboard</a>
         <span>/</span>
-        <span class="current">Inventory</span>
+        <span class="current">Invoices</span>
       </nav>
-
     </header>
 
     <section class="admin-card">
-
       <div class="admin-section-header">
-        <h2>Add Inventory Item</h2>
+        <h2>Create Invoice</h2>
       </div>
 
-      <form
-        id="inventoryForm"
-        class="admin-form"
-        onsubmit="event.preventDefault(); addInventoryItem();">
-
+      <form id="invoiceForm" class="admin-form" onsubmit="event.preventDefault(); saveInvoice();">
         <div class="admin-form-grid">
 
           <div class="admin-form-field">
-            <label for="itemName">Item Name</label>
-            <input
-              id="itemName"
-              type="text"
-              required>
+            <label for="invoiceJobNumber">Job Number</label>
+            <input id="invoiceJobNumber" type="text" placeholder="CS-2026-0001" required>
           </div>
 
           <div class="admin-form-field">
-            <label for="itemType">Category</label>
-
-            <select
-              id="itemType"
-              required>
-
-              <option value="">Select Category</option>
-
-              <option>Subfloor Options</option>
-              <option>Luxury Vinyl Products</option>
-              <option>Hardwood</option>
-              <option>Laminate</option>
-              <option>Carpet</option>
-              <option>Tile</option>
-              <option>VCT</option>
-              <option>Trim / Moldings</option>
-
-            </select>
+            <label for="invoiceEstimateId">Estimate ID</label>
+            <input id="invoiceEstimateId" type="text" placeholder="Optional">
           </div>
 
           <div class="admin-form-field">
-            <label for="unitPrice">Unit Price</label>
-
-            <input
-              id="unitPrice"
-              type="number"
-              step="0.01"
-              min="0"
-              required>
+            <label for="invoiceAgreementId">Agreement ID</label>
+            <input id="invoiceAgreementId" type="text" placeholder="Optional">
           </div>
 
           <div class="admin-form-field">
-            <label for="quantity">Quantity</label>
+            <label for="invoiceDueDate">Due Date</label>
+            <input id="invoiceDueDate" type="date">
+          </div>
 
-            <input
-              id="quantity"
-              type="number"
-              min="0"
-              required>
+          <div class="admin-form-field">
+            <label for="invoiceTaxAmount">Tax Amount</label>
+            <input id="invoiceTaxAmount" type="number" step="0.01" value="0">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="invoiceDiscount">Discount</label>
+            <input id="invoiceDiscount" type="number" step="0.01" value="0">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="invoiceAmountPaid">Amount Paid</label>
+            <input id="invoiceAmountPaid" type="number" step="0.01" value="0">
           </div>
 
           <div class="admin-form-field full-width">
-            <label for="productFile">
-              Product Image
-            </label>
-
-            <input
-              id="productFile"
-              type="file"
-              accept="image/*">
+            <label for="invoiceNotes">Notes</label>
+            <textarea id="invoiceNotes" placeholder="Optional invoice notes..."></textarea>
           </div>
 
         </div>
 
-        <button class="btn" type="submit">
-          Add Inventory Item
-        </button>
+        <div class="invoice-items-section">
+          <div class="admin-section-header">
+            <h3>Invoice Items</h3>
+            <button class="btn secondary" type="button" onclick="addInvoiceItemRow()">+ Add Line Item</button>
+          </div>
 
+          <div id="invoiceItems"></div>
+        </div>
+
+        <div class="invoice-summary">
+          <div>
+            <span>Subtotal</span>
+            <strong id="invoiceSubtotal">$0.00</strong>
+          </div>
+
+          <div>
+            <span>Total</span>
+            <strong id="invoiceTotal">$0.00</strong>
+          </div>
+
+          <div>
+            <span>Amount Paid</span>
+            <strong id="invoicePaid">$0.00</strong>
+          </div>
+
+          <div>
+            <span>Balance Due</span>
+            <strong id="invoiceBalance">$0.00</strong>
+          </div>
+        </div>
+
+        <button class="btn" type="submit">Save Invoice</button>
       </form>
-
     </section>
 
     <section class="admin-card">
-
       <div class="admin-section-header">
-        <h2>Current Inventory</h2>
+        <h2>Saved Invoices</h2>
       </div>
 
-      <div id="inventory" class="inventory-grid">
-        <div class="admin-empty-state">
-          Loading inventory...
-        </div>
+      <div id="invoices" class="invoice-grid">
+        <div class="admin-empty-state">Loading invoices...</div>
       </div>
-
     </section>
 
   </main>
@@ -192,16 +181,18 @@
   <script src="../js/config/constants.js"></script>
   <script src="../js/config/dbTables.js"></script>
   <script src="../js/config/statuses.js"></script>
-  <script src="../js/config/flooringTypes.js"></script>
   <script src="../js/config/routes.js"></script>
 
   <script src="../js/utils.js"></script>
 
-  <script src="../js/services/inventoryService.js"></script>
+  <script src="../js/services/jobService.js"></script>
+  <script src="../js/services/estimateService.js"></script>
+  <script src="../js/services/agreementService.js"></script>
+  <script src="../js/services/invoiceService.js"></script>
 
   <script src="../js/admin/admin-modals.js"></script>
   <script src="../js/admin/admin.js"></script>
-  <script src="../js/admin/inventory.js"></script>
+  <script src="../js/admin/invoices.js"></script>
 
   <script src="../js/main.js"></script>
   <script src="../js/auth.js"></script>

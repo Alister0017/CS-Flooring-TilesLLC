@@ -1,28 +1,61 @@
 // utils.js
 
 function generateId(prefix = "ID") {
-    return `${prefix}-${Date.now()}`;
+  return `${prefix}-${crypto.randomUUID()}`;
 }
 
-function generateJobNumber() {
-    const jobs = getJobs();
-    const next = jobs.length + 1;
+async function generateSupabaseJobNumber() {
+  const year = new Date().getFullYear();
 
-    return `CS-2026-${String(next).padStart(4, "0")}`;
+  const { count, error } = await db
+    .from("jobs")
+    .select("*", { count: "exact", head: true });
+
+  if (error) {
+    console.error(error);
+    return `CS-${year}-${String(Date.now()).slice(-4)}`;
+  }
+
+  const next = (count || 0) + 1;
+  return `CS-${year}-${String(next).padStart(4, "0")}`;
 }
 
 function showMessage(message) {
-    alert(message);
+  if (typeof showSuccessModal === "function") {
+    showSuccessModal("Message", message);
+    return;
+  }
+
+  alert(message);
 }
 
 function formatMoney(amount) {
-    return `$${Number(amount).toFixed(2)}`;
+  const value = Number(amount) || 0;
+
+  return value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD"
+  });
+}
+
+function formatDate(dateString) {
+  if (!dateString) return "";
+
+  const date = new Date(dateString + "T00:00:00");
+
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  });
 }
 
 function clearForm(formId) {
-    const form = document.getElementById(formId);
+  const form = document.getElementById(formId);
 
-    if (form) {
-        form.reset();
-    }
+  if (form) {
+    form.reset();
+  }
 }

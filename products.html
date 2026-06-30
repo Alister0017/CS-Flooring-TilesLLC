@@ -3,13 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>CS Flooring & Tile LLC | Products</title>
+
   <link rel="stylesheet" href="css/styles.css" />
 </head>
+
 <body>
   <header class="site-header">
     <div class="logo">CS Flooring & Tile LLC</div>
-    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open navigation menu">☰</button>
+
+    <button
+      class="mobile-menu-btn"
+      onclick="toggleMobileMenu()"
+      aria-label="Open navigation menu">
+      ☰
+    </button>
+
     <nav id="siteNav">
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
@@ -19,65 +29,89 @@
       <a href="contact.html">Contact</a>
     </nav>
   </header>
+
   <main>
     <section class="section page-hero">
       <div class="section-heading">
         <p class="eyebrow">Our Products</p>
         <h1>Browse Flooring Products</h1>
-        <p>Search available flooring options by type, style, price, or product tags. This page is for browsing products only. Final installation pricing is provided after the free measurement.</p>
+        <p>
+          Search available flooring options by type, style, price, or product tags. This page is for browsing products only. Final installation pricing is provided after the free measurement.
+        </p>
       </div>
     </section>
+
     <section class="section product-showroom">
       <div class="product-filter-card">
         <div class="product-search-wrap">
           <label for="productSearch">Search Products</label>
-          <input id="productSearch" type="text" placeholder="Search by product, category, tag, or price..." oninput="filterProducts()" />
+          <input
+            id="productSearch"
+            type="text"
+            placeholder="Search by product, category, tag, or price..."
+            oninput="filterProducts()" />
         </div>
-        <div class="category-buttons">
-          <button class="category-pill active" data-category="All" onclick="setCategory('All')">All</button>
-          <button class="category-pill" data-category="Subfloor Options" onclick="setCategory('Subfloor Options')">Subfloor Options</button>
-          <button class="category-pill" data-category="Luxury Vinyl Products" onclick="setCategory('Luxury Vinyl Products')">Luxury Vinyl</button>
-          <button class="category-pill" data-category="Carpet" onclick="setCategory('Carpet')">Carpet</button>
-          <button class="category-pill" data-category="Ceramic Tile" onclick="setCategory('Ceramic Tile')">Ceramic Tile</button>
-          <button class="category-pill" data-category="VCT" onclick="setCategory('VCT')">VCT</button>
-          <button class="category-pill" data-category="Trim/Moldings" onclick="setCategory('Trim/Moldings')">Trim & Moldings</button>
+
+        <div id="productCategoryButtons" class="category-buttons">
+          <!-- Category buttons load from products.js -->
         </div>
       </div>
+
       <div class="products-heading-row">
         <div>
           <p class="eyebrow">Showroom</p>
           <h2 id="categoryTitle">All Products</h2>
         </div>
+
         <p id="productCount" class="product-count">Loading products...</p>
       </div>
+
       <div id="productGrid" class="product-grid">
         <p>Loading products...</p>
       </div>
     </section>
+
     <section class="section cta-section">
       <div class="cta-card">
         <p class="eyebrow">Questions About Products?</p>
         <h2>Schedule a free measurement.</h2>
-        <p>Charles Sinotte can review your space, discuss product options, and provide an estimate after measuring the project area.</p>
+        <p>
+          Charles Sinotte can review your space, discuss product options, and provide an estimate after measuring the project area.
+        </p>
+
         <a class="btn" href="request.html">Request Free Measurement</a>
       </div>
     </section>
   </main>
+
   <footer class="site-footer">
     <div>
       <h2>CS Flooring & Tile LLC</h2>
       <p>Four Generations of Trusted Floor Professionals</p>
     </div>
+
     <div>
       <p><strong>Owner & Founder:</strong> Charles Sinotte</p>
       <p><strong>Services:</strong> Luxury Vinyl, Carpet, Ceramic Tile, VCT, Subfloor Options, Trim & Moldings</p>
       <p>&copy; 2026 CS Flooring & Tile LLC. All rights reserved.</p>
     </div>
   </footer>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script src="js/supabase-config.js"></script>
+
+  <script src="js/config/constants.js"></script>
+  <script src="js/config/dbTables.js"></script>
+  <script src="js/config/statuses.js"></script>
+  <script src="js/config/flooringTypes.js"></script>
+  <script src="js/config/routes.js"></script>
+
   <script src="js/utils.js"></script>
-  <script src="js/products.js"></script>
+
+  <script src="js/services/inventoryService.js"></script>
+
+  <script src="js/public/products.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,264 @@
+/* ==========================================================
+   INVENTORY PAGE
+========================================================== */
+
+.inventory-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(360px,1fr));
+  gap:22px;
+}
+
+.inventory-card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  box-shadow:var(--shadow-soft);
+  transition:.18s ease;
+  display:flex;
+  flex-direction:column;
+}
+
+.inventory-card:hover{
+  transform:translateY(-3px);
+  border-color:var(--bronze-500);
+  box-shadow:var(--shadow);
+}
+
+/* ==========================================================
+   IMAGE
+========================================================== */
+
+.inventory-image-wrap{
+  height:220px;
+  background:var(--cream-50);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.inventory-image{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.inventory-placeholder{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--muted);
+  font-weight:700;
+  background:linear-gradient(135deg,var(--cream-50),var(--white));
+}
+
+/* ==========================================================
+   BODY
+========================================================== */
+
+.inventory-card-body{
+  display:grid;
+  gap:18px;
+  padding:20px;
+  flex:1;
+}
+
+.inventory-card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+}
+
+.inventory-card-header h3{
+  margin:2px 0 0;
+  color:var(--green-900);
+}
+
+/* ==========================================================
+   DETAILS
+========================================================== */
+
+.inventory-detail-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.inventory-detail-grid>div{
+  background:var(--cream-50);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:12px;
+}
+
+.inventory-detail-grid span{
+  display:block;
+  color:var(--muted);
+  font-size:.75rem;
+  text-transform:uppercase;
+  font-weight:800;
+  margin-bottom:4px;
+}
+
+.inventory-detail-grid strong{
+  color:var(--green-900);
+}
+
+.inventory-extra-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.inventory-extra-grid>div{
+  display:grid;
+  gap:4px;
+}
+
+.inventory-extra-grid span{
+  color:var(--muted);
+  font-size:.75rem;
+  text-transform:uppercase;
+  font-weight:700;
+}
+
+.inventory-extra-grid strong{
+  color:var(--green-900);
+}
+
+/* ==========================================================
+   NOTES
+========================================================== */
+
+.inventory-notes{
+  display:grid;
+  gap:6px;
+  padding-top:10px;
+  border-top:1px solid var(--border);
+}
+
+.inventory-notes span{
+  color:var(--muted);
+  text-transform:uppercase;
+  font-size:.75rem;
+  font-weight:800;
+}
+
+.inventory-notes p{
+  margin:0;
+  line-height:1.45;
+}
+
+/* ==========================================================
+   ACTIONS
+========================================================== */
+
+.inventory-card-actions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:auto;
+}
+
+.inventory-card-actions .btn{
+  width:100%;
+}
+
+/* ==========================================================
+   FORM
+========================================================== */
+
+#inventoryForm{
+  display:grid;
+  gap:20px;
+}
+
+.admin-form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+
+.admin-form-field{
+  display:grid;
+  gap:8px;
+}
+
+.admin-form-field.full-width{
+  grid-column:1/-1;
+}
+
+.admin-form-field label{
+  font-size:.8rem;
+  font-weight:800;
+  color:var(--green-900);
+  text-transform:uppercase;
+}
+
+.admin-form-field input,
+.admin-form-field select{
+  width:100%;
+}
+
+/* ==========================================================
+   LOW STOCK
+========================================================== */
+
+.inventory-card.low-stock{
+  border-color:#c0392b;
+}
+
+.inventory-card.low-stock .inventory-image-wrap{
+  border-bottom-color:#c0392b;
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:1000px){
+
+  .inventory-grid{
+    grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  }
+
+}
+
+@media(max-width:760px){
+
+  .admin-form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .inventory-detail-grid,
+  .inventory-extra-grid{
+    grid-template-columns:1fr;
+  }
+
+  .inventory-card-actions{
+    grid-template-columns:1fr;
+  }
+
+  .inventory-card-header{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+}
+
+@media(max-width:500px){
+
+  .inventory-grid{
+    grid-template-columns:1fr;
+  }
+
+  .inventory-image-wrap{
+    height:180px;
+  }
+
+}

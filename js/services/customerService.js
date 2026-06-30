@@ -1,19 +1,27 @@
 // customerService.js
 
 const CustomerService = {
+
+  /* ==========================================================
+     GET CUSTOMERS
+  ========================================================== */
+
   async getActiveCustomers() {
     const { data, error } = await db
-      .from("customers")
+      .from(TABLES.CUSTOMERS)
       .select("*")
-      .eq("active", true)
+      .eq("active", CUSTOMER.DEFAULT_ACTIVE)
       .order("customer_name", { ascending: true });
 
-    return { data: data || [], error };
+    return {
+      data: data || [],
+      error
+    };
   },
 
   async getCustomerById(customerId) {
     const { data, error } = await db
-      .from("customers")
+      .from(TABLES.CUSTOMERS)
       .select(`
         *,
         jobs (
@@ -27,64 +35,106 @@ const CustomerService = {
           status,
           created_at,
           estimate_id,
-          agreement_id
+          agreement_id,
+          invoice_id,
+          notes
         )
       `)
       .eq("customer_id", customerId)
       .single();
 
-    return { data, error };
+    return {
+      data,
+      error
+    };
   },
+
+  /* ==========================================================
+     CREATE
+  ========================================================== */
 
   async createCustomer(customer) {
     const { data, error } = await db
-      .from("customers")
+      .from(TABLES.CUSTOMERS)
       .insert([{
         customer_name: customer.customer_name,
         phone: customer.phone || null,
         email: customer.email || null,
         address: customer.address || null,
-        active: true
+        notes: customer.notes || null,
+        active: CUSTOMER.DEFAULT_ACTIVE
       }])
       .select()
       .single();
 
-    return { data, error };
+    return {
+      data,
+      error
+    };
   },
+
+  /* ==========================================================
+     UPDATE
+  ========================================================== */
 
   async updateCustomer(customerId, updates) {
     const { data, error } = await db
-      .from("customers")
-      .update(updates)
+      .from(TABLES.CUSTOMERS)
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
       .eq("customer_id", customerId)
       .select()
       .single();
 
-    return { data, error };
+    return {
+      data,
+      error
+    };
   },
 
+  async archiveCustomer(customerId) {
+    return await this.updateCustomer(customerId, {
+      active: false
+    });
+  },
+
+  async restoreCustomer(customerId) {
+    return await this.updateCustomer(customerId, {
+      active: true
+    });
+  },
+
+  /* ==========================================================
+     FIND / MATCH
+  ========================================================== */
+
   async findExistingCustomer({ email, phone }) {
-    const cleanEmail = email ? email.trim().toLowerCase() : "";
-    const cleanPhone = phone ? phone.replace(/\D/g, "") : "";
+    const cleanEmail = this.normalizeEmail(email);
+    const cleanPhone = this.normalizePhone(phone);
 
     if (!cleanEmail && !cleanPhone) {
-      return { data: null, error: null };
+      return {
+        data: null,
+        error: null
+      };
     }
 
     const { data, error } = await db
-      .from("customers")
+      .from(TABLES.CUSTOMERS)
       .select("*");
 
-    if (error) return { data: null, error };
+    if (error) {
+      return {
+        data: null,
+        error
+      };
+    }
 
     const existingCustomer = (data || []).find(customer => {
-      const customerEmail = customer.email
-        ? customer.email.trim().toLowerCase()
-        : "";
-
-      const customerPhone = customer.phone
-        ? customer.phone.replace(/\D/g, "")
-        : "";
+      const customerEmail = this.normalizeEmail(customer.email);
+      const customerPhone = this.normalizePhone(customer.phone);
 
       return (
         (cleanEmail && customerEmail === cleanEmail) ||
@@ -92,6 +142,45 @@ const CustomerService = {
       );
     });
 
-    return { data: existingCustomer || null, error: null };
+    return {
+      data: existingCustomer || null,
+      error: null
+    };
+  },
+
+  /* ==========================================================
+     COUNTS
+  ========================================================== */
+
+  async getActiveCustomerCount() {
+    const { count, error } = await db
+      .from(TABLES.CUSTOMERS)
+      .select("*", {
+        count: "exact",
+        head: true
+      })
+      .eq("active", CUSTOMER.DEFAULT_ACTIVE);
+
+    return {
+      count: count || 0,
+      error
+    };
+  },
+
+  /* ==========================================================
+     HELPERS
+  ========================================================== */
+
+  normalizeEmail(email) {
+    return email
+      ? email.trim().toLowerCase()
+      : "";
+  },
+
+  normalizePhone(phone) {
+    return phone
+      ? phone.replace(/\D/g, "")
+      : "";
   }
+
 };

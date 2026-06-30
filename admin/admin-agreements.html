@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>CS Flooring & Tile LLC | Agreements</title>
+
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body class="admin-body">
+
+  <div class="admin-mobile-bar">
+    <div class="admin-mobile-brand">
+      <strong>CS Flooring</strong>
+      <span>Admin Portal</span>
+    </div>
+
+    <button
+      class="admin-menu-toggle"
+      type="button"
+      onclick="toggleAdminNav()"
+      aria-label="Open admin menu">
+      ☰
+    </button>
+  </div>
+
+  <div class="admin-sidebar-backdrop" onclick="closeAdminNav()"></div>
+
+  <aside class="admin-sidebar">
+    <div class="admin-brand">
+      <h2>CS Flooring</h2>
+      <p>Admin Portal</p>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Main</p>
+      <a href="admin-dashboard.html">Dashboard</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Operations</p>
+      <a href="admin-customerList.html">Customers</a>
+      <a href="admin-jobList.html">Jobs</a>
+      <a href="admin-calendar.html">Calendar</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Documents</p>
+      <a href="admin-estimates.html">Estimates</a>
+      <a href="admin-agreements.html">Agreements</a>
+      <a class="active" href="admin-invoices.html">Invoices</a>
+      <a href="admin-materialCalc.html">Material Calculator</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Website</p>
+      <a href="admin-inventory.html">Inventory</a>
+      <a href="admin-photos.html">Photos</a>
+      <a href="../index.html">Public Website</a>
+    </div>
+
+    <button class="admin-logout" onclick="logoutAdmin()">Logout</button>
+  </aside>
+
+  <main class="admin-main">
+
+    <header class="admin-dashboard-header">
+
+      <h1 class="admin-business-title">
+        CS Flooring & Tile LLC
+      </h1>
+
+      <div class="admin-title-row">
+        <h1>Customer Agreements</h1>
+        <p id="adminCurrentDate" class="admin-current-date"></p>
+      </div>
+
+      <nav class="admin-breadcrumb">
+        <a href="admin-dashboard.html">Dashboard</a>
+        <span>/</span>
+        <span class="current">Agreements</span>
+      </nav>
+
+    </header>
+
+    <section class="admin-card">
+
+      <div class="admin-section-header">
+        <h2>Create Agreement</h2>
+      </div>
+
+      <form
+        id="agreementForm"
+        class="admin-form"
+        onsubmit="event.preventDefault(); saveAgreement();">
+
+        <div class="admin-form-grid">
+
+          <div class="admin-form-field">
+            <label for="agreementJobNumber">
+              Job Number
+            </label>
+
+            <input
+              id="agreementJobNumber"
+              type="text"
+              placeholder="CS-2026-0001"
+              required>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="agreementEstimateId">
+              Estimate ID (Optional)
+            </label>
+
+            <input
+              id="agreementEstimateId"
+              type="text"
+              placeholder="Estimate ID">
+          </div>
+
+          <div class="admin-form-field full-width">
+            <label for="agreementScope">
+              Scope of Work
+            </label>
+
+            <textarea
+              id="agreementScope"
+              rows="6"
+              placeholder="Describe the work to be completed..."></textarea>
+          </div>
+
+          <div class="admin-form-field full-width">
+            <label for="agreementTerms">
+              Terms & Conditions
+            </label>
+
+            <textarea
+              id="agreementTerms"
+              rows="6"
+              placeholder="Terms and conditions..."></textarea>
+          </div>
+
+          <div class="admin-form-field full-width">
+            <label for="agreementWarranty">
+              Warranty
+            </label>
+
+            <textarea
+              id="agreementWarranty"
+              rows="5"
+              placeholder="Warranty information..."></textarea>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="agreementTotal">
+              Contract Total
+            </label>
+
+            <input
+              id="agreementTotal"
+              type="number"
+              step="0.01"
+              value="0">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="agreementDeposit">
+              Deposit
+            </label>
+
+            <input
+              id="agreementDeposit"
+              type="number"
+              step="0.01"
+              value="0">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="agreementBalance">
+              Balance Due
+            </label>
+
+            <input
+              id="agreementBalance"
+              type="number"
+              step="0.01"
+              value="0">
+          </div>
+
+        </div>
+
+        <button class="btn" type="submit">
+          Save Agreement
+        </button>
+
+      </form>
+
+    </section>
+
+    <section class="admin-card">
+
+      <div class="admin-section-header">
+        <h2>Saved Agreements</h2>
+      </div>
+
+      <div id="agreements" class="agreement-grid">
+
+        <div class="admin-empty-state">
+          Loading agreements...
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="../js/supabase-config.js"></script>
+
+  <script src="../js/config/constants.js"></script>
+  <script src="../js/config/dbTables.js"></script>
+  <script src="../js/config/statuses.js"></script>
+  <script src="../js/config/routes.js"></script>
+
+  <script src="../js/utils.js"></script>
+
+  <script src="../js/services/jobService.js"></script>
+  <script src="../js/services/estimateService.js"></script>
+  <script src="../js/services/agreementService.js"></script>
+
+  <script src="../js/admin/admin-modals.js"></script>
+  <script src="../js/admin/admin.js"></script>
+  <script src="../js/admin/agreements.js"></script>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/auth.js"></script>
+
+</body>
+</html>

@@ -1,13 +1,14 @@
 // estimateService.js
 
 const EstimateService = {
+
   /* ==========================================================
      GET ESTIMATES
   ========================================================== */
 
   async getEstimates() {
     const { data, error } = await db
-      .from("estimates")
+      .from(TABLES.ESTIMATES)
       .select(`
         *,
         jobs (
@@ -24,12 +25,15 @@ const EstimateService = {
       `)
       .order("created_at", { ascending: false });
 
-    return { data: data || [], error };
+    return {
+      data: data || [],
+      error
+    };
   },
 
   async getEstimate(estimateId) {
     const { data, error } = await db
-      .from("estimates")
+      .from(TABLES.ESTIMATES)
       .select(`
         *,
         estimate_items (*),
@@ -50,12 +54,15 @@ const EstimateService = {
       .eq("estimate_id", estimateId)
       .single();
 
-    return { data, error };
+    return {
+      data,
+      error
+    };
   },
 
   async getEstimateByJob(jobNumber) {
     const { data, error } = await db
-      .from("estimates")
+      .from(TABLES.ESTIMATES)
       .select(`
         *,
         estimate_items (*)
@@ -63,84 +70,121 @@ const EstimateService = {
       .eq("job_number", jobNumber)
       .maybeSingle();
 
-    return { data, error };
+    return {
+      data,
+      error
+    };
   },
 
   /* ==========================================================
-     CREATE / UPDATE
+     CREATE
   ========================================================== */
 
   async createEstimate(estimate) {
-    const totals = this.calculateTotals(estimate.items || [], {
-      tax_rate: estimate.tax_rate || 0,
+    const items = estimate.items || [];
+
+    const totals = this.calculateTotals(items, {
+      tax_rate: estimate.tax_rate ?? ESTIMATE.DEFAULT_TAX_RATE,
       discount: estimate.discount || 0,
       deposit: estimate.deposit || 0
     });
 
     const { data, error } = await db
-      .from("estimates")
+      .from(TABLES.ESTIMATES)
       .insert([{
         job_number: estimate.job_number,
         customer_id: estimate.customer_id || null,
         subtotal: totals.subtotal,
-        tax_rate: estimate.tax_rate || 0,
+        tax_rate: estimate.tax_rate ?? ESTIMATE.DEFAULT_TAX_RATE,
         tax_amount: totals.taxAmount,
         discount: estimate.discount || 0,
         deposit: estimate.deposit || 0,
         total: totals.total,
         balance_due: totals.balanceDue,
         notes: estimate.notes || null,
-        status: estimate.status || "Draft"
+        status: estimate.status || ESTIMATE.DEFAULT_STATUS
       }])
       .select()
       .single();
 
-    if (error) return { data: null, error };
+    if (error) {
+      return {
+        data: null,
+        error
+      };
+    }
 
     const estimateId = data.estimate_id;
 
-    if (estimate.items && estimate.items.length > 0) {
+    if (items.length > 0) {
       const { error: itemError } = await this.replaceEstimateItems(
         estimateId,
-        estimate.items
+        items
       );
 
-      if (itemError) return { data, error: itemError };
+      if (itemError) {
+        return {
+          data,
+          error: itemError
+        };
+      }
     }
 
-    await JobService.updateJob(estimate.job_number, {
-      estimate_id: estimateId,
-      status: "Estimate Sent"
-    });
+    const { error: jobUpdateError } = await JobService.linkEstimate(
+      estimate.job_number,
+      estimateId
+    );
 
-    return { data, error: null };
+    if (jobUpdateError) {
+      return {
+        data,
+        error: jobUpdateError
+      };
+    }
+
+    return {
+      data,
+      error: null
+    };
   },
 
+  /* ==========================================================
+     UPDATE
+  ========================================================== */
+
   async updateEstimate(estimateId, updates) {
-    const totals = this.calculateTotals(updates.items || [], {
-      tax_rate: updates.tax_rate || 0,
+    const items = updates.items || [];
+
+    const totals = this.calculateTotals(items, {
+      tax_rate: updates.tax_rate ?? ESTIMATE.DEFAULT_TAX_RATE,
       discount: updates.discount || 0,
       deposit: updates.deposit || 0
     });
 
     const { data, error } = await db
-      .from("estimates")
+      .from(TABLES.ESTIMATES)
       .update({
         subtotal: totals.subtotal,
-        tax_rate: updates.tax_rate || 0,
+        tax_rate: updates.tax_rate ?? ESTIMATE.DEFAULT_TAX_RATE,
         tax_amount: totals.taxAmount,
         discount: updates.discount || 0,
         deposit: updates.deposit || 0,
         total: totals.total,
         balance_due: totals.balanceDue,
         notes: updates.notes || null,
-        status: updates.status || "Draft"
+        status: updates.status || ESTIMATE.DEFAULT_STATUS,
+        updated_at: new Date().toISOString()
       })
       .eq("estimate_id", estimateId)
       .select()
       .single();
 
-    if (error) return { data: null, error };
+    if (error) {
+      return {
+        data: null,
+        error
+      };
+    }
 
     if (updates.items) {
       const { error: itemError } = await this.replaceEstimateItems(
@@ -148,10 +192,35 @@ const EstimateService = {
         updates.items
       );
 
-      if (itemError) return { data, error: itemError };
+      if (itemError) {
+        return {
+          data,
+          error: itemError
+        };
+      }
     }
 
-    return { data, error: null };
+    return {
+      data,
+      error: null
+    };
+  },
+
+  async updateEstimateStatus(estimateId, status) {
+    const { data, error } = await db
+      .from(TABLES.ESTIMATES)
+      .update({
+        status,
+        updated_at: new Date().toISOString()
+      })
+      .eq("estimate_id", estimateId)
+      .select()
+      .single();
+
+    return {
+      data,
+      error
+    };
   },
 
   /* ==========================================================
@@ -160,32 +229,46 @@ const EstimateService = {
 
   async replaceEstimateItems(estimateId, items) {
     const { error: deleteError } = await db
-      .from("estimate_items")
+      .from(TABLES.ESTIMATE_ITEMS)
       .delete()
       .eq("estimate_id", estimateId);
 
-    if (deleteError) return { error: deleteError };
-
-    if (!items || items.length === 0) {
-      return { error: null };
+    if (deleteError) {
+      return {
+        error: deleteError
+      };
     }
 
-    const rows = items.map(item => ({
-      estimate_id: estimateId,
-      item_type: item.item_type || "Line Item",
-      description: item.description,
-      quantity: Number(item.quantity) || 0,
-      unit: item.unit || "each",
-      unit_price: Number(item.unit_price) || 0,
-      line_total:
-        (Number(item.quantity) || 0) * (Number(item.unit_price) || 0)
-    }));
+    if (!items || items.length === 0) {
+      return {
+        error: null
+      };
+    }
+
+    const rows = items.map((item, index) => {
+      const quantity = Number(item.quantity) || 0;
+      const unitPrice = Number(item.unit_price) || 0;
+
+      return {
+        estimate_id: estimateId,
+        room_name: item.room_name || null,
+        item_type: item.item_type || "Line Item",
+        description: item.description,
+        quantity,
+        unit: item.unit || "each",
+        unit_price: unitPrice,
+        line_total: quantity * unitPrice,
+        sort_order: item.sort_order ?? index
+      };
+    });
 
     const { error } = await db
-      .from("estimate_items")
+      .from(TABLES.ESTIMATE_ITEMS)
       .insert(rows);
 
-    return { error };
+    return {
+      error
+    };
   },
 
   /* ==========================================================
@@ -194,11 +277,15 @@ const EstimateService = {
 
   async deleteEstimate(estimateId, jobNumber = null) {
     const { error } = await db
-      .from("estimates")
+      .from(TABLES.ESTIMATES)
       .delete()
       .eq("estimate_id", estimateId);
 
-    if (error) return { error };
+    if (error) {
+      return {
+        error
+      };
+    }
 
     if (jobNumber) {
       await JobService.updateJob(jobNumber, {
@@ -206,7 +293,9 @@ const EstimateService = {
       });
     }
 
-    return { error: null };
+    return {
+      error: null
+    };
   },
 
   /* ==========================================================
@@ -217,6 +306,7 @@ const EstimateService = {
     const subtotal = items.reduce((sum, item) => {
       const quantity = Number(item.quantity) || 0;
       const unitPrice = Number(item.unit_price) || 0;
+
       return sum + quantity * unitPrice;
     }, 0);
 
@@ -235,4 +325,5 @@ const EstimateService = {
       balanceDue
     };
   }
+
 };

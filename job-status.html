@@ -4,14 +4,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>CS Flooring & Tile LLC | Job Status</title>
+
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body class="job-status-page">
   <header class="site-header">
     <div class="logo">CS Flooring & Tile LLC</div>
-    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open navigation menu">☰</button>
+
+    <button
+      class="mobile-menu-btn"
+      onclick="toggleMobileMenu()"
+      aria-label="Open navigation menu">
+      ☰
+    </button>
+
     <nav id="siteNav">
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
@@ -21,33 +30,49 @@
       <a href="contact.html">Contact</a>
     </nav>
   </header>
+
   <main>
     <section class="section page-hero">
       <div class="section-heading job-status-intro">
         <p class="eyebrow">Project Tracking</p>
         <h1>Track Your Flooring Project</h1>
-        <p>Enter your job number and the email or phone number connected to your project to view your current project
-          status.</p>
+        <p>
+          Enter your job number and the email or phone number connected to your project to view your current project status.
+        </p>
       </div>
     </section>
+
     <section class="section">
       <div class="job-status-shell">
-        <form class="job-search-card" onsubmit="event.preventDefault(); lookupJob();">
+        <form
+          class="job-search-card"
+          onsubmit="event.preventDefault(); lookupJob();">
+
           <p class="eyebrow">Secure Project Lookup</p>
           <h2>Check Job Status</h2>
-          <p>Enter both your job number and the email or phone number connected to your project.</p>
+          <p>
+            Enter both your job number and the email or phone number connected to your project.
+          </p>
 
           <div class="job-search-grid">
             <label>
               Job Number
               <small>Example: CS-2026-0001</small>
-              <input id="jobNumber" type="text" placeholder="CS-2026-0001" required />
+              <input
+                id="jobNumber"
+                type="text"
+                placeholder="CS-2026-0001"
+                required />
             </label>
 
             <label>
               Email Address or Phone Number
               <small>Must match the information used on your request.</small>
-              <input id="contactInfo" type="text" placeholder="Email address or phone number" required />
+              <input
+                id="contactInfo"
+                type="text"
+                placeholder="Email address or phone number"
+                required />
             </label>
 
             <button class="btn" type="submit">Track Project</button>
@@ -62,31 +87,47 @@
             </a>
           </div>
         </form>
+
         <div id="result" class="job-status-result">
           <div class="job-status-empty">
             <h3>Enter your project details to begin.</h3>
-            <p>Your project timeline will appear here after your job number and contact information are verified.</p>
+            <p>
+              Your project timeline will appear here after your job number and contact information are verified.
+            </p>
           </div>
         </div>
       </div>
     </section>
-
   </main>
+
   <footer class="site-footer">
     <div>
       <h2>CS Flooring & Tile LLC</h2>
       <p>Four Generations of Trusted Floor Professionals</p>
     </div>
+
     <div>
       <p><strong>Owner & Founder:</strong> Charles Sinotte</p>
       <p><strong>Services:</strong> Luxury Vinyl, Carpet, Ceramic Tile, VCT, Subfloor Options, Trim & Moldings</p>
       <p>&copy; 2026 CS Flooring & Tile LLC. All rights reserved.</p>
     </div>
   </footer>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script src="js/supabase-config.js"></script>
+
+  <script src="js/config/constants.js"></script>
+  <script src="js/config/dbTables.js"></script>
+  <script src="js/config/statuses.js"></script>
+  <script src="js/config/flooringTypes.js"></script>
+  <script src="js/config/routes.js"></script>
+
   <script src="js/utils.js"></script>
-  <script src="js/jobs.js"></script>
+
+  <script src="js/services/jobService.js"></script>
+
+  <script src="js/public/job-status.js"></script>
   <script src="js/main.js"></script>
 </body>
 

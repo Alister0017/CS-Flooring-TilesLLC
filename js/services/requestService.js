@@ -7,9 +7,8 @@ const RequestService = {
   ========================================================== */
 
   async getPendingRequests() {
-
     const { data, error } = await db
-      .from("measurement_requests")
+      .from(TABLES.MEASUREMENT_REQUESTS)
       .select("*")
       .order("created_at", { ascending: false });
 
@@ -17,13 +16,11 @@ const RequestService = {
       data: data || [],
       error
     };
-
   },
 
   async getRequest(requestId) {
-
     const { data, error } = await db
-      .from("measurement_requests")
+      .from(TABLES.MEASUREMENT_REQUESTS)
       .select("*")
       .eq("request_id", requestId)
       .single();
@@ -32,7 +29,6 @@ const RequestService = {
       data,
       error
     };
-
   },
 
   /* ==========================================================
@@ -40,10 +36,29 @@ const RequestService = {
   ========================================================== */
 
   async createRequest(request) {
+    const payload = {
+      customer_name: request.customer_name,
+      phone: request.phone || null,
+      email: request.email || null,
+      address: request.address || null,
+
+      flooring_type: Array.isArray(request.flooring_type)
+        ? request.flooring_type
+        : request.flooring_type
+          ? [request.flooring_type]
+          : [],
+
+      preferred_measurement_date:
+        request.preferred_measurement_date || null,
+
+      description: request.description || null,
+
+      status: request.status || REQUEST.DEFAULT_STATUS
+    };
 
     const { data, error } = await db
-      .from("measurement_requests")
-      .insert([request])
+      .from(TABLES.MEASUREMENT_REQUESTS)
+      .insert([payload])
       .select()
       .single();
 
@@ -51,7 +66,6 @@ const RequestService = {
       data,
       error
     };
-
   },
 
   /* ==========================================================
@@ -59,138 +73,117 @@ const RequestService = {
   ========================================================== */
 
   async acceptRequest(requestId) {
-
-    // Get request
     const { data: request, error: requestError } =
       await this.getRequest(requestId);
 
     if (requestError || !request) {
       return {
+        data: null,
         error: requestError || new Error("Request not found.")
       };
     }
 
-    /* ------------------------------------------
-       Find existing customer
-    ------------------------------------------ */
-
-    const { data: existingCustomer } =
+    const { data: existingCustomer, error: searchError } =
       await CustomerService.findExistingCustomer({
-
         email: request.email,
         phone: request.phone
-
       });
 
-    let customerId;
-
-    /* ------------------------------------------
-       Existing customer
-    ------------------------------------------ */
-
-    if (existingCustomer) {
-
-      customerId = existingCustomer.customer_id;
-
+    if (searchError) {
+      return {
+        data: null,
+        error: searchError
+      };
     }
 
-    /* ------------------------------------------
-       Create customer
-    ------------------------------------------ */
+    let customerId = null;
 
-    else {
+    if (existingCustomer) {
+      customerId = existingCustomer.customer_id;
 
+      await CustomerService.updateCustomer(customerId, {
+        customer_name: request.customer_name || existingCustomer.customer_name,
+        phone: request.phone || existingCustomer.phone,
+        email: request.email || existingCustomer.email,
+        address: request.address || existingCustomer.address,
+        active: CUSTOMER.DEFAULT_ACTIVE
+      });
+    } else {
       const { data: newCustomer, error: customerError } =
         await CustomerService.createCustomer({
-
           customer_name: request.customer_name,
           phone: request.phone,
           email: request.email,
           address: request.address
-
         });
 
       if (customerError) {
-
         return {
+          data: null,
           error: customerError
         };
-
       }
 
       customerId = newCustomer.customer_id;
-
     }
-
-    /* ------------------------------------------
-       Create Job
-    ------------------------------------------ */
 
     const { data: newJob, error: jobError } =
       await JobService.createJob({
-
         customer_id: customerId,
 
         flooring_type: Array.isArray(request.flooring_type)
           ? request.flooring_type
-          : [request.flooring_type],
+          : request.flooring_type
+            ? [request.flooring_type]
+            : [],
 
         description: request.description,
 
         measurement_date:
           request.preferred_measurement_date || null,
 
-        status: "Measurement Scheduled"
-
+        status: JOB_STATUS.MEASUREMENT_SCHEDULED
       });
 
     if (jobError) {
-
       return {
+        data: null,
         error: jobError
       };
-
     }
 
-    /* ------------------------------------------
-       Delete Request
-    ------------------------------------------ */
-
-    const { error: deleteError } = await db
-      .from("measurement_requests")
-      .delete()
-      .eq("request_id", requestId);
+    const { error: deleteError } = await this.deleteRequest(requestId);
 
     if (deleteError) {
-
       return {
+        data: newJob,
         error: deleteError
       };
-
     }
 
     return {
       data: newJob,
       error: null
     };
-
   },
 
   /* ==========================================================
-     DECLINE REQUEST
+     DECLINE / DELETE
   ========================================================== */
 
   async declineRequest(requestId) {
+    return await this.deleteRequest(requestId);
+  },
 
+  async deleteRequest(requestId) {
     const { error } = await db
-      .from("measurement_requests")
+      .from(TABLES.MEASUREMENT_REQUESTS)
       .delete()
       .eq("request_id", requestId);
 
     return {
       error
     };
-
   },
 
   /* ==========================================================
@@ -198,9 +191,8 @@ const RequestService = {
   ========================================================== */
 
   async getPendingRequestCount() {
-
     const { count, error } = await db
-      .from("measurement_requests")
+      .from(TABLES.MEASUREMENT_REQUESTS)
       .select("*", {
         count: "exact",
         head: true
@@ -210,7 +202,6 @@ const RequestService = {
       count: count || 0,
       error
     };
-
   }
 
 };
