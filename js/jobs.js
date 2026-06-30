@@ -1,4 +1,6 @@
-// job.js
+// jobs.js
+
+let currentJob = null;
 
 window.addEventListener("load", loadJobDetail);
 
@@ -45,6 +47,8 @@ async function loadJobDetail() {
     return;
   }
 
+  currentJob = job;
+
   updateJobHeader(job);
   renderJobDetail(job);
 }
@@ -53,13 +57,8 @@ function updateJobHeader(job) {
   const title = document.getElementById("jobPageTitle");
   const breadcrumb = document.getElementById("jobBreadcrumbName");
 
-  if (title) {
-    title.textContent = job.job_number || "Job Details";
-  }
-
-  if (breadcrumb) {
-    breadcrumb.textContent = job.job_number || "Job";
-  }
+  if (title) title.textContent = job.job_number || "Job Details";
+  if (breadcrumb) breadcrumb.textContent = job.job_number || "Job";
 }
 
 function renderJobDetail(job) {
@@ -138,7 +137,7 @@ function renderJobDetail(job) {
       </div>
 
       <div class="job-command-grid">
-        <button class="job-command-card" type="button" onclick="editJobPlaceholder()">
+        <button class="job-command-card" type="button" onclick="openEditJobModal()">
           <strong>Edit Job</strong>
           <span>Update job details and status.</span>
         </button>
@@ -183,10 +182,11 @@ function renderJobDetail(job) {
     <section class="detail-section">
       <div class="detail-section-header">
         <h2>Customer</h2>
-        ${customer.customer_id
-      ? `<a href="admin-customer.html?id=${customer.customer_id}">View Customer</a>`
-      : ""
-    }
+        ${
+          customer.customer_id
+            ? `<a href="admin-customer.html?id=${customer.customer_id}">View Customer</a>`
+            : ""
+        }
       </div>
 
       <div class="detail-grid">
@@ -220,17 +220,17 @@ function renderJobDetail(job) {
       <div class="detail-grid">
         <div class="detail-item">
           <span>Measurement Date</span>
-          <strong>${formatJobDetailDate(job.measurement_date) || "Not scheduled"}</strong>
+          <strong>${formatDateForDisplay(job.measurement_date) || "Not scheduled"}</strong>
         </div>
 
         <div class="detail-item">
           <span>Install Start Date</span>
-          <strong>${formatJobDetailDate(job.install_start_date) || "Not scheduled"}</strong>
+          <strong>${formatDateForDisplay(job.install_start_date) || "Not scheduled"}</strong>
         </div>
 
         <div class="detail-item">
           <span>Install End Date</span>
-          <strong>${formatJobDetailDate(job.install_end_date) || "Not scheduled"}</strong>
+          <strong>${formatDateForDisplay(job.install_end_date) || "Not scheduled"}</strong>
         </div>
 
         <div class="detail-item">
@@ -284,41 +284,214 @@ function renderJobDetail(job) {
       </div>
 
       <div class="detail-notes job-notes">
-        <textarea placeholder="Job notes will be saved here later.">${job.notes || ""}</textarea>
+        <textarea id="jobNotesField" placeholder="Job notes will be saved here later.">${job.notes || ""}</textarea>
+        <button class="btn" type="button" onclick="saveJobNotes('${job.job_number}')">
+          Save Notes
+        </button>
       </div>
     </section>
   `;
 }
 
+/* ==========================================================
+   EDIT JOB
+========================================================== */
+
+function openEditJobModal() {
+  if (!currentJob) {
+    showMessage("No job loaded.");
+    return;
+  }
+
+  const currentFlooringType = Array.isArray(currentJob.flooring_type)
+    ? currentJob.flooring_type[0]
+    : currentJob.flooring_type || "";
+
+  openAdminModal({
+    title: `Edit ${currentJob.job_number}`,
+    subtitle: "Edit Job",
+    wide: true,
+    body: `
+      <div class="admin-modal-grid">
+        <div class="admin-modal-field">
+          <label for="editJobStatus">Status</label>
+          <select id="editJobStatus">
+            ${renderStatusOptions(currentJob.status)}
+          </select>
+        </div>
+
+        <div class="admin-modal-field">
+          <label for="editFlooringType">Flooring Type</label>
+          <select id="editFlooringType">
+            ${renderFlooringOptions(currentFlooringType)}
+          </select>
+        </div>
+
+        <div class="admin-modal-field">
+          <label for="editMeasurementDate">Measurement Date</label>
+          <input id="editMeasurementDate" type="date" value="${formatDateForInput(currentJob.measurement_date)}">
+        </div>
+
+        <div class="admin-modal-field">
+          <label for="editInstallStartDate">Install Start Date</label>
+          <input id="editInstallStartDate" type="date" value="${formatDateForInput(currentJob.install_start_date)}">
+        </div>
+
+        <div class="admin-modal-field">
+          <label for="editInstallEndDate">Install End Date</label>
+          <input id="editInstallEndDate" type="date" value="${formatDateForInput(currentJob.install_end_date)}">
+        </div>
+
+        <div class="admin-modal-field">
+          <label for="editInstallPrice">Install Price</label>
+          <input id="editInstallPrice" type="number" min="0" step="0.01" value="${currentJob.install_price || ""}">
+        </div>
+
+        <div class="admin-modal-field full-width">
+          <label for="editJobDescription">Job Description</label>
+          <textarea id="editJobDescription">${currentJob.description || ""}</textarea>
+        </div>
+      </div>
+    `,
+    footer: `
+      <button class="btn secondary" type="button" onclick="closeAdminModal()">Cancel</button>
+      <button class="btn" type="button" onclick="saveJobEdits()">Save Changes</button>
+    `
+  });
+}
+
+function renderStatusOptions(currentStatus) {
+  const statuses = [
+    "Measurement Scheduled",
+    "Measurement Completed",
+    "Estimate Sent",
+    "Deposit Received",
+    "Installation Scheduled",
+    "Installation In Progress",
+    "Final Walkthrough",
+    "Completed"
+  ];
+
+  return statuses.map(status => `
+    <option value="${status}" ${normalizeJobDetailStatus(currentStatus) === status ? "selected" : ""}>
+      ${status}
+    </option>
+  `).join("");
+}
+
+function renderFlooringOptions(currentFlooringType) {
+  const flooringTypes = [
+    "Hardwood",
+    "Luxury Vinyl Plank",
+    "Laminate",
+    "Tile",
+    "Carpet Removal",
+    "Repair",
+    "Other"
+  ];
+
+  return `
+    <option value="">Select flooring type</option>
+    ${flooringTypes.map(type => `
+      <option value="${type}" ${currentFlooringType === type ? "selected" : ""}>
+        ${type}
+      </option>
+    `).join("")}
+  `;
+}
+
+async function saveJobEdits() {
+  if (!currentJob) {
+    showMessage("No job loaded.");
+    return;
+  }
+
+  const status = document.getElementById("editJobStatus")?.value;
+  const flooringType = document.getElementById("editFlooringType")?.value;
+  const measurementDate = document.getElementById("editMeasurementDate")?.value || null;
+  const installStartDate = document.getElementById("editInstallStartDate")?.value || null;
+  const installEndDate = document.getElementById("editInstallEndDate")?.value || null;
+  const installPriceValue = document.getElementById("editInstallPrice")?.value;
+  const description = document.getElementById("editJobDescription")?.value.trim();
+
+  if (!status) {
+    showMessage("Please select a status.");
+    return;
+  }
+
+  if (!flooringType) {
+    showMessage("Please select a flooring type.");
+    return;
+  }
+
+  const updatePayload = {
+    status,
+    flooring_type: [flooringType],
+    measurement_date: measurementDate,
+    install_start_date: installStartDate,
+    install_end_date: installEndDate,
+    install_price: installPriceValue ? Number(installPriceValue) : null,
+    description
+  };
+
+  const { error } = await db
+    .from("jobs")
+    .update(updatePayload)
+    .eq("job_number", currentJob.job_number);
+
+  if (error) {
+    console.error(error);
+    showErrorModal("Unable to Save Job", "The job could not be updated.");
+    return;
+  }
+
+  closeAdminModal();
+  showMessage("Job updated.");
+  await loadJobDetail();
+}
+
+/* ==========================================================
+   NOTES
+========================================================== */
+
+async function saveJobNotes(jobNumber) {
+  const notes = document.getElementById("jobNotesField")?.value || "";
+
+  const { error } = await db
+    .from("jobs")
+    .update({ notes })
+    .eq("job_number", jobNumber);
+
+  if (error) {
+    console.error(error);
+    showMessage("Could not save notes.");
+    return;
+  }
+
+  showMessage("Notes saved.");
+}
+
+/* ==========================================================
+   TIMELINE
+========================================================== */
+
 function renderJobDetailTimeline(job) {
   const items = [];
 
   if (job.created_at) {
-    items.push({
-      title: "Job Created",
-      date: job.created_at
-    });
+    items.push({ title: "Job Created", date: job.created_at });
   }
 
   if (job.measurement_date) {
-    items.push({
-      title: "Measurement Scheduled",
-      date: job.measurement_date
-    });
+    items.push({ title: "Measurement Scheduled", date: job.measurement_date });
   }
 
   if (job.install_start_date) {
-    items.push({
-      title: "Installation Scheduled",
-      date: job.install_start_date
-    });
+    items.push({ title: "Installation Scheduled", date: job.install_start_date });
   }
 
   if (job.install_end_date) {
-    items.push({
-      title: "Installation End Date",
-      date: job.install_end_date
-    });
+    items.push({ title: "Installation End Date", date: job.install_end_date });
   }
 
   if (items.length === 0) {
@@ -339,6 +512,10 @@ function renderJobDetailTimeline(job) {
     .join("");
 }
 
+/* ==========================================================
+   COMMAND ACTIONS
+========================================================== */
+
 async function markJobComplete(jobNumber) {
   const confirmed = confirm("Mark this job as completed?");
   if (!confirmed) return;
@@ -358,60 +535,8 @@ async function markJobComplete(jobNumber) {
   loadJobDetail();
 }
 
-function editJobPlaceholder() {
-  alert("Edit Job workflow will be added later.");
-}
-
-function scheduleMeasurementPlaceholder() {
-  alert("Schedule Measurement workflow will be added later.");
-}
-
-function scheduleInstallPlaceholder() {
-  alert("Schedule Installation workflow will be added later.");
-}
-
-function normalizeJobDetailStatus(status) {
-  const aliases = {
-    "Measurement Complete": "Measurement Completed",
-    "Estimate Generated": "Estimate Sent",
-    "Ready To Schedule": "Deposit Received",
-    "Scheduled": "Installation Scheduled",
-    "In Progress": "Installation In Progress",
-    "Closed": "Completed"
-  };
-
-  return aliases[status] || status || "Measurement Scheduled";
-}
-
-function formatJobDetailFlooringTypes(flooringType) {
-  if (Array.isArray(flooringType)) {
-    return flooringType.join(", ");
-  }
-
-  return flooringType || "";
-}
-
-function formatJobDetailDate(dateString) {
-  if (!dateString) return "";
-
-  const date = new Date(dateString);
-
-  if (Number.isNaN(date.getTime())) {
-    return "";
-  }
-
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric"
-  });
-}
-
 async function deleteJob(jobNumber) {
-  const confirmed = confirm(
-    "Delete this job permanently? This cannot be undone."
-  );
-
+  const confirmed = confirm("Delete this job permanently? This cannot be undone.");
   if (!confirmed) return;
 
   const { error } = await db
@@ -427,4 +552,65 @@ async function deleteJob(jobNumber) {
 
   showMessage("Job deleted.");
   window.location.href = "admin-jobList.html";
+}
+
+function scheduleMeasurementPlaceholder() {
+  openEditJobModal();
+}
+
+function scheduleInstallPlaceholder() {
+  openEditJobModal();
+}
+
+/* ==========================================================
+   HELPERS
+========================================================== */
+
+function normalizeJobDetailStatus(status) {
+  const aliases = {
+    "Measurement Complete": "Measurement Completed",
+    "Estimate Generated": "Estimate Sent",
+    "Ready To Schedule": "Deposit Received",
+    "Scheduled": "Installation Scheduled",
+    "In Progress": "Installation In Progress",
+    "Closed": "Completed"
+  };
+
+  return aliases[status] || status || "Measurement Scheduled";
+}
+
+function formatJobDetailFlooringTypes(flooringType) {
+  if (Array.isArray(flooringType)) return flooringType.join(", ");
+  return flooringType || "";
+}
+
+function formatJobDetailDate(dateString) {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  });
+}
+
+function formatDateForDisplay(dateString) {
+  if (!dateString) return "";
+
+  const date = new Date(dateString + "T00:00:00");
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  });
+}
+
+function formatDateForInput(dateString) {
+  if (!dateString) return "";
+  return String(dateString).split("T")[0];
 }
