@@ -1,0 +1,214 @@
+/* ==========================================================
+   ADMIN MODALS
+   Reusable modal system for admin workflows
+   ========================================================== */
+
+.admin-modal-root {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: none;
+}
+
+.admin-modal-root.open {
+  display: block;
+}
+
+.admin-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 24, 15, 0.62);
+}
+
+.admin-modal-panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100vh - 40px);
+  transform: translate(-50%, -50%);
+  background: var(--cream-50);
+  border: 1px solid rgba(185, 139, 99, 0.42);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 70px rgba(7, 24, 15, 0.36);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-modal-panel.wide {
+  width: min(980px, calc(100vw - 32px));
+}
+
+.admin-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 24px;
+  background: linear-gradient(180deg, var(--green-800), var(--green-950));
+  border-bottom: 3px solid var(--bronze-500);
+}
+
+.admin-modal-header h2 {
+  color: var(--white);
+  margin: 4px 0 0;
+}
+
+.admin-modal-header .eyebrow {
+  color: var(--bronze-soft);
+}
+
+.admin-modal-close {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(185, 139, 99, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.admin-modal-close:hover {
+  background: rgba(185, 139, 99, 0.18);
+}
+
+.admin-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  display: grid;
+  gap: 18px;
+}
+
+.admin-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 18px 24px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+}
+
+.admin-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.admin-modal-field {
+  display: grid;
+  gap: 7px;
+}
+
+.admin-modal-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.admin-modal-field label {
+  color: var(--green-900);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.admin-modal-field input,
+.admin-modal-field select,
+.admin-modal-field textarea {
+  width: 100%;
+  margin: 0;
+}
+
+.admin-modal-field textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.admin-modal-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.admin-modal-choice {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.admin-modal-choice:hover,
+.admin-modal-choice.active {
+  border-color: var(--bronze-500);
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-2px);
+}
+
+.admin-modal-choice strong {
+  display: block;
+  color: var(--green-900);
+  margin-bottom: 6px;
+}
+
+.admin-modal-choice span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.admin-modal-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-modal-list-item {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.admin-modal-list-item:hover,
+.admin-modal-list-item.active {
+  border-color: var(--bronze-500);
+  box-shadow: var(--shadow-soft);
+}
+
+.admin-modal-list-item strong {
+  display: block;
+  color: var(--green-900);
+}
+
+.admin-modal-list-item span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 760px) {
+  .admin-modal-panel,
+  .admin-modal-panel.wide {
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+  }
+
+  .admin-modal-header,
+  .admin-modal-body,
+  .admin-modal-footer {
+    padding: 18px;
+  }
+
+  .admin-modal-grid,
+  .admin-modal-choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-modal-footer {
+    flex-direction: column;
+  }
+}

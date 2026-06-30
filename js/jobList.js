@@ -2,7 +2,11 @@
 
 let allJobs = [];
 let allPendingRequests = [];
+let allCustomersForWizard = [];
+
 let selectedRequestId = null;
+let newJobMode = "existing";
+let selectedWizardCustomerId = null;
 
 const JOB_STATUS_GROUPS = [
   "Measurement Scheduled",
@@ -28,9 +32,7 @@ window.addEventListener("load", () => {
   if (sortSelect) sortSelect.addEventListener("change", renderFilteredJobs);
 
   if (newJobButton) {
-    newJobButton.addEventListener("click", () => {
-      alert("New Job workflow will be added later.");
-    });
+    newJobButton.addEventListener("click", openNewJobWizard);
   }
 });
 
@@ -40,6 +42,10 @@ async function loadJobListPage() {
     loadJobList()
   ]);
 }
+
+/* ==========================================================
+   PENDING REQUESTS
+========================================================== */
 
 async function loadPendingMeasurementRequests() {
   const container = document.getElementById("pendingRequests");
@@ -62,10 +68,7 @@ async function loadPendingMeasurementRequests() {
   }
 
   allPendingRequests = data || [];
-
-  if (count) {
-    count.textContent = allPendingRequests.length;
-  }
+  if (count) count.textContent = allPendingRequests.length;
 
   renderPendingRequests();
 }
@@ -76,7 +79,7 @@ function renderPendingRequests() {
 
   container.innerHTML = "";
 
-  if (!allPendingRequests || allPendingRequests.length === 0) {
+  if (!allPendingRequests.length) {
     container.innerHTML = `<div class="admin-empty-state">No pending measurement requests.</div>`;
     return;
   }
@@ -141,112 +144,76 @@ function openRequestDetails(requestId) {
 
   selectedRequestId = requestId;
 
-  let modal = document.getElementById("requestReviewModal");
-
-  if (!modal) {
-    modal = document.createElement("div");
-    modal.id = "requestReviewModal";
-    modal.className = "request-review-modal";
-    document.body.appendChild(modal);
-  }
-
   const flooringTypes = formatJobFlooringTypes(request.flooring_type);
 
-  modal.innerHTML = `
-    <div class="request-review-backdrop" onclick="closeRequestDetails()"></div>
+  openAdminModal({
+    title: request.customer_name || "Unnamed Customer",
+    subtitle: "Pending Measurement Request",
+    wide: true,
+    body: `
+      <section class="request-review-section">
+        <h3>Contact Information</h3>
 
-    <div class="request-review-panel">
-      <div class="request-review-header">
-        <div>
-          <p class="eyebrow">Pending Measurement Request</p>
-          <h2>${request.customer_name || "Unnamed Customer"}</h2>
+        <div class="request-review-grid">
+          <div class="pending-request-item">
+            <span>Phone</span>
+            <strong>${request.phone || "Not listed"}</strong>
+          </div>
+
+          <div class="pending-request-item">
+            <span>Email</span>
+            <strong>${request.email || "Not listed"}</strong>
+          </div>
+
+          <div class="pending-request-item full-width">
+            <span>Address</span>
+            <strong>${request.address || "Not listed"}</strong>
+          </div>
         </div>
+      </section>
 
-        <button class="request-review-close" type="button" onclick="closeRequestDetails()">
-          ×
-        </button>
-      </div>
+      <section class="request-review-section">
+        <h3>Project Information</h3>
 
-      <div class="request-review-content">
-        <section class="request-review-section">
-          <h3>Contact Information</h3>
-
-          <div class="request-review-grid">
-            <div class="pending-request-item">
-              <span>Phone</span>
-              <strong>${request.phone || "Not listed"}</strong>
-            </div>
-
-            <div class="pending-request-item">
-              <span>Email</span>
-              <strong>${request.email || "Not listed"}</strong>
-            </div>
-
-            <div class="pending-request-item full-width">
-              <span>Address</span>
-              <strong>${request.address || "Not listed"}</strong>
-            </div>
+        <div class="request-review-grid">
+          <div class="pending-request-item">
+            <span>Requested Flooring</span>
+            <strong>${flooringTypes || "Not listed"}</strong>
           </div>
-        </section>
 
-        <section class="request-review-section">
-          <h3>Project Information</h3>
-
-          <div class="request-review-grid">
-            <div class="pending-request-item">
-              <span>Requested Flooring</span>
-              <strong>${flooringTypes || "Not listed"}</strong>
-            </div>
-
-            <div class="pending-request-item">
-              <span>Preferred Measurement Date</span>
-              <strong>${formatJobDate(request.preferred_measurement_date) || "Not provided"}</strong>
-            </div>
-
-            <div class="pending-request-item full-width">
-              <span>Project Description</span>
-              <strong>${request.description || "No description provided."}</strong>
-            </div>
+          <div class="pending-request-item">
+            <span>Preferred Measurement Date</span>
+            <strong>${formatJobDate(request.preferred_measurement_date) || "Not provided"}</strong>
           </div>
-        </section>
 
-        <section class="request-review-section">
-          <h3>Reference Photos</h3>
-
-          <div class="admin-empty-state">
-            Customer photo uploads will appear here later.
+          <div class="pending-request-item full-width">
+            <span>Project Description</span>
+            <strong>${request.description || "No description provided."}</strong>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
 
-      <div class="request-review-actions">
-        <button class="btn secondary" type="button" onclick="closeRequestDetails()">
-          Close
-        </button>
+      <section class="request-review-section">
+        <h3>Reference Photos</h3>
+        <div class="admin-empty-state">
+          Customer photo uploads will appear here later.
+        </div>
+      </section>
+    `,
+    footer: `
+      <button class="btn secondary" type="button" onclick="closeAdminModal()">
+        Close
+      </button>
 
-        <button class="btn secondary" type="button" onclick="declineRequestFromModal()">
-          Decline Request
-        </button>
+      <button class="btn secondary" type="button" onclick="declineRequestFromModal()">
+        Decline Request
+      </button>
 
-        <button class="btn" type="button" onclick="acceptRequestFromModal()">
-          Accept Request
-        </button>
-      </div>
-    </div>
-  `;
-
-  document.body.classList.add("request-review-open");
-}
-
-function closeRequestDetails() {
-  document.body.classList.remove("request-review-open");
-  selectedRequestId = null;
-
-  const modal = document.getElementById("requestReviewModal");
-
-  if (modal) {
-    modal.innerHTML = "";
-  }
+      <button class="btn" type="button" onclick="acceptRequestFromModal()">
+        Accept Request
+      </button>
+    `
+  });
 }
 
 async function acceptRequestFromModal() {
@@ -256,7 +223,8 @@ async function acceptRequestFromModal() {
   }
 
   await acceptPendingRequest(selectedRequestId);
-  closeRequestDetails();
+  selectedRequestId = null;
+  closeAdminModal();
 }
 
 async function declineRequestFromModal() {
@@ -266,7 +234,8 @@ async function declineRequestFromModal() {
   }
 
   await declinePendingRequest(selectedRequestId);
-  closeRequestDetails();
+  selectedRequestId = null;
+  closeAdminModal();
 }
 
 async function acceptPendingRequest(requestId) {
@@ -306,6 +275,311 @@ async function declinePendingRequest(requestId) {
   showMessage("Measurement request declined.");
   await loadJobListPage();
 }
+
+/* ==========================================================
+   NEW JOB WIZARD
+========================================================== */
+
+async function openNewJobWizard() {
+  newJobMode = "existing";
+  selectedWizardCustomerId = null;
+
+  const { data, error } = await db
+    .from("customers")
+    .select("*")
+    .eq("active", true)
+    .order("customer_name", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    showErrorModal("Unable to Load Customers", "Could not load customer list.");
+    return;
+  }
+
+  allCustomersForWizard = data || [];
+  renderNewJobStepOne();
+}
+
+function renderNewJobStepOne() {
+  openAdminModal({
+    title: "Create New Job",
+    subtitle: "Step 1 of 2",
+    wide: true,
+    body: `
+      <div class="admin-modal-choice-grid">
+        <div class="admin-modal-choice active" id="choiceExistingCustomer" onclick="setNewJobMode('existing')">
+          <strong>Existing Customer</strong>
+          <span>Create a new job under an existing customer profile.</span>
+        </div>
+
+        <div class="admin-modal-choice" id="choiceNewCustomer" onclick="setNewJobMode('new')">
+          <strong>New Customer</strong>
+          <span>Create a customer profile and attach the new job.</span>
+        </div>
+      </div>
+
+      <div id="newJobCustomerArea">
+        ${renderExistingCustomerSelector()}
+      </div>
+    `,
+    footer: `
+      <button class="btn secondary" onclick="closeAdminModal()">Cancel</button>
+      <button class="btn" onclick="goToNewJobStepTwo()">Continue</button>
+    `
+  });
+}
+
+function setNewJobMode(mode) {
+  newJobMode = mode;
+  selectedWizardCustomerId = null;
+
+  const existingChoice = document.getElementById("choiceExistingCustomer");
+  const newChoice = document.getElementById("choiceNewCustomer");
+  const area = document.getElementById("newJobCustomerArea");
+
+  if (existingChoice) existingChoice.classList.toggle("active", mode === "existing");
+  if (newChoice) newChoice.classList.toggle("active", mode === "new");
+
+  if (!area) return;
+
+  area.innerHTML = mode === "existing"
+    ? renderExistingCustomerSelector()
+    : renderNewCustomerFields();
+}
+
+function renderExistingCustomerSelector() {
+  return `
+    <div class="admin-modal-field full-width" style="margin-top:18px;">
+      <label for="newJobCustomerSearch">Search Customers</label>
+      <input id="newJobCustomerSearch" type="search" placeholder="Search by name, phone, email, or address..." oninput="filterWizardCustomers()">
+    </div>
+
+    <div id="wizardCustomerList" class="admin-modal-list" style="margin-top:14px;">
+      ${renderWizardCustomerList(allCustomersForWizard)}
+    </div>
+  `;
+}
+
+function renderWizardCustomerList(customers) {
+  if (!customers.length) {
+    return `<div class="admin-empty-state">No customers found.</div>`;
+  }
+
+  return customers.map(customer => `
+    <div class="admin-modal-list-item" onclick="selectWizardCustomer('${customer.customer_id}', this)">
+      <strong>${customer.customer_name || "Unnamed Customer"}</strong>
+      <span>${customer.phone || "No phone"} · ${customer.email || "No email"}</span>
+      <span>${customer.address || "No address"}</span>
+    </div>
+  `).join("");
+}
+
+function filterWizardCustomers() {
+  const input = document.getElementById("newJobCustomerSearch");
+  const list = document.getElementById("wizardCustomerList");
+
+  if (!input || !list) return;
+
+  const searchTerm = input.value.toLowerCase().trim();
+
+  const filtered = allCustomersForWizard.filter(customer => {
+    const name = customer.customer_name?.toLowerCase() || "";
+    const phone = customer.phone?.toLowerCase() || "";
+    const email = customer.email?.toLowerCase() || "";
+    const address = customer.address?.toLowerCase() || "";
+
+    return (
+      name.includes(searchTerm) ||
+      phone.includes(searchTerm) ||
+      email.includes(searchTerm) ||
+      address.includes(searchTerm)
+    );
+  });
+
+  list.innerHTML = renderWizardCustomerList(filtered);
+}
+
+function selectWizardCustomer(customerId, element) {
+  selectedWizardCustomerId = customerId;
+
+  document.querySelectorAll(".admin-modal-list-item").forEach(item => {
+    item.classList.remove("active");
+  });
+
+  element.classList.add("active");
+}
+
+function renderNewCustomerFields() {
+  return `
+    <div class="admin-modal-grid" style="margin-top:18px;">
+      <div class="admin-modal-field">
+        <label for="wizardCustomerName">Customer Name</label>
+        <input id="wizardCustomerName" type="text" placeholder="Customer name">
+      </div>
+
+      <div class="admin-modal-field">
+        <label for="wizardCustomerPhone">Phone</label>
+        <input id="wizardCustomerPhone" type="tel" placeholder="Phone number">
+      </div>
+
+      <div class="admin-modal-field">
+        <label for="wizardCustomerEmail">Email</label>
+        <input id="wizardCustomerEmail" type="email" placeholder="Email address">
+      </div>
+
+      <div class="admin-modal-field">
+        <label for="wizardCustomerAddress">Address</label>
+        <input id="wizardCustomerAddress" type="text" placeholder="Job/customer address">
+      </div>
+    </div>
+  `;
+}
+
+function goToNewJobStepTwo() {
+  if (newJobMode === "existing" && !selectedWizardCustomerId) {
+    showMessage("Please select a customer.");
+    return;
+  }
+
+  if (newJobMode === "new") {
+    const name = document.getElementById("wizardCustomerName")?.value.trim();
+
+    if (!name) {
+      showMessage("Please enter the customer name.");
+      return;
+    }
+  }
+
+  renderNewJobStepTwo();
+}
+
+function renderNewJobStepTwo() {
+  openAdminModal({
+    title: "Create New Job",
+    subtitle: "Step 2 of 2",
+    wide: true,
+    body: `
+      <div class="admin-modal-grid">
+        <div class="admin-modal-field">
+          <label for="wizardFlooringType">Flooring Type</label>
+          <select id="wizardFlooringType">
+            <option value="">Select flooring type</option>
+            <option value="Hardwood">Hardwood</option>
+            <option value="Luxury Vinyl Plank">Luxury Vinyl Plank</option>
+            <option value="Laminate">Laminate</option>
+            <option value="Tile">Tile</option>
+            <option value="Carpet Removal">Carpet Removal</option>
+            <option value="Repair">Repair</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="admin-modal-field">
+          <label for="wizardMeasurementDate">Measurement Date</label>
+          <input id="wizardMeasurementDate" type="date">
+        </div>
+
+        <div class="admin-modal-field">
+          <label for="wizardJobStatus">Status</label>
+          <select id="wizardJobStatus">
+            <option value="Measurement Scheduled">Measurement Scheduled</option>
+            <option value="Measurement Completed">Measurement Completed</option>
+            <option value="Estimate Sent">Estimate Sent</option>
+            <option value="Deposit Received">Deposit Received</option>
+            <option value="Installation Scheduled">Installation Scheduled</option>
+            <option value="Installation In Progress">Installation In Progress</option>
+            <option value="Final Walkthrough">Final Walkthrough</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
+        <div class="admin-modal-field full-width">
+          <label for="wizardJobDescription">Job Description</label>
+          <textarea id="wizardJobDescription" placeholder="Describe the work being requested..."></textarea>
+        </div>
+      </div>
+    `,
+    footer: `
+      <button class="btn secondary" onclick="renderNewJobStepOne()">Back</button>
+      <button class="btn secondary" onclick="closeAdminModal()">Cancel</button>
+      <button class="btn" onclick="createJobFromWizard()">Create Job</button>
+    `
+  });
+}
+
+async function createJobFromWizard() {
+  const flooringType = document.getElementById("wizardFlooringType")?.value;
+  const measurementDate = document.getElementById("wizardMeasurementDate")?.value || null;
+  const status = document.getElementById("wizardJobStatus")?.value || "Measurement Scheduled";
+  const description = document.getElementById("wizardJobDescription")?.value.trim();
+
+  if (!flooringType) {
+    showMessage("Please select a flooring type.");
+    return;
+  }
+
+  let customerId = selectedWizardCustomerId;
+
+  if (newJobMode === "new") {
+    const customerName = document.getElementById("wizardCustomerName")?.value.trim();
+    const phone = document.getElementById("wizardCustomerPhone")?.value.trim();
+    const email = document.getElementById("wizardCustomerEmail")?.value.trim();
+    const address = document.getElementById("wizardCustomerAddress")?.value.trim();
+
+    const { data: createdCustomer, error: customerError } = await db
+      .from("customers")
+      .insert([{
+        customer_name: customerName,
+        phone,
+        email,
+        address,
+        active: true
+      }])
+      .select()
+      .single();
+
+    if (customerError) {
+      console.error(customerError);
+      showErrorModal("Unable to Create Customer", "The customer could not be created.");
+      return;
+    }
+
+    customerId = createdCustomer.customer_id;
+  }
+
+  const jobNumber = typeof generateSupabaseJobNumber === "function"
+    ? await generateSupabaseJobNumber()
+    : `CS-${new Date().getFullYear()}-${String(Date.now()).slice(-4)}`;
+
+  const { error: jobError } = await db
+    .from("jobs")
+    .insert([{
+      job_number: jobNumber,
+      customer_id: customerId,
+      flooring_type: [flooringType],
+      description,
+      measurement_date: measurementDate,
+      install_start_date: null,
+      install_end_date: null,
+      install_price: null,
+      status,
+      estimate_id: null,
+      agreement_id: null
+    }]);
+
+  if (jobError) {
+    console.error(jobError);
+    showErrorModal("Unable to Create Job", "The job could not be created.");
+    return;
+  }
+
+  closeAdminModal();
+  window.location.href = `admin-job.html?id=${jobNumber}`;
+}
+
+/* ==========================================================
+   ACCEPTED JOBS
+========================================================== */
 
 async function loadJobList() {
   const container = document.getElementById("jobListGroups");
@@ -404,7 +678,7 @@ function renderJobGroups(jobs, selectedStatus) {
 
   container.innerHTML = "";
 
-  if (!jobs || jobs.length === 0) {
+  if (!jobs.length) {
     container.innerHTML = `
       <div class="admin-empty-state">
         <h3>No accepted jobs found.</h3>
@@ -422,7 +696,7 @@ function renderJobGroups(jobs, selectedStatus) {
   groupsToShow.forEach(status => {
     const groupJobs = jobs.filter(job => normalizeJobStatus(job.status) === status);
 
-    if (groupJobs.length === 0) return;
+    if (!groupJobs.length) return;
 
     const section = document.createElement("section");
     section.className = "job-group";
@@ -496,6 +770,10 @@ function renderJobCard(job) {
   `;
 }
 
+/* ==========================================================
+   HELPERS
+========================================================== */
+
 function normalizeJobStatus(status) {
   const aliases = {
     "Measurement Complete": "Measurement Completed",
@@ -540,10 +818,6 @@ function formatJobDate(dateString) {
 
 function truncateText(text, maxLength) {
   if (!text) return "";
-
-  if (text.length <= maxLength) {
-    return text;
-  }
-
+  if (text.length <= maxLength) return text;
   return `${text.substring(0, maxLength).trim()}...`;
 }
