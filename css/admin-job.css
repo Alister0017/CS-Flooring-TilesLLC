@@ -21,6 +21,65 @@
   gap: 16px;
 }
 
+/* ==========================================================
+   PROJECT PROGRESS
+   ========================================================== */
+
+.job-progress-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.job-progress-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  background: var(--cream-50);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.job-progress-item.complete {
+  background: rgba(30, 87, 56, 0.08);
+  border-color: rgba(30, 87, 56, 0.35);
+  color: var(--green-900);
+}
+
+.job-progress-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--white);
+  border: 1px solid var(--border);
+
+  font-weight: 900;
+}
+
+.job-progress-item.complete .job-progress-icon {
+  background: var(--green-800);
+  border-color: var(--bronze-500);
+  color: var(--white);
+}
+
+.job-progress-item strong {
+  line-height: 1.25;
+}
+
+/* ==========================================================
+   COMMAND CENTER
+   ========================================================== */
+
 .job-command-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -56,6 +115,19 @@
   font-size: 0.92rem;
 }
 
+.job-command-card.danger {
+  background: linear-gradient(180deg, #6b2d2d, #3f1515);
+  border-color: #c9a2a2;
+}
+
+.job-command-card.danger strong {
+  color: #f8dada;
+}
+
+/* ==========================================================
+   TIMELINE
+   ========================================================== */
+
 .job-timeline-list {
   display: grid;
   gap: 18px;
@@ -75,11 +147,28 @@
   border: 2px solid var(--bronze-500);
 }
 
+/* ==========================================================
+   NOTES
+   ========================================================== */
+
+.job-notes {
+  display: grid;
+  gap: 14px;
+}
+
 .job-notes textarea {
   width: 100%;
   min-height: 180px;
   resize: vertical;
 }
+
+.job-notes .btn {
+  justify-self: start;
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
 
 @media (max-width: 1000px) {
   .job-summary {
@@ -91,13 +180,8 @@
   .job-info-grid {
     grid-template-columns: 1fr;
   }
-}
 
-.job-command-card.danger {
-  background: linear-gradient(180deg, #6b2d2d, #3f1515);
-  border-color: #c9a2a2;
-}
-
-.job-command-card.danger strong {
-  color: #f8dada;
+  .job-progress-grid {
+    grid-template-columns: 1fr;
+  }
 }

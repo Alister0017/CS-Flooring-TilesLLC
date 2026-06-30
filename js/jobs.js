@@ -133,6 +133,16 @@ function renderJobDetail(job) {
 
     <section class="detail-section">
       <div class="detail-section-header">
+        <h2>Project Progress</h2>
+      </div>
+
+      <div class="job-progress-grid">
+        ${renderJobProgress(job)}
+      </div>
+    </section>
+
+    <section class="detail-section">
+      <div class="detail-section-header">
         <h2>Command Center</h2>
       </div>
 
@@ -284,13 +294,80 @@ function renderJobDetail(job) {
       </div>
 
       <div class="detail-notes job-notes">
-        <textarea id="jobNotesField" placeholder="Job notes will be saved here later.">${job.notes || ""}</textarea>
+        <textarea id="jobNotesField" placeholder="Add internal job notes...">${job.notes || ""}</textarea>
         <button class="btn" type="button" onclick="saveJobNotes('${job.job_number}')">
           Save Notes
         </button>
       </div>
     </section>
   `;
+}
+
+/* ==========================================================
+   PROJECT PROGRESS
+========================================================== */
+
+function renderJobProgress(job) {
+  const status = normalizeJobDetailStatus(job.status);
+
+  const steps = [
+    {
+      label: "Measurement Scheduled",
+      complete: Boolean(job.measurement_date) || statusOrder(status) >= statusOrder("Measurement Scheduled")
+    },
+    {
+      label: "Measurement Completed",
+      complete: statusOrder(status) >= statusOrder("Measurement Completed")
+    },
+    {
+      label: "Estimate Created",
+      complete: Boolean(job.estimate_id) || statusOrder(status) >= statusOrder("Estimate Sent")
+    },
+    {
+      label: "Deposit Received",
+      complete: statusOrder(status) >= statusOrder("Deposit Received")
+    },
+    {
+      label: "Agreement Created",
+      complete: Boolean(job.agreement_id)
+    },
+    {
+      label: "Installation Scheduled",
+      complete: Boolean(job.install_start_date) || statusOrder(status) >= statusOrder("Installation Scheduled")
+    },
+    {
+      label: "Installation In Progress",
+      complete: statusOrder(status) >= statusOrder("Installation In Progress")
+    },
+    {
+      label: "Job Completed",
+      complete: ["Completed", "Closed"].includes(status)
+    }
+  ];
+
+  return steps.map(step => `
+    <div class="job-progress-item ${step.complete ? "complete" : ""}">
+      <span class="job-progress-icon">${step.complete ? "✓" : "○"}</span>
+      <strong>${step.label}</strong>
+    </div>
+  `).join("");
+}
+
+function statusOrder(status) {
+  const order = {
+    "Measurement Scheduled": 1,
+    "Measurement Completed": 2,
+    "Estimate Sent": 3,
+    "Deposit Received": 4,
+    "Installation Scheduled": 5,
+    "Installation In Progress": 6,
+    "Final Walkthrough": 7,
+    "Completed": 8,
+    "Closed": 8,
+    "Cancelled": 0
+  };
+
+  return order[normalizeJobDetailStatus(status)] || 0;
 }
 
 /* ==========================================================
@@ -424,19 +501,17 @@ async function saveJobEdits() {
     return;
   }
 
-  const updatePayload = {
-    status,
-    flooring_type: [flooringType],
-    measurement_date: measurementDate,
-    install_start_date: installStartDate,
-    install_end_date: installEndDate,
-    install_price: installPriceValue ? Number(installPriceValue) : null,
-    description
-  };
-
   const { error } = await db
     .from("jobs")
-    .update(updatePayload)
+    .update({
+      status,
+      flooring_type: [flooringType],
+      measurement_date: measurementDate,
+      install_start_date: installStartDate,
+      install_end_date: installEndDate,
+      install_price: installPriceValue ? Number(installPriceValue) : null,
+      description
+    })
     .eq("job_number", currentJob.job_number);
 
   if (error) {
@@ -478,21 +553,10 @@ async function saveJobNotes(jobNumber) {
 function renderJobDetailTimeline(job) {
   const items = [];
 
-  if (job.created_at) {
-    items.push({ title: "Job Created", date: job.created_at });
-  }
-
-  if (job.measurement_date) {
-    items.push({ title: "Measurement Scheduled", date: job.measurement_date });
-  }
-
-  if (job.install_start_date) {
-    items.push({ title: "Installation Scheduled", date: job.install_start_date });
-  }
-
-  if (job.install_end_date) {
-    items.push({ title: "Installation End Date", date: job.install_end_date });
-  }
+  if (job.created_at) items.push({ title: "Job Created", date: job.created_at });
+  if (job.measurement_date) items.push({ title: "Measurement Scheduled", date: job.measurement_date });
+  if (job.install_start_date) items.push({ title: "Installation Scheduled", date: job.install_start_date });
+  if (job.install_end_date) items.push({ title: "Installation End Date", date: job.install_end_date });
 
   if (items.length === 0) {
     return `<div class="admin-empty-state">No timeline activity yet.</div>`;
