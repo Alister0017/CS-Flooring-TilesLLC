@@ -2,6 +2,7 @@
 
 let allJobs = [];
 let allPendingRequests = [];
+let selectedRequestId = null;
 
 const JOB_STATUS_GROUPS = [
   "Measurement Scheduled",
@@ -108,35 +109,164 @@ function renderPendingRequests() {
           </div>
 
           <div class="pending-request-item">
-            <span>Email</span>
-            <strong>${request.email || "Not listed"}</strong>
-          </div>
-
-          <div class="pending-request-item">
-            <span>Address</span>
-            <strong>${request.address || "Not listed"}</strong>
-          </div>
-
-          <div class="pending-request-item">
             <span>Preferred Measurement Date</span>
             <strong>${formatJobDate(request.preferred_measurement_date) || "Not provided"}</strong>
+          </div>
+
+          <div class="pending-request-item">
+            <span>Description Preview</span>
+            <strong>${request.description ? truncateText(request.description, 90) : "No description provided."}</strong>
           </div>
         </div>
       </div>
 
       <div class="pending-request-footer">
-        <button class="btn" type="button" onclick="acceptPendingRequest('${request.request_id}')">
-          Accept Request
-        </button>
-
-        <button class="btn secondary" type="button" onclick="declinePendingRequest('${request.request_id}')">
-          Decline
+        <button class="btn" type="button" onclick="openRequestDetails('${request.request_id}')">
+          View Details
         </button>
       </div>
     `;
 
     container.appendChild(card);
   });
+}
+
+function openRequestDetails(requestId) {
+  const request = allPendingRequests.find(item => String(item.request_id) === String(requestId));
+
+  if (!request) {
+    showMessage("Could not find request details.");
+    return;
+  }
+
+  selectedRequestId = requestId;
+
+  let modal = document.getElementById("requestReviewModal");
+
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "requestReviewModal";
+    modal.className = "request-review-modal";
+    document.body.appendChild(modal);
+  }
+
+  const flooringTypes = formatJobFlooringTypes(request.flooring_type);
+
+  modal.innerHTML = `
+    <div class="request-review-backdrop" onclick="closeRequestDetails()"></div>
+
+    <div class="request-review-panel">
+      <div class="request-review-header">
+        <div>
+          <p class="eyebrow">Pending Measurement Request</p>
+          <h2>${request.customer_name || "Unnamed Customer"}</h2>
+        </div>
+
+        <button class="request-review-close" type="button" onclick="closeRequestDetails()">
+          ×
+        </button>
+      </div>
+
+      <div class="request-review-content">
+        <section class="request-review-section">
+          <h3>Contact Information</h3>
+
+          <div class="request-review-grid">
+            <div class="pending-request-item">
+              <span>Phone</span>
+              <strong>${request.phone || "Not listed"}</strong>
+            </div>
+
+            <div class="pending-request-item">
+              <span>Email</span>
+              <strong>${request.email || "Not listed"}</strong>
+            </div>
+
+            <div class="pending-request-item full-width">
+              <span>Address</span>
+              <strong>${request.address || "Not listed"}</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="request-review-section">
+          <h3>Project Information</h3>
+
+          <div class="request-review-grid">
+            <div class="pending-request-item">
+              <span>Requested Flooring</span>
+              <strong>${flooringTypes || "Not listed"}</strong>
+            </div>
+
+            <div class="pending-request-item">
+              <span>Preferred Measurement Date</span>
+              <strong>${formatJobDate(request.preferred_measurement_date) || "Not provided"}</strong>
+            </div>
+
+            <div class="pending-request-item full-width">
+              <span>Project Description</span>
+              <strong>${request.description || "No description provided."}</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="request-review-section">
+          <h3>Reference Photos</h3>
+
+          <div class="admin-empty-state">
+            Customer photo uploads will appear here later.
+          </div>
+        </section>
+      </div>
+
+      <div class="request-review-actions">
+        <button class="btn secondary" type="button" onclick="closeRequestDetails()">
+          Close
+        </button>
+
+        <button class="btn secondary" type="button" onclick="declineRequestFromModal()">
+          Decline Request
+        </button>
+
+        <button class="btn" type="button" onclick="acceptRequestFromModal()">
+          Accept Request
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.classList.add("request-review-open");
+}
+
+function closeRequestDetails() {
+  document.body.classList.remove("request-review-open");
+  selectedRequestId = null;
+
+  const modal = document.getElementById("requestReviewModal");
+
+  if (modal) {
+    modal.innerHTML = "";
+  }
+}
+
+async function acceptRequestFromModal() {
+  if (!selectedRequestId) {
+    showMessage("No request selected.");
+    return;
+  }
+
+  await acceptPendingRequest(selectedRequestId);
+  closeRequestDetails();
+}
+
+async function declineRequestFromModal() {
+  if (!selectedRequestId) {
+    showMessage("No request selected.");
+    return;
+  }
+
+  await declinePendingRequest(selectedRequestId);
+  closeRequestDetails();
 }
 
 async function acceptPendingRequest(requestId) {
@@ -406,4 +536,14 @@ function formatJobDate(dateString) {
     day: "numeric",
     year: "numeric"
   });
+}
+
+function truncateText(text, maxLength) {
+  if (!text) return "";
+
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  return `${text.substring(0, maxLength).trim()}...`;
 }
