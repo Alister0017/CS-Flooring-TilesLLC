@@ -1,14 +1,16 @@
-const ADMIN_BASE = window.location.pathname.includes("/admin/")
-  ? ""
-  : "admin/";
+const BASE_PATH = window.location.hostname.includes("github.io")
+  ? "/CS-Flooring-TilesLLC/"
+  : "";
+
+const ADMIN_BASE = `${BASE_PATH}admin/`;
 
 const ROUTES = Object.freeze({
-  HOME: "index.html",
-  PRODUCTS: "products.html",
-  GALLERY: "gallery.html",
-  REQUEST: "request.html",
-  JOB_STATUS: "job-status.html",
-  CONTACT: "contact.html",
+  HOME: `${BASE_PATH}index.html`,
+  PRODUCTS: `${BASE_PATH}products.html`,
+  GALLERY: `${BASE_PATH}gallery.html`,
+  REQUEST: `${BASE_PATH}request.html`,
+  JOB_STATUS: `${BASE_PATH}job-status.html`,
+  CONTACT: `${BASE_PATH}contact.html`,
 
   LOGIN: `${ADMIN_BASE}admin-login.html`,
   DASHBOARD: `${ADMIN_BASE}admin-dashboard.html`,
