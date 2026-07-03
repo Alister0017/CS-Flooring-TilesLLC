@@ -11,7 +11,7 @@ const AgreementService = {
       .from(TABLES.AGREEMENTS)
       .select(`
         *,
-        jobs (
+        jobs!agreements_job_number_fkey (
           job_number,
           status,
           customers (
@@ -44,7 +44,7 @@ const AgreementService = {
       .select(`
         *,
         agreement_signatures (*),
-        jobs (
+        jobs!agreements_job_number_fkey (
           job_number,
           status,
           description,
