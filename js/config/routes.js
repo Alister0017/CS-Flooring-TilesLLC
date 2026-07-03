@@ -23,31 +23,31 @@ const ROUTES = Object.freeze({
        ADMIN
     ========================================================== */
 
-    LOGIN: "/admin/admin-login.html",
+    LOGIN: "/admin-login.html",
 
-    DASHBOARD: "/admin/admin-dashboard.html",
+    DASHBOARD: "/admin-dashboard.html",
 
-    CUSTOMERS: "/admin/admin-customerList.html",
+    CUSTOMERS: "/admin-customerList.html",
 
-    CUSTOMER: "/admin/admin-customer.html",
+    CUSTOMER: "/admin-customer.html",
 
-    JOBS: "/admin/admin-jobList.html",
+    JOBS: "/admin-jobList.html",
 
-    JOB: "/admin/admin-job.html",
+    JOB: "/admin-job.html",
 
-    ESTIMATES: "/admin/admin-estimates.html",
+    ESTIMATES: "/admin-estimates.html",
 
-    AGREEMENTS: "/admin/admin-agreements.html",
+    AGREEMENTS: "/admin-agreements.html",
 
-    INVENTORY: "/admin/admin-inventory.html",
+    INVENTORY: "/admin-inventory.html",
 
-    CALENDAR: "/admin/admin-calendar.html",
+    CALENDAR: "/admin-calendar.html",
 
-    PHOTOS: "/admin/admin-photos.html",
+    PHOTOS: "/admin-photos.html",
 
-    INVOICES: "/admin/admin-invoices.html",
+    INVOICES: "/admin-invoices.html",
 
-    MATERIAL_CALCULATOR: "/admin/admin-materialCalc.html"
+    MATERIAL_CALCULATOR: "/admin-materialCalc.html"
     
 
 });
