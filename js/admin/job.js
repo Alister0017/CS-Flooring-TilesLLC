@@ -87,6 +87,7 @@ function renderJobDetail(job) {
         <button class="job-command-card" type="button" onclick="scheduleMeasurementPlaceholder()"><strong>Schedule Measurement</strong><span>Add or update the measurement date.</span></button>
         <button class="job-command-card" type="button" onclick="scheduleInstallPlaceholder()"><strong>Schedule Installation</strong><span>Add install start and end dates.</span></button>
         <button class="job-command-card" type="button" onclick="markJobComplete('${job.job_number}')"><strong>Mark Complete</strong><span>Move this job to completed status.</span></button>
+        <button class="job-command-card" type="button" onclick="unmarkJobComplete('${job.job_number}')"><strong>Mark as In Progress</strong><span>Move this job to in-progress status.</span></button>
         <button class="job-command-card danger" type="button" onclick="deleteJob('${job.job_number}')"><strong>Delete Job</strong><span>Permanently remove this job.</span></button>
       </div>
     </section>
@@ -390,6 +391,23 @@ async function markJobComplete(jobNumber) {
   showMessage("Job marked complete.");
   await loadJobDetail();
 }
+
+async function unmarkJobComplete(jobNumber) {
+  const confirmed = confirm("Mark this job as in progress?");
+  if (!confirmed) return;
+
+  const { error } = await JobService.updateStatus(jobNumber, JOB_STATUS.INSTALLATION_IN_PROGRESS);
+
+  if (error) {
+    console.error(error);
+    showMessage("Could not mark job as in progress.");
+    return;
+  }
+
+  showMessage("Job marked as in progress.");
+  await loadJobDetail();
+}
+
 
 async function deleteJob(jobNumber) {
   const confirmed = confirm("Delete this job permanently? This cannot be undone.");
