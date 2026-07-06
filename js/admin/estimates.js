@@ -1,362 +1,870 @@
 // estimates.js
 
-let estimateItems=[];
+let estimateItems = [];
+let estimateCustomers = [];
+let estimateJobs = [];
+let estimateProducts = [];
 
-window.addEventListener("load",()=>{
-  initializeEstimatesPage();
+let selectedEstimateCustomer = null;
+let selectedEstimateJob = null;
+
+/* ==========================================================
+   INITIALIZE
+========================================================== */
+
+window.addEventListener("load", async () => {
+  await initializeEstimatePage();
 });
 
-async function initializeEstimatesPage(){
-  setupEstimateForm();
-  applyEstimateJobFromUrl();
+async function initializeEstimatePage() {
+  await Promise.all([
+    loadEstimateCustomers(),
+    loadEstimateProducts()
+  ]);
+
   addEstimateItemRow();
+  applyEstimateUrlContext();
+
   await loadEstimates();
 }
 
-function setupEstimateForm(){
-  ["estimateTaxRate","estimateDiscount","estimateDeposit"].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.addEventListener("input",updateEstimateTotals);
-  });
+/* ==========================================================
+   LOAD FORM DATA
+========================================================== */
+
+async function loadEstimateCustomers() {
+  const select = document.getElementById("estimateCustomerSelect");
+
+  if (!select) return;
+
+  const options = await FormDataService.getCustomerOptions();
+
+  estimateCustomers = options.map(option => option.data);
+
+  FormDataService.populateSelect(
+    select,
+    options,
+    "Select Customer"
+  );
 }
 
-function applyEstimateJobFromUrl(){
-  const params=new URLSearchParams(window.location.search);
-  const jobNumber=params.get("job");
-  const input=document.getElementById("estimateJobNumber");
-  if(jobNumber&&input)input.value=jobNumber;
+async function loadEstimateProducts() {
+  const options = await FormDataService.getProductOptions();
+
+  estimateProducts = options.map(option => option.data);
+}
+
+async function loadEstimateJobs(customerId = null) {
+  const select = document.getElementById("estimateJobSelect");
+
+  if (!select) return;
+
+  const options = await FormDataService.getJobOptions(customerId);
+
+  estimateJobs = options.map(option => option.data);
+
+  FormDataService.populateSelect(
+    select,
+    options,
+    customerId
+      ? "Select Job for Customer"
+      : "Select Job"
+  );
+}
+
+/* ==========================================================
+   CUSTOMER / JOB CASCADING SELECTION
+========================================================== */
+
+async function handleEstimateCustomerChange() {
+  const customerId =
+    document.getElementById("estimateCustomerSelect")?.value || "";
+
+  selectedEstimateCustomer =
+    estimateCustomers.find(customer =>
+      String(customer.customer_id) === String(customerId)
+    ) || null;
+
+  selectedEstimateJob = null;
+
+  clearEstimateJobContext();
+
+  if (!customerId) {
+    await loadEstimateJobs();
+    updateEstimateContextPanel();
+    return;
+  }
+
+  await loadEstimateJobs(customerId);
+
+  updateEstimateContextPanel();
+}
+
+function handleEstimateJobChange() {
+  const jobNumber =
+    document.getElementById("estimateJobSelect")?.value || "";
+
+  selectedEstimateJob =
+    estimateJobs.find(job =>
+      String(job.job_number) === String(jobNumber)
+    ) || null;
+
+  if (!selectedEstimateJob) {
+    clearEstimateJobContext();
+    updateEstimateContextPanel();
+    return;
+  }
+
+  const jobNumberInput =
+    document.getElementById("estimateJobNumber");
+
+  if (jobNumberInput) {
+    jobNumberInput.value = selectedEstimateJob.job_number || "";
+  }
+
+  /*
+    If the job has an embedded customer object, prefer it.
+    Otherwise retain the customer selected in the dropdown.
+  */
+
+  if (selectedEstimateJob.customers) {
+    selectedEstimateCustomer = selectedEstimateJob.customers;
+
+    const customerSelect =
+      document.getElementById("estimateCustomerSelect");
+
+    if (customerSelect && selectedEstimateCustomer.customer_id) {
+      customerSelect.value =
+        selectedEstimateCustomer.customer_id;
+    }
+  }
+
+  updateEstimateContextPanel();
+}
+
+/* ==========================================================
+   CONTEXT PANEL
+========================================================== */
+
+function updateEstimateContextPanel() {
+  setText(
+    "estimateContextCustomer",
+    selectedEstimateCustomer?.customer_name || "None selected"
+  );
+
+  setText(
+    "estimateContextJob",
+    selectedEstimateJob?.job_number || "None selected"
+  );
+
+  setText(
+    "estimateContextWork",
+    formatEstimateFlooringTypes(
+      selectedEstimateJob?.flooring_type
+    ) || "Not available"
+  );
+
+  setText(
+    "estimateContextAddress",
+    selectedEstimateJob?.customers?.address ||
+    selectedEstimateCustomer?.address ||
+    "Not available"
+  );
+}
+
+function clearEstimateJobContext() {
+  selectedEstimateJob = null;
+
+  const jobNumberInput =
+    document.getElementById("estimateJobNumber");
+
+  if (jobNumberInput) {
+    jobNumberInput.value = "";
+  }
 }
 
 /* ==========================================================
    LINE ITEMS
 ========================================================== */
 
-function addEstimateItemRow(){
-  const id=Date.now()+Math.random();
-  estimateItems.push({id,room_name:"",item_type:"Line Item",description:"",quantity:1,unit:"each",unit_price:0});
-  renderEstimateItemRows();
+function addEstimateItemRow(prefill = {}) {
+  const item = {
+    local_id: crypto.randomUUID(),
+    inventory_id: prefill.inventory_id || "",
+    room_name: prefill.room_name || "",
+    item_type: prefill.item_type || "Material",
+    description: prefill.description || "",
+    quantity: Number(prefill.quantity || 1),
+    unit: prefill.unit || "each",
+    unit_price: Number(prefill.unit_price || 0)
+  };
+
+  estimateItems.push(item);
+
+  renderEstimateItems();
 }
 
-function removeEstimateItemRow(id){
-  estimateItems=estimateItems.filter(item=>String(item.id)!==String(id));
-  renderEstimateItemRows();
+function removeEstimateItemRow(localId) {
+  estimateItems =
+    estimateItems.filter(item => item.local_id !== localId);
+
+  if (!estimateItems.length) {
+    addEstimateItemRow();
+    return;
+  }
+
+  renderEstimateItems();
 }
 
-function renderEstimateItemRows(){
-  const container=document.getElementById("estimateItems");
-  if(!container)return;
+function renderEstimateItems() {
+  const container = document.getElementById("estimateItems");
 
-  container.innerHTML=estimateItems.map((item,index)=>`
-    <div class="estimate-item-row" data-id="${item.id}">
-      <div class="estimate-item-field">
-        <label>Room</label>
-        <input type="text" value="${item.room_name||""}" oninput="updateEstimateItem(${index},'room_name',this.value)">
-      </div>
+  if (!container) return;
 
-      <div class="estimate-item-field">
-        <label>Type</label>
-        <select onchange="updateEstimateItem(${index},'item_type',this.value)">
-          <option ${item.item_type==="Line Item"?"selected":""}>Line Item</option>
-          <option ${item.item_type==="Material"?"selected":""}>Material</option>
-          <option ${item.item_type==="Labor"?"selected":""}>Labor</option>
-          <option ${item.item_type==="Removal"?"selected":""}>Removal</option>
-          <option ${item.item_type==="Trim"?"selected":""}>Trim</option>
-          <option ${item.item_type==="Other"?"selected":""}>Other</option>
+  container.innerHTML = estimateItems.map((item, index) => `
+    <div class="estimate-item-row" data-item-id="${item.local_id}">
+
+      <div class="admin-form-field">
+        <label>Product / Inventory Item</label>
+
+        <select
+          onchange="handleEstimateProductChange(
+            '${item.local_id}',
+            this.value
+          )">
+
+          <option value="">
+            Custom Line Item
+          </option>
+
+          ${estimateProducts.map(product => `
+            <option
+              value="${product.inventory_id}"
+              ${String(item.inventory_id) ===
+      String(product.inventory_id)
+      ? "selected"
+      : ""
+    }>
+              ${escapeEstimateHtml(
+      product.material_name || "Unnamed Product"
+    )}
+              -
+              $${formatEstimateMoney(
+      getEstimateProductPrice(product)
+    )}
+              /
+              ${escapeEstimateHtml(product.unit || "each")}
+            </option>
+          `).join("")}
+
         </select>
       </div>
 
-      <div class="estimate-item-field description-field">
+      <div class="admin-form-field">
+        <label>Room / Area</label>
+
+        <input
+          type="text"
+          value="${escapeEstimateHtml(item.room_name)}"
+          placeholder="Example: Kitchen, Bedroom 1"
+          oninput="updateEstimateItem(
+            '${item.local_id}',
+            'room_name',
+            this.value
+          )">
+      </div>
+
+      <div class="admin-form-field">
+        <label>Item Type</label>
+
+        <select
+          onchange="updateEstimateItem(
+            '${item.local_id}',
+            'item_type',
+            this.value
+          )">
+
+          ${[
+      "Material",
+      "Labor",
+      "Removal",
+      "Preparation",
+      "Delivery",
+      "Equipment",
+      "Other"
+    ].map(type => `
+            <option
+              value="${type}"
+              ${item.item_type === type ? "selected" : ""}>
+              ${type}
+            </option>
+          `).join("")}
+
+        </select>
+      </div>
+
+      <div class="admin-form-field full-width">
         <label>Description</label>
-        <input type="text" value="${item.description||""}" oninput="updateEstimateItem(${index},'description',this.value)">
+
+        <input
+          type="text"
+          value="${escapeEstimateHtml(item.description)}"
+          placeholder="Describe the product, labor, preparation, removal, or other charge"
+          oninput="updateEstimateItem(
+            '${item.local_id}',
+            'description',
+            this.value
+          )">
       </div>
 
-      <div class="estimate-item-field">
-        <label>Qty</label>
-        <input type="number" min="0" step="0.01" value="${item.quantity||0}" oninput="updateEstimateItem(${index},'quantity',this.value)">
+      <div class="admin-form-field">
+        <label>Quantity</label>
+
+        <input
+          type="number"
+          min="0"
+          step="0.01"
+          value="${item.quantity}"
+          placeholder="Amount of units"
+          oninput="updateEstimateItem(
+            '${item.local_id}',
+            'quantity',
+            this.value
+          )">
       </div>
 
-      <div class="estimate-item-field">
-        <label>Unit</label>
-        <input type="text" value="${item.unit||"each"}" oninput="updateEstimateItem(${index},'unit',this.value)">
+      <div class="admin-form-field">
+        <label>Unit of Measurement</label>
+
+        <select
+          onchange="updateEstimateItem(
+            '${item.local_id}',
+            'unit',
+            this.value
+          )">
+
+          ${[
+      "each",
+      "sq ft",
+      "sq yd",
+      "linear ft",
+      "hour",
+      "day",
+      "flat rate"
+    ].map(unit => `
+            <option
+              value="${unit}"
+              ${item.unit === unit ? "selected" : ""}>
+              ${unit}
+            </option>
+          `).join("")}
+
+        </select>
       </div>
 
-      <div class="estimate-item-field">
-        <label>Unit Price</label>
-        <input type="number" min="0" step="0.01" value="${item.unit_price||0}" oninput="updateEstimateItem(${index},'unit_price',this.value)">
+      <div class="admin-form-field">
+        <label>Unit Price ($ per selected unit)</label>
+
+        <input
+          type="number"
+          min="0"
+          step="0.01"
+          value="${item.unit_price}"
+          placeholder="Price charged for one unit"
+          oninput="updateEstimateItem(
+            '${item.local_id}',
+            'unit_price',
+            this.value
+          )">
       </div>
 
-      <div class="estimate-line-total">
-        <span>Total</span>
-        <strong>${formatMoney((Number(item.quantity)||0)*(Number(item.unit_price)||0))}</strong>
+      <div class="estimate-item-total">
+        <span>Line Total ($)</span>
+
+        <strong>
+          $${formatEstimateMoney(
+      calculateEstimateLineTotal(item)
+    )}
+        </strong>
       </div>
 
-      <button class="btn danger" type="button" onclick="removeEstimateItemRow('${item.id}')">Remove</button>
+      <div class="estimate-item-actions">
+        <button
+          class="btn secondary"
+          type="button"
+          onclick="removeEstimateItemRow('${item.local_id}')">
+          Remove
+        </button>
+      </div>
+
     </div>
   `).join("");
 
-  updateEstimateTotals();
+  calculateEstimateTotals();
 }
 
-function updateEstimateItem(index,field,value){
-  if(!estimateItems[index])return;
+function handleEstimateProductChange(localId, inventoryId) {
+  const item =
+    estimateItems.find(item => item.local_id === localId);
 
-  if(field==="quantity"||field==="unit_price"){
-    estimateItems[index][field]=Number(value)||0;
-  }else{
-    estimateItems[index][field]=value;
+  if (!item) return;
+
+  item.inventory_id = inventoryId || "";
+
+  if (!inventoryId) {
+    renderEstimateItems();
+    return;
   }
 
-  updateEstimateTotals();
-  const row=document.querySelectorAll(".estimate-item-row")[index];
-  if(row){
-    const total=row.querySelector(".estimate-line-total strong");
-    if(total){
-      total.textContent=formatMoney(
-        (Number(estimateItems[index].quantity)||0)*
-        (Number(estimateItems[index].unit_price)||0)
-      );
+  const product =
+    estimateProducts.find(product =>
+      String(product.inventory_id) === String(inventoryId)
+    );
+
+  if (!product) return;
+
+  item.description =
+    product.material_name ||
+    product.description ||
+    "";
+
+  item.unit =
+    product.unit ||
+    "each";
+
+  item.unit_price =
+    getEstimateProductPrice(product);
+
+  item.item_type = "Material";
+
+  renderEstimateItems();
+}
+
+function updateEstimateItem(localId, field, value) {
+  const item =
+    estimateItems.find(item => item.local_id === localId);
+
+  if (!item) return;
+
+  if (["quantity", "unit_price"].includes(field)) {
+    item[field] = Number(value || 0);
+  } else {
+    item[field] = value;
+  }
+
+  calculateEstimateTotals();
+
+  const row =
+    document.querySelector(`[data-item-id="${localId}"]`);
+
+  if (row) {
+    const totalElement =
+      row.querySelector(".estimate-item-total strong");
+
+    if (totalElement) {
+      totalElement.textContent =
+        `$${formatEstimateMoney(
+          calculateEstimateLineTotal(item)
+        )}`;
     }
   }
 }
 
 /* ==========================================================
-   TOTALS
+   CALCULATIONS
 ========================================================== */
 
-function getEstimateOptions(){
-  return{
-    tax_rate:Number(document.getElementById("estimateTaxRate")?.value)||0,
-    discount:Number(document.getElementById("estimateDiscount")?.value)||0,
-    deposit:Number(document.getElementById("estimateDeposit")?.value)||0
+function calculateEstimateLineTotal(item) {
+  return (
+    Number(item.quantity || 0) *
+    Number(item.unit_price || 0)
+  );
+}
+
+function calculateEstimateTotals() {
+  const subtotal = estimateItems.reduce(
+    (sum, item) =>
+      sum + calculateEstimateLineTotal(item),
+    0
+  );
+
+  const taxRate =
+    Number(
+      document.getElementById("estimateTaxRate")?.value || 0
+    );
+
+  const discount =
+    Number(
+      document.getElementById("estimateDiscount")?.value || 0
+    );
+
+  const deposit =
+    Number(
+      document.getElementById("estimateDeposit")?.value || 0
+    );
+
+  const taxableAmount = Math.max(subtotal - discount, 0);
+
+  const taxAmount =
+    taxableAmount * (taxRate / 100);
+
+  const total =
+    taxableAmount + taxAmount;
+
+  const balanceDue =
+    Math.max(total - deposit, 0);
+
+  setText(
+    "estimateSubtotal",
+    `$${formatEstimateMoney(subtotal)}`
+  );
+
+  setText(
+    "estimateTax",
+    `$${formatEstimateMoney(taxAmount)}`
+  );
+
+  setText(
+    "estimateTotal",
+    `$${formatEstimateMoney(total)}`
+  );
+
+  setText(
+    "estimateBalance",
+    `$${formatEstimateMoney(balanceDue)}`
+  );
+
+  return {
+    subtotal,
+    taxRate,
+    taxAmount,
+    discount,
+    deposit,
+    total,
+    balanceDue
   };
-}
-
-function updateEstimateTotals(){
-  const totals=EstimateService.calculateTotals(estimateItems,getEstimateOptions());
-
-  setText("estimateSubtotal",formatMoney(totals.subtotal));
-  setText("estimateTax",formatMoney(totals.taxAmount));
-  setText("estimateTotal",formatMoney(totals.total));
-  setText("estimateBalance",formatMoney(totals.balanceDue));
-}
-
-function setText(id,value){
-  const el=document.getElementById(id);
-  if(el)el.textContent=value;
 }
 
 /* ==========================================================
    SAVE ESTIMATE
 ========================================================== */
 
-async function saveEstimate(){
-  const jobNumber=document.getElementById("estimateJobNumber")?.value.trim();
-  const notes=document.getElementById("estimateNotes")?.value.trim()||null;
+async function saveEstimate() {
+  const jobNumber =
+    document.getElementById("estimateJobNumber")?.value.trim();
 
-  if(!jobNumber){
-    showMessage("Please enter a job number.");
+  const notes =
+    document.getElementById("estimateNotes")?.value.trim();
+
+  if (!jobNumber) {
+    showMessage("Select a job or enter a job number.");
     return;
   }
 
-  const validItems=estimateItems.filter(item=>item.description&&Number(item.quantity)>0);
+  const validItems =
+    estimateItems.filter(item =>
+      item.description.trim() &&
+      Number(item.quantity) > 0
+    );
 
-  if(!validItems.length){
-    showMessage("Please add at least one estimate item with a description.");
+  if (!validItems.length) {
+    showMessage("Add at least one valid estimate line item.");
     return;
   }
 
-  const estimate={
-    job_number:jobNumber,
-    tax_rate:Number(document.getElementById("estimateTaxRate")?.value)||0,
-    discount:Number(document.getElementById("estimateDiscount")?.value)||0,
-    deposit:Number(document.getElementById("estimateDeposit")?.value)||0,
-    notes,
-    status:ESTIMATE.DEFAULT_STATUS,
-    items:validItems
+  const totals = calculateEstimateTotals();
+
+  const customerId =
+    selectedEstimateCustomer?.customer_id ||
+    selectedEstimateJob?.customer_id ||
+    selectedEstimateJob?.customers?.customer_id ||
+    null;
+
+  const estimatePayload = {
+    job_number: jobNumber,
+    customer_id: customerId,
+    subtotal: totals.subtotal,
+    tax_rate: totals.taxRate,
+    tax_amount: totals.taxAmount,
+    discount: totals.discount,
+    deposit: totals.deposit,
+    total: totals.total,
+    balance_due: totals.balanceDue,
+    notes: notes || null,
+    status: "Draft"
   };
 
-  const{error}=await EstimateService.createEstimate(estimate);
+  const itemPayloads =
+    validItems.map((item, index) => ({
+      room_name: item.room_name || null,
+      item_type: item.item_type || "Line Item",
+      description: item.description,
+      quantity: Number(item.quantity || 0),
+      unit: item.unit || "each",
+      unit_price: Number(item.unit_price || 0),
+      line_total: calculateEstimateLineTotal(item),
+      sort_order: index
+    }));
 
-  if(error){
+  const {
+    data: createdEstimate,
+    error
+  } = await EstimateService.createEstimateWithItems(
+    estimatePayload,
+    itemPayloads
+  );
+
+  if (error) {
     console.error(error);
     showMessage("Could not save estimate.");
     return;
   }
 
+  if (
+    createdEstimate?.estimate_id &&
+    selectedEstimateJob?.job_number
+  ) {
+    await JobService.updateJob(
+      selectedEstimateJob.job_number,
+      {
+        estimate_id: createdEstimate.estimate_id
+      }
+    );
+  }
+
   showMessage("Estimate saved.");
 
-  document.getElementById("estimateForm")?.reset();
-  estimateItems=[];
+  resetEstimateForm();
+
+  await loadEstimates();
+}
+
+/* ==========================================================
+   RESET FORM
+========================================================== */
+
+function resetEstimateForm() {
+  const form = document.getElementById("estimateForm");
+
+  if (form) {
+    form.reset();
+  }
+
+  selectedEstimateCustomer = null;
+  selectedEstimateJob = null;
+
+  estimateItems = [];
+
+  const taxRate =
+    document.getElementById("estimateTaxRate");
+
+  if (taxRate) {
+    taxRate.value = "6.35";
+  }
+
+  loadEstimateJobs();
+
   addEstimateItemRow();
 
-  await loadEstimates();
-
-  if(typeof loadDashboardCounts==="function")loadDashboardCounts();
+  updateEstimateContextPanel();
 }
 
 /* ==========================================================
-   LOAD / RENDER SAVED ESTIMATES
+   LOAD SAVED ESTIMATES
 ========================================================== */
 
-async function loadEstimates(){
-  const container=document.getElementById("estimates");
-  if(!container)return;
+async function loadEstimates() {
+  const container = document.getElementById("estimates");
 
-  container.innerHTML=`<div class="admin-empty-state">Loading estimates...</div>`;
+  if (!container) return;
 
-  const{data,error}=await EstimateService.getEstimates();
+  container.innerHTML = `
+    <div class="admin-empty-state">
+      Loading estimates...
+    </div>
+  `;
 
-  if(error){
+  const { data, error } =
+    await EstimateService.getEstimates();
+
+  if (error) {
     console.error(error);
-    container.innerHTML=`<div class="admin-empty-state">Could not load estimates.</div>`;
-    return;
-  }
 
-  renderEstimates(data||[]);
-}
-
-function renderEstimates(estimates){
-  const container=document.getElementById("estimates");
-  if(!container)return;
-
-  if(!estimates.length){
-    container.innerHTML=`
+    container.innerHTML = `
       <div class="admin-empty-state">
-        <h3>No estimates yet.</h3>
-        <p>Saved estimates will appear here.</p>
+        Could not load estimates.
       </div>
     `;
+
     return;
   }
 
-  container.innerHTML=estimates.map(estimate=>renderEstimateCard(estimate)).join("");
-}
+  const estimates = data || [];
 
-function renderEstimateCard(estimate){
-  const job=estimate.jobs||{};
-  const customer=job.customers||{};
+  if (!estimates.length) {
+    container.innerHTML = `
+      <div class="admin-empty-state">
+        No estimates found.
+      </div>
+    `;
 
-  return`
-    <article class="estimate-card">
-      <div class="estimate-card-header">
-        <div>
-          <p class="eyebrow">${estimate.job_number||"Estimate"}</p>
-          <h3>${customer.customer_name||"Customer not listed"}</h3>
+    return;
+  }
+
+  container.innerHTML = estimates.map(estimate => {
+    const customer =
+      estimate.jobs?.customers ||
+      estimate.customers ||
+      {};
+
+    return `
+      <article class="estimate-card">
+
+        <div class="estimate-card-header">
+          <div>
+            <p class="eyebrow">
+              ${escapeEstimateHtml(
+      estimate.job_number || "No Job"
+    )}
+            </p>
+
+            <h3>
+              ${escapeEstimateHtml(
+      customer.customer_name ||
+      "No customer listed"
+    )}
+            </h3>
+          </div>
+
+          <span class="admin-status-pill">
+            ${escapeEstimateHtml(
+      estimate.status || "Draft"
+    )}
+          </span>
         </div>
-        <span class="admin-status-pill pending">${estimate.status||ESTIMATE.DEFAULT_STATUS}</span>
-      </div>
 
-      <div class="estimate-card-details">
-        <div><span>Total</span><strong>${formatMoney(estimate.total||0)}</strong></div>
-        <div><span>Deposit</span><strong>${formatMoney(estimate.deposit||0)}</strong></div>
-        <div><span>Balance</span><strong>${formatMoney(estimate.balance_due||0)}</strong></div>
-        <div><span>Created</span><strong>${formatEstimateDate(estimate.created_at)}</strong></div>
-      </div>
+        <div class="estimate-card-details">
+          <div>
+            <span>Total</span>
+            <strong>
+              $${formatEstimateMoney(estimate.total)}
+            </strong>
+          </div>
 
-      ${estimate.notes?`
-        <div class="estimate-card-notes">
-          <span>Notes</span>
-          <p>${estimate.notes}</p>
+          <div>
+            <span>Deposit</span>
+            <strong>
+              $${formatEstimateMoney(estimate.deposit)}
+            </strong>
+          </div>
+
+          <div>
+            <span>Balance Due</span>
+            <strong>
+              $${formatEstimateMoney(estimate.balance_due)}
+            </strong>
+          </div>
         </div>
-      `:""}
 
-      <div class="estimate-card-actions">
-        <button class="btn secondary" type="button" onclick="viewEstimate('${estimate.estimate_id}')">View</button>
-        <button class="btn secondary" type="button" onclick="markEstimateSent('${estimate.estimate_id}')">Mark Sent</button>
-        <button class="btn danger" type="button" onclick="deleteEstimate('${estimate.estimate_id}','${estimate.job_number||""}')">Delete</button>
-      </div>
-    </article>
-  `;
+      </article>
+    `;
+  }).join("");
 }
 
 /* ==========================================================
-   ACTIONS
+   URL CONTEXT
 ========================================================== */
 
-async function viewEstimate(estimateId){
-  const{data:estimate,error}=await EstimateService.getEstimate(estimateId);
+async function applyEstimateUrlContext() {
+  const params = new URLSearchParams(window.location.search);
 
-  if(error||!estimate){
-    console.error(error);
-    showMessage("Could not load estimate.");
-    return;
+  const customerId = params.get("customer_id");
+  const jobNumber = params.get("job_number");
+
+  if (customerId) {
+    const customerSelect =
+      document.getElementById("estimateCustomerSelect");
+
+    if (customerSelect) {
+      customerSelect.value = customerId;
+    }
+
+    await handleEstimateCustomerChange();
+  } else {
+    await loadEstimateJobs();
   }
 
-  const items=estimate.estimate_items||[];
-  const job=estimate.jobs||{};
-  const customer=job.customers||{};
+  if (jobNumber) {
+    const matchingJob =
+      estimateJobs.find(job =>
+        String(job.job_number) === String(jobNumber)
+      );
 
-  openAdminModal({
-    title:`Estimate ${estimate.estimate_id}`,
-    subtitle:customer.customer_name||estimate.job_number||"Estimate",
-    wide:true,
-    body:`
-      <div class="estimate-modal-summary">
-        <div><span>Job</span><strong>${estimate.job_number}</strong></div>
-        <div><span>Total</span><strong>${formatMoney(estimate.total||0)}</strong></div>
-        <div><span>Deposit</span><strong>${formatMoney(estimate.deposit||0)}</strong></div>
-        <div><span>Balance</span><strong>${formatMoney(estimate.balance_due||0)}</strong></div>
-      </div>
+    if (matchingJob) {
+      const jobSelect =
+        document.getElementById("estimateJobSelect");
 
-      <div class="estimate-modal-items">
-        ${items.map(item=>`
-          <div class="estimate-modal-item">
-            <strong>${item.description}</strong>
-            <span>${item.quantity} ${item.unit||"each"} × ${formatMoney(item.unit_price||0)}</span>
-            <span>${formatMoney(item.line_total||0)}</span>
-          </div>
-        `).join("")}
-      </div>
+      if (jobSelect) {
+        jobSelect.value = matchingJob.job_number;
+      }
 
-      ${estimate.notes?`<p>${estimate.notes}</p>`:""}
-    `,
-    footer:`
-      <button class="btn secondary" type="button" onclick="closeAdminModal()">Close</button>
-    `
-  });
-}
+      handleEstimateJobChange();
+    } else {
+      const jobNumberInput =
+        document.getElementById("estimateJobNumber");
 
-async function markEstimateSent(estimateId){
-  const{error}=await EstimateService.updateEstimateStatus(estimateId,ESTIMATE.STATUS_SENT||"Sent");
-
-  if(error){
-    console.error(error);
-    showMessage("Could not update estimate.");
-    return;
+      if (jobNumberInput) {
+        jobNumberInput.value = jobNumber;
+      }
+    }
   }
-
-  showMessage("Estimate marked sent.");
-  await loadEstimates();
 }
 
-async function deleteEstimate(estimateId,jobNumber){
-  const confirmed=confirm("Delete this estimate? This cannot be undone.");
-  if(!confirmed)return;
+/* ==========================================================
+   EVENT LISTENERS
+========================================================== */
 
-  const{error}=await EstimateService.deleteEstimate(estimateId,jobNumber||null);
+document
+  .getElementById("estimateTaxRate")
+  ?.addEventListener("input", calculateEstimateTotals);
 
-  if(error){
-    console.error(error);
-    showMessage("Could not delete estimate.");
-    return;
-  }
+document
+  .getElementById("estimateDiscount")
+  ?.addEventListener("input", calculateEstimateTotals);
 
-  showMessage("Estimate deleted.");
-  await loadEstimates();
-}
+document
+  .getElementById("estimateDeposit")
+  ?.addEventListener("input", calculateEstimateTotals);
 
 /* ==========================================================
    HELPERS
 ========================================================== */
 
-function formatEstimateDate(dateString){
-  if(!dateString)return"Not listed";
-  const date=new Date(dateString);
-  if(Number.isNaN(date.getTime()))return"Not listed";
+function getEstimateProductPrice(product) {
+  return Number(
+    product.price_per_unit ??
+    product.unit_cost ??
+    0
+  );
+}
 
-  return date.toLocaleDateString(JOB.DATE_FORMAT,{
-    month:"short",
-    day:"numeric",
-    year:"numeric"
-  });
+function formatEstimateFlooringTypes(flooringType) {
+  if (Array.isArray(flooringType)) {
+    return flooringType.join(", ");
+  }
+
+  return flooringType || "";
+}
+
+function formatEstimateMoney(value) {
+  return Number(value || 0).toFixed(2);
+}
+
+function escapeEstimateHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }

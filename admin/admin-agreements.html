@@ -17,11 +17,7 @@
       <span>Admin Portal</span>
     </div>
 
-    <button
-      class="admin-menu-toggle"
-      type="button"
-      onclick="toggleAdminNav()"
-      aria-label="Open admin menu">
+    <button class="admin-menu-toggle" type="button" onclick="toggleAdminNav()" aria-label="Open admin menu">
       ☰
     </button>
   </div>
@@ -49,8 +45,8 @@
     <div class="admin-nav-group">
       <p class="admin-nav-label">Documents</p>
       <a href="admin-estimates.html">Estimates</a>
-      <a href="admin-agreements.html">Agreements</a>
-      <a class="active" href="admin-invoices.html">Invoices</a>
+      <a class="active" href="admin-agreements.html">Agreements</a>
+      <a href="admin-invoices.html">Invoices</a>
       <a href="admin-materialCalc.html">Material Calculator</a>
     </div>
 
@@ -65,12 +61,8 @@
   </aside>
 
   <main class="admin-main">
-
     <header class="admin-dashboard-header">
-
-      <h1 class="admin-business-title">
-        CS Flooring & Tile LLC
-      </h1>
+      <h1 class="admin-business-title">CS Flooring & Tile LLC</h1>
 
       <div class="admin-title-row">
         <h1>Customer Agreements</h1>
@@ -82,144 +74,117 @@
         <span>/</span>
         <span class="current">Agreements</span>
       </nav>
-
     </header>
 
     <section class="admin-card">
-
       <div class="admin-section-header">
         <h2>Create Agreement</h2>
       </div>
 
-      <form
-        id="agreementForm"
-        class="admin-form"
-        onsubmit="event.preventDefault(); saveAgreement();">
-
+      <form id="agreementForm" class="admin-form" onsubmit="event.preventDefault(); saveAgreement();">
         <div class="admin-form-grid">
 
           <div class="admin-form-field">
-            <label for="agreementJobNumber">
-              Job Number
-            </label>
-
-            <input
-              id="agreementJobNumber"
-              type="text"
-              placeholder="CS-2026-0001"
-              required>
+            <label for="agreementCustomerSelect">Customer</label>
+            <select id="agreementCustomerSelect" onchange="handleAgreementCustomerChange()">
+              <option value="">Select Customer</option>
+            </select>
           </div>
 
           <div class="admin-form-field">
-            <label for="agreementEstimateId">
-              Estimate ID (Optional)
-            </label>
+            <label for="agreementJobSelect">Job</label>
+            <select id="agreementJobSelect" onchange="handleAgreementJobChange()">
+              <option value="">Select Job</option>
+            </select>
+          </div>
 
-            <input
-              id="agreementEstimateId"
-              type="text"
-              placeholder="Estimate ID">
+          <div class="admin-form-field">
+            <label for="agreementEstimateSelect">Estimate</label>
+            <select id="agreementEstimateSelect" onchange="handleAgreementEstimateChange()">
+              <option value="">Optional: Select Estimate</option>
+            </select>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="agreementJobNumber">Job Number</label>
+            <input id="agreementJobNumber" type="text" placeholder="Auto-filled from selected job or enter manually" required>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="agreementEstimateId">Estimate ID</label>
+            <input id="agreementEstimateId" type="text" placeholder="Auto-filled if estimate is selected">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="agreementTotal">Contract Total ($)</label>
+            <input id="agreementTotal" type="number" step="0.01" value="0" placeholder="Total agreed contract amount in dollars">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="agreementDeposit">Deposit Required / Paid ($)</label>
+            <input id="agreementDeposit" type="number" step="0.01" value="0" placeholder="Dollar amount of deposit, not percentage">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="agreementBalance">Balance Due ($)</label>
+            <input id="agreementBalance" type="number" step="0.01" value="0" placeholder="Remaining dollar balance after deposit">
           </div>
 
           <div class="admin-form-field full-width">
-            <label for="agreementScope">
-              Scope of Work
-            </label>
-
-            <textarea
-              id="agreementScope"
-              rows="6"
-              placeholder="Describe the work to be completed..."></textarea>
+            <label for="agreementScope">Scope of Work</label>
+            <textarea id="agreementScope" rows="6" placeholder="Describe the work to be completed. This can auto-fill from the selected job/estimate, but can be edited manually."></textarea>
           </div>
 
           <div class="admin-form-field full-width">
-            <label for="agreementTerms">
-              Terms & Conditions
-            </label>
-
-            <textarea
-              id="agreementTerms"
-              rows="6"
-              placeholder="Terms and conditions..."></textarea>
+            <label for="agreementTerms">Terms & Conditions</label>
+            <textarea id="agreementTerms" rows="6" placeholder="Payment terms, customer responsibilities, scheduling terms, and project conditions."></textarea>
           </div>
 
           <div class="admin-form-field full-width">
-            <label for="agreementWarranty">
-              Warranty
-            </label>
-
-            <textarea
-              id="agreementWarranty"
-              rows="5"
-              placeholder="Warranty information..."></textarea>
-          </div>
-
-          <div class="admin-form-field">
-            <label for="agreementTotal">
-              Contract Total
-            </label>
-
-            <input
-              id="agreementTotal"
-              type="number"
-              step="0.01"
-              value="0">
-          </div>
-
-          <div class="admin-form-field">
-            <label for="agreementDeposit">
-              Deposit
-            </label>
-
-            <input
-              id="agreementDeposit"
-              type="number"
-              step="0.01"
-              value="0">
-          </div>
-
-          <div class="admin-form-field">
-            <label for="agreementBalance">
-              Balance Due
-            </label>
-
-            <input
-              id="agreementBalance"
-              type="number"
-              step="0.01"
-              value="0">
+            <label for="agreementWarranty">Warranty</label>
+            <textarea id="agreementWarranty" rows="5" placeholder="Describe workmanship warranty, product warranty limits, exclusions, or warranty review notes."></textarea>
           </div>
 
         </div>
 
-        <button class="btn" type="submit">
-          Save Agreement
-        </button>
+        <div class="agreement-context-panel" id="agreementContextPanel">
+          <div>
+            <span>Selected Customer</span>
+            <strong id="agreementContextCustomer">None selected</strong>
+          </div>
 
+          <div>
+            <span>Selected Job</span>
+            <strong id="agreementContextJob">None selected</strong>
+          </div>
+
+          <div>
+            <span>Selected Estimate</span>
+            <strong id="agreementContextEstimate">None selected</strong>
+          </div>
+
+          <div>
+            <span>Requested Work</span>
+            <strong id="agreementContextWork">Not available</strong>
+          </div>
+        </div>
+
+        <button class="btn" type="submit">Save Agreement</button>
       </form>
-
     </section>
 
     <section class="admin-card">
-
       <div class="admin-section-header">
         <h2>Saved Agreements</h2>
       </div>
 
       <div id="agreements" class="agreement-grid">
-
-        <div class="admin-empty-state">
-          Loading agreements...
-        </div>
-
+        <div class="admin-empty-state">Loading agreements...</div>
       </div>
-
     </section>
-
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <script src="../js/supabase-config.js"></script>
 
   <script src="../js/config/constants.js"></script>
@@ -229,9 +194,11 @@
 
   <script src="../js/utils.js"></script>
 
+  <script src="../js/services/customerService.js"></script>
   <script src="../js/services/jobService.js"></script>
   <script src="../js/services/estimateService.js"></script>
   <script src="../js/services/agreementService.js"></script>
+  <script src="../js/services/formDataService.js"></script>
 
   <script src="../js/admin/admin-modals.js"></script>
   <script src="../js/admin/admin.js"></script>

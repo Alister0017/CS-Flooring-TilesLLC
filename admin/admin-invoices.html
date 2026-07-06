@@ -3,23 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>CS Flooring & Tile LLC | Invoices</title>
-
   <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body class="admin-body">
-
   <div class="admin-mobile-bar">
     <div class="admin-mobile-brand">
       <strong>CS Flooring</strong>
       <span>Admin Portal</span>
     </div>
-
-    <button class="admin-menu-toggle" type="button" onclick="toggleAdminNav()" aria-label="Open admin menu">
-      ☰
-    </button>
+    <button class="admin-menu-toggle" type="button" onclick="toggleAdminNav()" aria-label="Open admin menu">☰</button>
   </div>
 
   <div class="admin-sidebar-backdrop" onclick="closeAdminNav()"></div>
@@ -61,7 +55,6 @@
   </aside>
 
   <main class="admin-main">
-
     <header class="admin-dashboard-header">
       <h1 class="admin-business-title">CS Flooring & Tile LLC</h1>
 
@@ -86,18 +79,46 @@
         <div class="admin-form-grid">
 
           <div class="admin-form-field">
+            <label for="invoiceCustomerSelect">Customer</label>
+            <select id="invoiceCustomerSelect" onchange="handleInvoiceCustomerChange()">
+              <option value="">Select Customer</option>
+            </select>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="invoiceJobSelect">Job</label>
+            <select id="invoiceJobSelect" onchange="handleInvoiceJobChange()">
+              <option value="">Select Job</option>
+            </select>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="invoiceEstimateSelect">Estimate</label>
+            <select id="invoiceEstimateSelect" onchange="handleInvoiceEstimateChange()">
+              <option value="">Optional: Select Estimate</option>
+            </select>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="invoiceAgreementSelect">Agreement</label>
+            <select id="invoiceAgreementSelect" onchange="handleInvoiceAgreementChange()">
+              <option value="">Optional: Select Agreement</option>
+            </select>
+          </div>
+
+          <div class="admin-form-field">
             <label for="invoiceJobNumber">Job Number</label>
-            <input id="invoiceJobNumber" type="text" placeholder="CS-2026-0001" required>
+            <input id="invoiceJobNumber" type="text" placeholder="Auto-filled from selected job or enter manually" required>
           </div>
 
           <div class="admin-form-field">
             <label for="invoiceEstimateId">Estimate ID</label>
-            <input id="invoiceEstimateId" type="text" placeholder="Optional">
+            <input id="invoiceEstimateId" type="text" placeholder="Auto-filled if estimate is selected">
           </div>
 
           <div class="admin-form-field">
             <label for="invoiceAgreementId">Agreement ID</label>
-            <input id="invoiceAgreementId" type="text" placeholder="Optional">
+            <input id="invoiceAgreementId" type="text" placeholder="Auto-filled if agreement is selected">
           </div>
 
           <div class="admin-form-field">
@@ -106,54 +127,80 @@
           </div>
 
           <div class="admin-form-field">
-            <label for="invoiceTaxAmount">Tax Amount</label>
-            <input id="invoiceTaxAmount" type="number" step="0.01" value="0">
+            <label for="invoiceTaxAmount">Tax Amount ($)</label>
+            <input id="invoiceTaxAmount" type="number" step="0.01" value="0" placeholder="Dollar amount of tax">
           </div>
 
           <div class="admin-form-field">
-            <label for="invoiceDiscount">Discount</label>
-            <input id="invoiceDiscount" type="number" step="0.01" value="0">
+            <label for="invoiceDiscount">Discount ($)</label>
+            <input id="invoiceDiscount" type="number" step="0.01" value="0" placeholder="Dollar amount discounted from subtotal">
           </div>
 
           <div class="admin-form-field">
-            <label for="invoiceAmountPaid">Amount Paid</label>
-            <input id="invoiceAmountPaid" type="number" step="0.01" value="0">
+            <label for="invoiceAmountPaid">Amount Paid ($)</label>
+            <input id="invoiceAmountPaid" type="number" step="0.01" value="0" placeholder="Total money already paid toward this invoice">
           </div>
 
           <div class="admin-form-field full-width">
-            <label for="invoiceNotes">Notes</label>
-            <textarea id="invoiceNotes" placeholder="Optional invoice notes..."></textarea>
+            <label for="invoiceNotes">Invoice Notes</label>
+            <textarea id="invoiceNotes" placeholder="Optional invoice notes for payment terms, customer notes, or internal details..."></textarea>
           </div>
 
         </div>
 
+        <div class="invoice-context-panel" id="invoiceContextPanel">
+          <div>
+            <span>Selected Customer</span>
+            <strong id="invoiceContextCustomer">None selected</strong>
+          </div>
+
+          <div>
+            <span>Selected Job</span>
+            <strong id="invoiceContextJob">None selected</strong>
+          </div>
+
+          <div>
+            <span>Selected Estimate</span>
+            <strong id="invoiceContextEstimate">None selected</strong>
+          </div>
+
+          <div>
+            <span>Selected Agreement</span>
+            <strong id="invoiceContextAgreement">None selected</strong>
+          </div>
+        </div>
+
         <div class="invoice-items-section">
           <div class="admin-section-header">
-            <h3>Invoice Items</h3>
+            <h3>Invoice Line Items</h3>
             <button class="btn secondary" type="button" onclick="addInvoiceItemRow()">+ Add Line Item</button>
           </div>
+
+          <p class="admin-help-text">
+            Select an estimate or agreement to auto-fill invoice amounts, or enter invoice line items manually.
+          </p>
 
           <div id="invoiceItems"></div>
         </div>
 
         <div class="invoice-summary">
           <div>
-            <span>Subtotal</span>
+            <span>Subtotal ($)</span>
             <strong id="invoiceSubtotal">$0.00</strong>
           </div>
 
           <div>
-            <span>Total</span>
+            <span>Total ($)</span>
             <strong id="invoiceTotal">$0.00</strong>
           </div>
 
           <div>
-            <span>Amount Paid</span>
+            <span>Amount Paid ($)</span>
             <strong id="invoicePaid">$0.00</strong>
           </div>
 
           <div>
-            <span>Balance Due</span>
+            <span>Balance Due ($)</span>
             <strong id="invoiceBalance">$0.00</strong>
           </div>
         </div>
@@ -171,11 +218,9 @@
         <div class="admin-empty-state">Loading invoices...</div>
       </div>
     </section>
-
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <script src="../js/supabase-config.js"></script>
 
   <script src="../js/config/constants.js"></script>
@@ -185,10 +230,13 @@
 
   <script src="../js/utils.js"></script>
 
+  <script src="../js/services/customerService.js"></script>
   <script src="../js/services/jobService.js"></script>
+  <script src="../js/services/inventoryService.js"></script>
   <script src="../js/services/estimateService.js"></script>
   <script src="../js/services/agreementService.js"></script>
   <script src="../js/services/invoiceService.js"></script>
+  <script src="../js/services/formDataService.js"></script>
 
   <script src="../js/admin/admin-modals.js"></script>
   <script src="../js/admin/admin.js"></script>
@@ -196,6 +244,5 @@
 
   <script src="../js/main.js"></script>
   <script src="../js/auth.js"></script>
-
 </body>
 </html>

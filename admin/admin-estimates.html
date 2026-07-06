@@ -3,26 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>CS Flooring & Tile LLC | Estimates</title>
-
   <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body class="admin-body">
-
   <div class="admin-mobile-bar">
     <div class="admin-mobile-brand">
       <strong>CS Flooring</strong>
       <span>Admin Portal</span>
     </div>
-
-    <button class="admin-menu-toggle"
-            type="button"
-            onclick="toggleAdminNav()"
-            aria-label="Open admin menu">
-      ☰
-    </button>
+    <button class="admin-menu-toggle" type="button" onclick="toggleAdminNav()" aria-label="Open admin menu">☰</button>
   </div>
 
   <div class="admin-sidebar-backdrop" onclick="closeAdminNav()"></div>
@@ -47,9 +38,9 @@
 
     <div class="admin-nav-group">
       <p class="admin-nav-label">Documents</p>
-      <a href="admin-estimates.html">Estimates</a>
+      <a class="active" href="admin-estimates.html">Estimates</a>
       <a href="admin-agreements.html">Agreements</a>
-      <a class="active" href="admin-invoices.html">Invoices</a>
+      <a href="admin-invoices.html">Invoices</a>
       <a href="admin-materialCalc.html">Material Calculator</a>
     </div>
 
@@ -64,12 +55,8 @@
   </aside>
 
   <main class="admin-main">
-
     <header class="admin-dashboard-header">
-
-      <h1 class="admin-business-title">
-        CS Flooring & Tile LLC
-      </h1>
+      <h1 class="admin-business-title">CS Flooring & Tile LLC</h1>
 
       <div class="admin-title-row">
         <h1>Owner Estimates</h1>
@@ -81,148 +68,122 @@
         <span>/</span>
         <span class="current">Estimates</span>
       </nav>
-
     </header>
 
     <section class="admin-card">
-
       <div class="admin-section-header">
         <h2>Create Estimate</h2>
       </div>
 
-      <form id="estimateForm"
-            class="admin-form"
-            onsubmit="event.preventDefault(); saveEstimate();">
-
+      <form id="estimateForm" class="admin-form" onsubmit="event.preventDefault(); saveEstimate();">
         <div class="admin-form-grid">
-
           <div class="admin-form-field">
-            <label for="estimateJobNumber">
-              Job Number
-            </label>
-
-            <input
-              id="estimateJobNumber"
-              type="text"
-              placeholder="CS-2026-0001"
-              required>
+            <label for="estimateCustomerSelect">Customer</label>
+            <select id="estimateCustomerSelect" onchange="handleEstimateCustomerChange()">
+              <option value="">Select Customer</option>
+            </select>
           </div>
 
           <div class="admin-form-field">
-            <label for="estimateTaxRate">
-              Tax Rate (%)
-            </label>
-
-            <input
-              id="estimateTaxRate"
-              type="number"
-              step="0.01"
-              value="6.35">
+            <label for="estimateJobSelect">Job</label>
+            <select id="estimateJobSelect" onchange="handleEstimateJobChange()">
+              <option value="">Select Job</option>
+            </select>
           </div>
 
           <div class="admin-form-field">
-            <label for="estimateDiscount">
-              Discount
-            </label>
-
-            <input
-              id="estimateDiscount"
-              type="number"
-              step="0.01"
-              value="0">
+            <label for="estimateJobNumber">Job Number</label>
+            <input id="estimateJobNumber" type="text" placeholder="Auto-filled from selected job or enter manually" required>
           </div>
 
           <div class="admin-form-field">
-            <label for="estimateDeposit">
-              Deposit
-            </label>
+            <label for="estimateTaxRate">Tax Rate (%)</label>
+            <input id="estimateTaxRate" type="number" step="0.01" value="6.35">
+          </div>
 
-            <input
-              id="estimateDeposit"
-              type="number"
-              step="0.01"
-              value="0">
+          <div class="admin-form-field">
+            <label for="estimateDiscount">Discount ($)</label>
+            <input id="estimateDiscount" type="number" step="0.01" value="0">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="estimateDeposit">Deposit Paid / Required ($)</label>
+            <input id="estimateDeposit" type="number" step="0.01" value="0">
           </div>
 
           <div class="admin-form-field full-width">
-            <label for="estimateNotes">
-              Notes
-            </label>
-
-            <textarea
-              id="estimateNotes"
-              placeholder="Optional estimate notes..."></textarea>
+            <label for="estimateNotes">Estimate Notes</label>
+            <textarea id="estimateNotes" placeholder="Optional notes that should appear with or support the estimate..."></textarea>
           </div>
+        </div>
 
+        <div class="estimate-context-panel" id="estimateContextPanel">
+          <div>
+            <span>Selected Customer</span>
+            <strong id="estimateContextCustomer">None selected</strong>
+          </div>
+          <div>
+            <span>Selected Job</span>
+            <strong id="estimateContextJob">None selected</strong>
+          </div>
+          <div>
+            <span>Requested Work</span>
+            <strong id="estimateContextWork">Not available</strong>
+          </div>
+          <div>
+            <span>Job Address</span>
+            <strong id="estimateContextAddress">Not available</strong>
+          </div>
         </div>
 
         <div class="estimate-items-section">
-
           <div class="admin-section-header">
-            <h3>Estimate Items</h3>
-
-            <button
-              type="button"
-              class="btn secondary"
-              onclick="addEstimateItemRow()">
-              + Add Line Item
-            </button>
+            <h3>Estimate Line Items</h3>
+            <button type="button" class="btn secondary" onclick="addEstimateItemRow()">+ Add Line Item</button>
           </div>
 
-          <div id="estimateItems"></div>
+          <p class="admin-help-text">
+            Use the product dropdown to auto-fill material name, unit, and unit price, or enter a custom line item manually.
+          </p>
 
+          <div id="estimateItems"></div>
         </div>
 
         <div class="estimate-summary">
-
           <div>
-            <span>Subtotal</span>
+            <span>Subtotal ($)</span>
             <strong id="estimateSubtotal">$0.00</strong>
           </div>
-
           <div>
-            <span>Tax</span>
+            <span>Tax ($)</span>
             <strong id="estimateTax">$0.00</strong>
           </div>
-
           <div>
-            <span>Total</span>
+            <span>Total ($)</span>
             <strong id="estimateTotal">$0.00</strong>
           </div>
-
           <div>
-            <span>Balance Due</span>
+            <span>Balance Due ($)</span>
             <strong id="estimateBalance">$0.00</strong>
           </div>
-
         </div>
 
-        <button class="btn" type="submit">
-          Save Estimate
-        </button>
-
+        <button class="btn" type="submit">Save Estimate</button>
       </form>
-
     </section>
 
     <section class="admin-card">
-
       <div class="admin-section-header">
         <h2>Saved Estimates</h2>
       </div>
 
       <div id="estimates" class="estimate-grid">
-        <div class="admin-empty-state">
-          Loading estimates...
-        </div>
+        <div class="admin-empty-state">Loading estimates...</div>
       </div>
-
     </section>
-
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <script src="../js/supabase-config.js"></script>
 
   <script src="../js/config/constants.js"></script>
@@ -232,8 +193,11 @@
 
   <script src="../js/utils.js"></script>
 
+  <script src="../js/services/customerService.js"></script>
   <script src="../js/services/jobService.js"></script>
+  <script src="../js/services/inventoryService.js"></script>
   <script src="../js/services/estimateService.js"></script>
+  <script src="../js/services/formDataService.js"></script>
 
   <script src="../js/admin/admin-modals.js"></script>
   <script src="../js/admin/admin.js"></script>
@@ -241,6 +205,5 @@
 
   <script src="../js/main.js"></script>
   <script src="../js/auth.js"></script>
-
 </body>
 </html>

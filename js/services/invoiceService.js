@@ -11,9 +11,19 @@ const InvoiceService = {
       .from(TABLES.INVOICES)
       .select(`
         *,
+        customers (
+          customer_id,
+          customer_name,
+          phone,
+          email,
+          address
+        ),
         jobs!invoices_job_number_fkey (
           job_number,
+          customer_id,
           status,
+          description,
+          flooring_type,
           customers (
             customer_id,
             customer_name,
@@ -24,6 +34,7 @@ const InvoiceService = {
         ),
         estimates (
           estimate_id,
+          job_number,
           total,
           deposit,
           balance_due,
@@ -31,6 +42,7 @@ const InvoiceService = {
         ),
         agreements (
           agreement_id,
+          job_number,
           total,
           deposit,
           balance_due,
@@ -50,10 +62,18 @@ const InvoiceService = {
       .from(TABLES.INVOICES)
       .select(`
         *,
+        customers (
+          customer_id,
+          customer_name,
+          phone,
+          email,
+          address
+        ),
         invoice_items (*),
         invoice_payments (*),
         jobs!invoices_job_number_fkey (
           job_number,
+          customer_id,
           status,
           description,
           flooring_type,
@@ -112,12 +132,12 @@ const InvoiceService = {
       customer_id: invoice.customer_id || null,
       estimate_id: invoice.estimate_id || null,
       agreement_id: invoice.agreement_id || null,
-      subtotal: totals.subtotal,
+      subtotal: invoice.subtotal !== undefined ? Number(invoice.subtotal) || 0 : totals.subtotal,
       tax_amount: Number(invoice.tax_amount) || 0,
       discount: Number(invoice.discount) || 0,
-      total: totals.total,
+      total: invoice.total !== undefined ? Number(invoice.total) || 0 : totals.total,
       amount_paid: Number(invoice.amount_paid) || 0,
-      balance_due: totals.balanceDue,
+      balance_due: invoice.balance_due !== undefined ? Number(invoice.balance_due) || 0 : totals.balanceDue,
       status: invoice.status || INVOICE.DEFAULT_STATUS,
       due_date: invoice.due_date || null,
       notes: invoice.notes || null
@@ -150,109 +170,16 @@ const InvoiceService = {
       }
     }
 
-    const { error: jobUpdateError } = await JobService.linkInvoice(
-      invoice.job_number,
-      data.invoice_id
-    );
-
-    if (jobUpdateError) {
-      return {
-        data,
-        error: jobUpdateError
-      };
-    }
-
-    return {
-      data,
-      error: null
-    };
-  },
-
-  async createInvoiceFromEstimate(estimateId) {
-    const { data: estimate, error: estimateError } =
-      await EstimateService.getEstimate(estimateId);
-
-    if (estimateError || !estimate) {
-      return {
-        data: null,
-        error: estimateError || new Error("Estimate not found.")
-      };
-    }
-
-    const job = estimate.jobs || {};
-    const customer = job.customers || {};
-
-    const items = (estimate.estimate_items || []).map(item => ({
-      description: item.description,
-      quantity: item.quantity,
-      unit: item.unit,
-      unit_price: item.unit_price,
-      sort_order: item.sort_order || 0
-    }));
-
-    return await this.createInvoice({
-      job_number: estimate.job_number,
-      customer_id: customer.customer_id || estimate.customer_id || null,
-      estimate_id: estimate.estimate_id,
-      agreement_id: job.agreement_id || null,
-      items,
-      tax_amount: estimate.tax_amount || 0,
-      discount: estimate.discount || 0,
-      amount_paid: estimate.deposit || 0,
-      due_date: null,
-      notes: estimate.notes || null,
-      status: INVOICE.DEFAULT_STATUS
-    });
-  },
-
-  /* ==========================================================
-     UPDATE
-  ========================================================== */
-
-  async updateInvoice(invoiceId, updates) {
-    const items = updates.items || [];
-
-    const totals = this.calculateTotals(items, {
-      tax_amount: updates.tax_amount || 0,
-      discount: updates.discount || 0,
-      amount_paid: updates.amount_paid || 0
-    });
-
-    const { data, error } = await db
-      .from(TABLES.INVOICES)
-      .update({
-        subtotal: totals.subtotal,
-        tax_amount: Number(updates.tax_amount) || 0,
-        discount: Number(updates.discount) || 0,
-        total: totals.total,
-        amount_paid: Number(updates.amount_paid) || 0,
-        balance_due: totals.balanceDue,
-        status: updates.status || INVOICE.DEFAULT_STATUS,
-        due_date: updates.due_date || null,
-        notes: updates.notes || null,
-        updated_at: new Date().toISOString()
-      })
-      .eq("invoice_id", invoiceId)
-      .select()
-      .single();
-
-    if (error) {
-      return {
-        data: null,
-        error
-      };
-    }
-
-    if (updates.items) {
-      const { error: itemError } = await this.replaceInvoiceItems(
-        invoiceId,
-        updates.items
+    if (invoice.job_number && data?.invoice_id) {
+      const { error: jobUpdateError } = await JobService.linkInvoice(
+        invoice.job_number,
+        data.invoice_id
       );
 
-      if (itemError) {
+      if (jobUpdateError) {
         return {
           data,
-          error: itemError
+          error: jobUpdateError
         };
       }
     }
@@ -263,13 +190,28 @@ const InvoiceService = {
     };
   },
 
-  async updateInvoiceStatus(invoiceId, status) {
+  async createInvoiceWithItems(invoiceData, items = []) {
+    const payload = {
+      ...invoiceData,
+      items
+    };
+
+    return await this.createInvoice(payload);
+  },
+    /* ==========================================================
+     UPDATE
+  ========================================================== */
+
+  async updateInvoice(invoiceId, updates) {
+
+    const payload = {
+      ...updates,
+      updated_at: new Date().toISOString()
+    };
+
     const { data, error } = await db
       .from(TABLES.INVOICES)
-      .update({
-        status,
-        updated_at: new Date().toISOString()
-      })
+      .update(payload)
       .eq("invoice_id", invoiceId)
       .select()
       .single();
@@ -278,52 +220,55 @@ const InvoiceService = {
       data,
       error
     };
+
+  },
+
+  async updateInvoiceStatus(invoiceId, status) {
+
+    return await this.updateInvoice(invoiceId, {
+      status
+    });
+
   },
 
   /* ==========================================================
-     ITEMS
+     INVOICE ITEMS
   ========================================================== */
 
-  async replaceInvoiceItems(invoiceId, items) {
-    const { error: deleteError } = await db
+  async replaceInvoiceItems(invoiceId, items = []) {
+
+    await db
       .from(TABLES.INVOICE_ITEMS)
       .delete()
       .eq("invoice_id", invoiceId);
 
-    if (deleteError) {
-      return {
-        error: deleteError
-      };
+    if (!items.length) {
+      return { data: [], error: null };
     }
 
-    if (!items || items.length === 0) {
-      return {
-        error: null
-      };
-    }
+    const payload = items.map((item, index) => ({
+      invoice_id: invoiceId,
+      description: item.description || "",
+      quantity: Number(item.quantity || 0),
+      unit: item.unit || "each",
+      unit_price: Number(item.unit_price || 0),
+      line_total:
+        item.line_total ??
+        Number(item.quantity || 0) *
+        Number(item.unit_price || 0),
+      sort_order: index
+    }));
 
-    const rows = items.map((item, index) => {
-      const quantity = Number(item.quantity) || 0;
-      const unitPrice = Number(item.unit_price) || 0;
-
-      return {
-        invoice_id: invoiceId,
-        description: item.description,
-        quantity,
-        unit: item.unit || "each",
-        unit_price: unitPrice,
-        line_total: quantity * unitPrice,
-        sort_order: item.sort_order ?? index
-      };
-    });
-
-    const { error } = await db
+    const { data, error } = await db
       .from(TABLES.INVOICE_ITEMS)
-      .insert(rows);
+      .insert(payload)
+      .select();
 
     return {
+      data,
       error
     };
+
   },
 
   /* ==========================================================
@@ -331,13 +276,44 @@ const InvoiceService = {
   ========================================================== */
 
   async addPayment(invoiceId, payment) {
+
+    const { data: invoice, error: invoiceError } =
+      await this.getInvoice(invoiceId);
+
+    if (invoiceError) {
+      return {
+        data: null,
+        error: invoiceError
+      };
+    }
+
+    const paymentAmount =
+      Number(payment.amount || 0);
+
+    const newAmountPaid =
+      Number(invoice.amount_paid || 0) +
+      paymentAmount;
+
+    const balanceDue =
+      Math.max(
+        Number(invoice.total || 0) - newAmountPaid,
+        0
+      );
+
+    const newStatus =
+      balanceDue <= 0
+        ? INVOICE.STATUS_PAID
+        : INVOICE.STATUS_PARTIALLY_PAID;
+
     const { data, error } = await db
       .from(TABLES.INVOICE_PAYMENTS)
       .insert([{
         invoice_id: invoiceId,
-        amount: Number(payment.amount) || 0,
+        amount: paymentAmount,
         payment_method: payment.payment_method || null,
-        payment_date: payment.payment_date || new Date().toISOString().split("T")[0],
+        payment_date:
+          payment.payment_date ||
+          new Date().toISOString(),
         notes: payment.notes || null
       }])
       .select()
@@ -350,35 +326,17 @@ const InvoiceService = {
       };
     }
 
-    const { data: invoice } = await this.getInvoice(invoiceId);
-
-    if (invoice) {
-      const totalPaid = (invoice.invoice_payments || []).reduce((sum, item) => {
-        return sum + (Number(item.amount) || 0);
-      }, 0);
-
-      const amountPaid = totalPaid + Number(payment.amount || 0);
-      const balanceDue = Math.max((Number(invoice.total) || 0) - amountPaid, 0);
-
-      await this.updateInvoiceStatus(
-        invoiceId,
-        balanceDue <= 0 ? "Paid" : INVOICE.DEFAULT_STATUS
-      );
-
-      await db
-        .from(TABLES.INVOICES)
-        .update({
-          amount_paid: amountPaid,
-          balance_due: balanceDue,
-          updated_at: new Date().toISOString()
-        })
-        .eq("invoice_id", invoiceId);
-    }
+    await this.updateInvoice(invoiceId, {
+      amount_paid: newAmountPaid,
+      balance_due: balanceDue,
+      status: newStatus
+    });
 
     return {
       data,
       error: null
     };
+
   },
 
   /* ==========================================================
@@ -386,15 +344,14 @@ const InvoiceService = {
   ========================================================== */
 
   async deleteInvoice(invoiceId, jobNumber = null) {
+
     const { error } = await db
       .from(TABLES.INVOICES)
       .delete()
       .eq("invoice_id", invoiceId);
 
     if (error) {
-      return {
-        error
-      };
+      return { error };
     }
 
     if (jobNumber) {
@@ -406,32 +363,46 @@ const InvoiceService = {
     return {
       error: null
     };
+
   },
 
   /* ==========================================================
-     CALCULATIONS
+     TOTALS
   ========================================================== */
 
   calculateTotals(items = [], options = {}) {
-    const subtotal = items.reduce((sum, item) => {
-      const quantity = Number(item.quantity) || 0;
-      const unitPrice = Number(item.unit_price) || 0;
 
-      return sum + quantity * unitPrice;
-    }, 0);
+    const subtotal = items.reduce(
+      (sum, item) =>
+        sum +
+        (
+          Number(item.quantity || 0) *
+          Number(item.unit_price || 0)
+        ),
+      0
+    );
 
-    const taxAmount = Number(options.tax_amount) || 0;
-    const discount = Number(options.discount) || 0;
-    const amountPaid = Number(options.amount_paid) || 0;
+    const tax =
+      Number(options.tax_amount || 0);
 
-    const total = Math.max(subtotal + taxAmount - discount, 0);
-    const balanceDue = Math.max(total - amountPaid, 0);
+    const discount =
+      Number(options.discount || 0);
+
+    const paid =
+      Number(options.amount_paid || 0);
+
+    const total =
+      subtotal + tax - discount;
+
+    const balanceDue =
+      Math.max(total - paid, 0);
 
     return {
       subtotal,
       total,
       balanceDue
     };
+
   }
 
 };
