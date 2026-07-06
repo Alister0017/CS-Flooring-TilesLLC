@@ -1,57 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Material Calculator</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .placeholder-content {
-            text-align: center;
-            color: #666;
-            line-height: 1.6;
-        }
-        .placeholder-content p {
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-        .icon {
-            font-size: 48px;
-            margin: 20px 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS Flooring & Tile LLC | Material Calculator</title>
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
-<body>
-    <div class="container">
-        <h1>Material Calculator</h1>
-        <div class="placeholder-content">
-            <div class="icon">📐</div>
-            <p>Material Calculator Page</p>
-            <p>This page is under development.</p>
-            <p>Content coming soon...</p>
-        </div>
+
+<body class="admin-body">
+  <div class="admin-mobile-bar">
+    <div class="admin-mobile-brand">
+      <strong>CS Flooring</strong>
+      <span>Admin Portal</span>
     </div>
+    <button class="admin-menu-toggle" type="button" onclick="toggleAdminNav()" aria-label="Open admin menu">☰</button>
+  </div>
+
+  <div class="admin-sidebar-backdrop" onclick="closeAdminNav()"></div>
+
+  <aside class="admin-sidebar">
+    <div class="admin-brand">
+      <h2>CS Flooring</h2>
+      <p>Admin Portal</p>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Main</p>
+      <a href="admin-dashboard.html">Dashboard</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Operations</p>
+      <a href="admin-customerList.html">Customers</a>
+      <a href="admin-jobList.html">Jobs</a>
+      <a href="admin-calendar.html">Calendar</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Documents</p>
+      <a href="admin-estimates.html">Estimates</a>
+      <a href="admin-agreements.html">Agreements</a>
+      <a href="admin-invoices.html">Invoices</a>
+      <a class="active" href="admin-materialCalc.html">Material Calculator</a>
+    </div>
+
+    <div class="admin-nav-group">
+      <p class="admin-nav-label">Website</p>
+      <a href="admin-inventory.html">Inventory</a>
+      <a href="admin-photos.html">Photos</a>
+      <a href="../index.html">Public Website</a>
+    </div>
+
+    <button class="admin-logout" onclick="logoutAdmin()">Logout</button>
+  </aside>
+
+  <main class="admin-main">
+    <header class="admin-dashboard-header">
+      <h1 class="admin-business-title">CS Flooring & Tile LLC</h1>
+
+      <div class="admin-title-row">
+        <h1>Material Calculator</h1>
+        <p id="adminCurrentDate" class="admin-current-date"></p>
+      </div>
+
+      <nav class="admin-breadcrumb">
+        <a href="admin-dashboard.html">Dashboard</a>
+        <span>/</span>
+        <span class="current">Material Calculator</span>
+      </nav>
+    </header>
+
+    <section class="admin-card">
+      <div class="admin-section-header">
+        <h2>Project Material Estimate</h2>
+      </div>
+
+      <form id="materialCalcForm" class="admin-form" onsubmit="event.preventDefault(); calculateMaterials();">
+        <div class="admin-form-grid">
+
+          <div class="admin-form-field">
+            <label for="calcCustomerSelect">Customer</label>
+            <select id="calcCustomerSelect" onchange="handleCalcCustomerChange()">
+              <option value="">Optional: Select Customer</option>
+            </select>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="calcJobSelect">Job</label>
+            <select id="calcJobSelect" onchange="handleCalcJobChange()">
+              <option value="">Optional: Select Job</option>
+            </select>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="calcProductSelect">Product / Material</label>
+            <select id="calcProductSelect" onchange="handleCalcProductChange()">
+              <option value="">Optional: Select Product</option>
+            </select>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="calcFlooringType">Flooring Type</label>
+            <select id="calcFlooringType">
+              <option value="">Select Flooring Type</option>
+              <option>Luxury Vinyl Products</option>
+              <option>Hardwood</option>
+              <option>Tile</option>
+              <option>Carpet</option>
+              <option>VCT</option>
+              <option>Trim / Moldings</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="calcRoomName">Room / Area</label>
+            <input id="calcRoomName" type="text" placeholder="Example: Kitchen, Living Room, Bathroom">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="calcWastePercent">Waste Factor (%)</label>
+            <input id="calcWastePercent" type="number" step="0.01" value="10" placeholder="Common range: 5–15%">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="calcUnitCost">Material Unit Cost ($ per unit)</label>
+            <input id="calcUnitCost" type="number" step="0.01" value="0" placeholder="Example: 3.25">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="calcUnit">Unit of Measurement</label>
+            <select id="calcUnit">
+              <option value="sq ft">sq ft</option>
+              <option value="sq yd">sq yd</option>
+              <option value="linear ft">linear ft</option>
+              <option value="each">each</option>
+              <option value="box">box</option>
+            </select>
+          </div>
+
+          <div class="admin-form-field">
+            <label for="calcBoxCoverage">Box Coverage (sq ft per box)</label>
+            <input id="calcBoxCoverage" type="number" step="0.01" value="0" placeholder="Only needed for boxed flooring">
+          </div>
+
+          <div class="admin-form-field">
+            <label for="calcInstallRate">Labor / Install Rate ($ per sq ft)</label>
+            <input id="calcInstallRate" type="number" step="0.01" value="0" placeholder="Optional labor estimate">
+          </div>
+
+          <div class="admin-form-field full-width">
+            <label for="calcNotes">Calculator Notes</label>
+            <textarea id="calcNotes" placeholder="Optional notes about rooms, waste, transitions, prep work, demo, or special conditions..."></textarea>
+          </div>
+
+        </div>
+
+        <div class="material-room-section">
+          <div class="admin-section-header">
+            <h3>Room Measurements</h3>
+            <button class="btn secondary" type="button" onclick="addMaterialRoomRow()">+ Add Room / Area</button>
+          </div>
+
+          <p class="admin-help-text">
+            Enter length and width in feet. The calculator will estimate square footage, waste, boxes, material cost, and optional labor cost.
+          </p>
+
+          <div id="materialRooms"></div>
+        </div>
+
+        <div class="material-calc-summary">
+          <div>
+            <span>Total Area</span>
+            <strong id="calcTotalArea">0.00 sq ft</strong>
+          </div>
+
+          <div>
+            <span>Area With Waste</span>
+            <strong id="calcWasteArea">0.00 sq ft</strong>
+          </div>
+
+          <div>
+            <span>Boxes Needed</span>
+            <strong id="calcBoxesNeeded">0</strong>
+          </div>
+
+          <div>
+            <span>Material Cost</span>
+            <strong id="calcMaterialCost">$0.00</strong>
+          </div>
+
+          <div>
+            <span>Labor Cost</span>
+            <strong id="calcLaborCost">$0.00</strong>
+          </div>
+
+          <div>
+            <span>Estimated Total</span>
+            <strong id="calcEstimatedTotal">$0.00</strong>
+          </div>
+        </div>
+
+        <div class="admin-form-actions">
+          <button class="btn" type="submit">Calculate Materials</button>
+          <button class="btn secondary" type="button" onclick="addCalcToEstimate()">Add to Estimate</button>
+          <button class="btn secondary" type="button" onclick="resetMaterialCalculator()">Reset</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="admin-card">
+      <div class="admin-section-header">
+        <h2>Calculation Preview</h2>
+      </div>
+
+      <div id="materialCalcPreview" class="material-calc-preview">
+        <div class="admin-empty-state">
+          Enter room measurements and click Calculate Materials to preview the result.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+
+  <script src="../js/config/constants.js"></script>
+  <script src="../js/config/dbTables.js"></script>
+  <script src="../js/config/statuses.js"></script>
+  <script src="../js/config/flooringTypes.js"></script>
+  <script src="../js/config/routes.js"></script>
+
+  <script src="../js/utils.js"></script>
+
+  <script src="../js/services/customerService.js"></script>
+  <script src="../js/services/jobService.js"></script>
+  <script src="../js/services/inventoryService.js"></script>
+  <script src="../js/services/formDataService.js"></script>
+
+  <script src="../js/admin/admin-modals.js"></script>
+  <script src="../js/admin/admin.js"></script>
+  <script src="../js/admin/materialCalc.js"></script>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/auth.js"></script>
 </body>
 </html>
