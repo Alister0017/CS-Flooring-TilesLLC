@@ -11,7 +11,7 @@ const InvoiceService = {
       .from(TABLES.INVOICES)
       .select(`
         *,
-        jobs (
+        jobs!estimates_job_number_fkey (
           job_number,
           status,
           customers (
@@ -52,7 +52,7 @@ const InvoiceService = {
         *,
         invoice_items (*),
         invoice_payments (*),
-        jobs (
+        jobs!estimates_job_number_fkey (
           job_number,
           status,
           description,
