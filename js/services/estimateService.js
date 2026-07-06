@@ -11,7 +11,7 @@ const EstimateService = {
       .from(TABLES.ESTIMATES)
       .select(`
         *,
-        jobs (
+       jobs!estimates_job_number_fkey (
           job_number,
           status,
           customers (
@@ -37,7 +37,7 @@ const EstimateService = {
       .select(`
         *,
         estimate_items (*),
-        jobs (
+        jobs!estimates_job_number_fkey (
           job_number,
           status,
           description,
