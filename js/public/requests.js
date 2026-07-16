@@ -112,8 +112,8 @@ async function submitRequest() {
             address:
                 document.getElementById("address").value.trim(),
 
-            //flooring_type:
-                //flooringTypes,
+            flooring_type:
+                flooringTypes,
 
             preferred_measurement_date:
                 document.getElementById("preferredDate").value || null,
